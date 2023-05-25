@@ -1,0 +1,496 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceGroupName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "subscriptionId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "automationAccountName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "location": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "requestsSiteUrl": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "siteTemplatesListId": {
+            "defaultValue": "",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "Singlequote": "'"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "comments": "Logic apps",
+            "apiVersion": "2017-07-01",
+            "name": "GetSiteTemplates",
+            "location": "[parameters('location')]",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {
+                            },
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "Recurrence": {
+                            "recurrence": {
+                                "frequency": "Week",
+                                "interval": 1
+                            },
+                            "type": "Recurrence"
+                        }
+                    },
+                    "actions": {
+                        "Create_job_to_get_Site_Templates": {
+                            "runAfter": {
+                                "Initialize_SiteTemplateExists_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "properties": {
+                                        "parameters": {
+                                            "SiteUrl": "[parameters('requestsSiteUrl')]"
+                                        }
+                                    }
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azureautomation']['connectionId']"
+                                    }
+                                },
+                                "method": "put",
+                                "path": "[concat('/subscriptions/@{encodeURIComponent(''',parameters('subscriptionId'),''')}/resourceGroups/@{encodeURIComponent(''',parameters('resourceGroupName'),''')}/providers/Microsoft.Automation/automationAccounts/@{encodeURIComponent(''',parameters('automationAccountName'),''')}/jobs')]",
+                                "queries": {
+                                    "runbookName": "GetSiteTemplates",
+                                    "wait": true,
+                                    "x-ms-api-version": "2015-10-31"
+                                }
+                            }
+                        },
+                        "Get_job_output": {
+                            "runAfter": {
+                                "Create_job_to_get_Site_Templates": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azureautomation']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "[concat('/subscriptions/@{encodeURIComponent(''',parameters('subscriptionId'),''')}/resourceGroups/@{encodeURIComponent(''',parameters('resourceGroupName'),''')}/providers/Microsoft.Automation/automationAccounts/@{encodeURIComponent(''',parameters('automationAccountName'),''')}/jobs/@{encodeURIComponent(body(''Create_job_to_get_Site_Templates'')?[''properties'']?[''jobId''])}/output')]",
+                                "queries": {
+                                    "x-ms-api-version": "2015-10-31"
+                                }
+                            }
+                        },
+                        "Initialize_SiteTemplateExists_variable": {
+                            "runAfter": {
+                                "Initialize_SiteTemplateListItemID_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "SiteTemplateExists",
+                                        "type": "boolean",
+                                        "value": "@false"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_SiteTemplateListItemID_variable": {
+                            "runAfter": {
+                                "Initialize_SiteTemplates_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "SiteTemplateListItemID",
+                                        "type": "integer"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_SiteTemplates_variable": {
+                            "runAfter": {},
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "SiteTemplates",
+                                        "type": "array"
+                                    }
+                                ]
+                            }
+                        },
+                        "Process_deleted_site_templates": {
+                            "actions": {
+                                "Get_all_site_templates_from_the_SharePoint_list": {
+                                    "runAfter": {},
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                            }
+                                        },
+                                        "method": "get",
+                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('siteTemplatesListId'),variables('singlequote'),'))}/items')]"
+                                    }
+                                },
+                                "Loop_through_site_templates_list_items": {
+                                    "foreach": "@body('Get_all_site_templates_from_the_SharePoint_list')?['value']",
+                                    "actions": {
+                                        "Check_if_site_template_exists": {
+                                            "actions": {
+                                                "Delete_site_template_list_item": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "delete",
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('siteTemplatesListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(items(',variables('singlequote'),'Loop_through_site_templates_list_items',variables('singlequote'),')?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Loop_through_site_templates_array_-_delete": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@variables('SiteTemplateExists')",
+                                                            "@false"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Loop_through_site_templates_array_-_delete": {
+                                            "foreach": "@body('Parse_site_templates_JSON')",
+                                            "actions": {
+                                                "Check_if_the_site_template_id_matches": {
+                                                    "actions": {
+                                                        "Set_SiteTemplateExists_variable": {
+                                                            "runAfter": {},
+                                                            "type": "SetVariable",
+                                                            "inputs": {
+                                                                "name": "SiteTemplateExists",
+                                                                "value": "@true"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {},
+                                                    "expression": {
+                                                        "and": [
+                                                            {
+                                                                "equals": [
+                                                                    "@items('Loop_through_site_templates_list_items')?['SiteTemplateId']",
+                                                                    "@items('Loop_through_site_templates_array_-_delete')['SiteTemplateId']"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type": "If"
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Reset_SiteTemplateExists_variable": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Foreach"
+                                        },
+                                        "Reset_SiteTemplateExists_variable": {
+                                            "runAfter": {},
+                                            "type": "SetVariable",
+                                            "inputs": {
+                                                "name": "SiteTemplateExists",
+                                                "value": "@false"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Get_all_site_templates_from_the_SharePoint_list": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach",
+                                    "runtimeConfiguration": {
+                                        "concurrency": {
+                                            "repetitions": 1
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Process_site_templates": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Process_site_templates": {
+                            "actions": {
+                                "Check_if_site_templates_were_found": {
+                                    "actions": {
+                                        "Loop_through_site_templates_array": {
+                                            "foreach": "@body('Parse_site_templates_JSON')",
+                                            "actions": {
+                                                "Check_if_the_site_template_was_found_in_the_list": {
+                                                    "actions": {
+                                                        "Create_site_template_list_item": {
+                                                            "runAfter": {},
+                                                            "type": "ApiConnection",
+                                                            "inputs": {
+                                                                "body": {
+                                                                    "PreviewImage": "@items('Loop_through_site_templates_array')['PreviewImage']",
+                                                                    "SiteTemplateId": "@items('Loop_through_site_templates_array')['SiteTemplateId']",
+                                                                    "Store": "@{items('Loop_through_site_templates_array')?['Store']}",
+                                                                    "Title": "@items('Loop_through_site_templates_array')['Title']",
+                                                                    "WebTemplate": "@items('Loop_through_site_templates_array')['WebTemplate']"
+                                                                },
+                                                                "host": {
+                                                                    "connection": {
+                                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                    }
+                                                                },
+                                                                "method": "post",
+                                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('siteTemplatesListId'),variables('singlequote'),'))}/items')]"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Compose": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "else": {
+                                                        "actions": {
+                                                            "Update_list_item_preview_image": {
+                                                                "runAfter": {
+                                                                    "Update_site_template_list_item": [
+                                                                        "Succeeded"
+                                                                    ]
+                                                                },
+                                                                "type": "ApiConnection",
+                                                                "inputs": {
+                                                                    "body": {
+                                                                        "body": "{'__metadata':{'type':'SP.Data.SiteTemplatesListItem'},'PreviewImage':\n{'Description':'Preview Image',\n'Url':'@{items('Loop_through_site_templates_array')?['PreviewImage']}'\n}\n}",
+                                                                        "headers": {
+                                                                            "Content-Type": "application/json;odata=verbose",
+                                                                            "IF-MATCH": "*",
+                                                                            "X-HTTP-Method": "MERGE"
+                                                                        },
+                                                                        "method": "POST",
+                                                                        "uri": "_api/web/lists/GetByTitle('Site Templates')/items(@{first(body('Get_site_template_from_the_sharepoint_list')?['Value'])?['ID']})"
+                                                                    },
+                                                                    "host": {
+                                                                        "connection": {
+                                                                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                        }
+                                                                    },
+                                                                    "method": "post",
+                                                                    "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/httprequest')]"
+                                                                }
+                                                            },
+                                                            "Update_site_template_list_item": {
+                                                                "runAfter": {},
+                                                                "type": "ApiConnection",
+                                                                "inputs": {
+                                                                    "body": {
+                                                                        "SiteTemplateId": "@items('Loop_through_site_templates_array')['SiteTemplateId']",
+                                                                        "Store": "@{items('Loop_through_site_templates_array')?['Store']}",
+                                                                        "Title": "@items('Loop_through_site_templates_array')['Title']",
+                                                                        "WebTemplate": "@items('Loop_through_site_templates_array')['WebTemplate']"
+                                                                    },
+                                                                    "host": {
+                                                                        "connection": {
+                                                                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                        }
+                                                                    },
+                                                                    "method": "patch",
+                                                                    "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('siteTemplatesListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(first(body(',variables('singlequote'),'Get_site_template_from_the_sharepoint_list',variables('singlequote'),')?[',variables('singlequote'),'Value',variables('singlequote'),'])?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "expression": {
+                                                        "and": [
+                                                            {
+                                                                "equals": [
+                                                                    "@empty(body('Get_site_template_from_the_SharePoint_list')?['value'])",
+                                                                    "@true"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type": "If"
+                                                },
+                                                "Compose": {
+                                                    "runAfter": {
+                                                        "Get_site_template_from_the_SharePoint_list": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Compose",
+                                                    "inputs": "@body('Get_site_template_from_the_SharePoint_list')?['value']"
+                                                },
+                                                "Get_site_template_from_the_SharePoint_list": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "get",
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('siteTemplatesListId'),variables('singlequote'),'))}/items')]",
+                                                        "queries": {
+                                                            "$filter": "SiteTemplateId eq '@{items('Loop_through_site_templates_array')['SiteTemplateId']}' or Title eq '@{items('Loop_through_site_templates_array')['Title']}'"
+                                                        }
+                                                    },
+                                                    "description": "Get the corresponding list item - if it exists we will update it and if not we will create a new list item."
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Parse_site_templates_JSON": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Foreach"
+                                        },
+                                        "Parse_site_templates_JSON": {
+                                            "runAfter": {},
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('Get_job_output')",
+                                                "schema": {
+                                                    "items": {
+                                                        "properties": {
+                                                            "Description": {
+                                                                "type": "string"
+                                                            },
+                                                            "PreviewImage": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "SiteTemplateId": {
+                                                                "type": "string"
+                                                            },
+                                                            "Store": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "Title": {
+                                                                "type": "string"
+                                                            },
+                                                            "WebTemplate": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "Title",
+                                                            "Description",
+                                                            "SiteTemplateId",
+                                                            "WebTemplate"
+                                                        ],
+                                                        "type": "object"
+                                                    },
+                                                    "type": "array"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "contains": [
+                                                    "@body('Get_job_output')",
+                                                    "{"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If",
+                                    "description": "Check if site templates were found in the tenant."
+                                }
+                            },
+                            "runAfter": {
+                                "Get_job_output": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azureautomation": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-automation')]",
+                                "connectionName": "provisionassist-automation",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/azureautomation')]"
+                            },
+                            "sharepointonline": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-spo')]",
+                                "connectionName": "provisionassist-spo",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/sharepointonline')]"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+    ]
+}

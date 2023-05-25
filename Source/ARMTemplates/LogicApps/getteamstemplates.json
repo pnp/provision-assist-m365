@@ -1,0 +1,548 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceGroupName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "subscriptionId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "tenantId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "location": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "requestsSiteUrl": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "teamsTemplatesListId": {
+            "defaultValue": "",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "Singlequote": "'"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "GetTeamsTemplates",
+            "location": "[parameters('location')]",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "Recurrence": {
+                            "recurrence": {
+                                "frequency": "Week",
+                                "interval": 1
+                            },
+                            "evaluatedRecurrence": {
+                                "frequency": "Week",
+                                "interval": 1
+                            },
+                            "type": "Recurrence"
+                        }
+                    },
+                    "actions": {
+                        "Get_Client_ID": {
+                            "runAfter": {
+                                "Initialize_TeamsTemplateExists_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/secrets/@{encodeURIComponent('appid')}/value"
+                            },
+                            "description": "Get Azure ad app client id from key vault.",
+                                "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
+                        "Get_Client_Secret": {
+                            "runAfter": {
+                                "Get_Client_ID": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
+                            },
+                            "description": "Get Azure ad app client secret from key vault.",
+                                "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
+                        "Get_teams_templates": {
+                            "runAfter": {
+                                "Get_Client_Secret": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "authentication": {
+                                    "audience": "https://graph.microsoft.com",
+                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                    "tenant": "@variables('TenantID')",
+                                    "type": "ActiveDirectoryOAuth"
+                                },
+                                "method": "GET",
+                                "uri": "@{variables('GraphURL')}/teamwork/teamTemplates?$expand=definitions&filter=definitions/any(a:a/languageTag+eq+'en-US')"
+                            }
+                        },
+                        "Initialize_GraphURL_variable": {
+                            "runAfter": {
+                                "Initialize_TenantID_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "GraphURL",
+                                        "type": "string",
+                                        "value": "https://graph.microsoft.com/beta"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_TeamsTemplateExists_variable": {
+                            "runAfter": {
+                                "Initialize_GraphURL_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "TeamsTemplateExists",
+                                        "type": "boolean"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_TenantID_variable": {
+                            "runAfter": {},
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "TenantID",
+                                        "type": "string",
+                                        "value": "[parameters('tenantId')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Loop_through_teams_templates": {
+                            "foreach": "@body('Parse_teams_templates_JSON')?['value']",
+                            "actions": {
+                                "Loop_through_definitions": {
+                                    "foreach": "@items('Loop_through_teams_templates')['definitions']",
+                                    "actions": {
+                                        "Check_template_language_is_en-US": {
+                                            "actions": {
+                                                "Check_if_the_template_was_found_in_the_list": {
+                                                    "actions": {
+                                                        "Create_template_list_item": {
+                                                            "runAfter": {},
+                                                            "type": "ApiConnection",
+                                                            "inputs": {
+                                                                "body": {
+                                                                    "AdminCenterTemplate": true,
+                                                                    "Description": "@{first(items('Loop_through_teams_templates')['definitions'])?['description']}",
+                                                                    "TemplateId": "@items('Loop_through_teams_templates')?['id']",
+                                                                    "Title": "@{first(items('Loop_through_teams_templates')['definitions'])?['displayName']}"
+                                                                },
+                                                                "host": {
+                                                                    "connection": {
+                                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                    }
+                                                                },
+                                                                "method": "post",
+                                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('teamsTemplatesListId'),variables('singlequote'),'))}/items')]"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Get_teams_template_from_the_SharePoint_list": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "else": {
+                                                        "actions": {
+                                                            "Update_template_list_item": {
+                                                                "runAfter": {},
+                                                                "type": "ApiConnection",
+                                                                "inputs": {
+                                                                    "body": {
+                                                                        "AdminCenterTemplate": true,
+                                                                        "Description": "@{first(items('Loop_through_teams_templates')['definitions'])?['description']}",
+                                                                        "TemplateId": "@items('Loop_through_teams_templates')?['id']",
+                                                                        "Title": "@{first(items('Loop_through_teams_templates')['definitions'])?['displayName']}"
+                                                                    },
+                                                                    "host": {
+                                                                        "connection": {
+                                                                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                        }
+                                                                    },
+                                                                    "method": "patch",
+                                                                    "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('teamsTemplatesListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(first(body(',variables('singlequote'),'Get_teams_template_from_the_sharepoint_list',variables('singlequote'),')?[',variables('singlequote'),'Value',variables('singlequote'),'])?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "expression": {
+                                                        "and": [
+                                                            {
+                                                                "equals": [
+                                                                    "@empty(body('Get_teams_template_from_the_SharePoint_list')?['value'])",
+                                                                    "@true"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type": "If"
+                                                },
+                                                "Get_teams_template_from_the_SharePoint_list": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "get",
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('teamsTemplatesListId'),variables('singlequote'),'))}/items')]",
+                                                        "queries": {
+                                                            "$filter": "TemplateId eq '@{items('Loop_through_teams_templates')?['id']}'"
+                                                        }
+                                                    },
+                                                    "description": "Get the corresponding list item - if it exists we will update it and if not we will create a new list item."
+                                                }
+                                            },
+                                            "runAfter": {},
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@items('Loop_through_definitions')?['languageTag']",
+                                                            "en-US"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "type": "Foreach"
+                                }
+                            },
+                            "runAfter": {
+                                "Parse_teams_templates_JSON": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Parse_teams_templates_JSON": {
+                            "runAfter": {
+                                "Get_teams_templates": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Get_teams_templates')",
+                                "schema": {
+                                    "properties": {
+                                        "@@odata.context": {
+                                            "type": "string"
+                                        },
+                                        "@@odata.count": {
+                                            "type": "integer"
+                                        },
+                                        "@@odata.nextLink": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "items": {
+                                                "properties": {
+                                                    "definitions": {
+                                                        "items": {
+                                                            "properties": {
+                                                                "audience": {
+                                                                    "type": "string"
+                                                                },
+                                                                "categories": {
+                                                                    "type": "array"
+                                                                },
+                                                                "description": {
+                                                                    "type": "string"
+                                                                },
+                                                                "displayName": {
+                                                                    "type": "string"
+                                                                },
+                                                                "iconUrl": {
+                                                                    "type": "string"
+                                                                },
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "languageTag": {
+                                                                    "type": "string"
+                                                                },
+                                                                "lastModifiedBy": {
+                                                                    "properties": {
+                                                                        "application": {},
+                                                                        "device": {},
+                                                                        "user": {
+                                                                            "properties": {
+                                                                                     "@@odata.type": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "displayName": {},
+                                                                                "id": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "userIdentityType": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "type": "object"
+                                                                        }
+                                                                    },
+                                                                 "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "lastModifiedDateTime": {
+                                                                    "type": "string"
+                                                                },
+                                                                "parentTemplateId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "publisherName": {},
+                                                                "shortDescription": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "parentTemplateId",
+                                                                "displayName",
+                                                                "languageTag",
+                                                                "audience",
+                                                                "description",
+                                                                "shortDescription",
+                                                                "lastModifiedDateTime",
+                                                                "publisherName",
+                                                                "categories",
+                                                                "iconUrl",
+                                                                "lastModifiedBy"
+                                                            ],
+                                                            "type": "object"
+                                                        },
+                                                        "type": "array"
+                                                    },
+                                                    "definitions@odata.context": {
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "definitions@odata.context",
+                                                    "definitions"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "Process_deleted_teams_templates": {
+                            "actions": {
+                                "Get_all_teams_templates_from_the_SharePoint_list": {
+                                    "runAfter": {},
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                            }
+                                        },
+                                        "method": "get",
+                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('teamsTemplatesListId'),variables('singlequote'),'))}/items')]"
+                                    }
+                                },
+                                "Loop_through_teams_templates_list_items": {
+                                    "foreach": "@body('Get_all_teams_templates_from_the_SharePoint_list')?['value']",
+                                    "actions": {
+                                        "Check_if_teams_template_exists": {
+                                            "actions": {
+                                                "Delete_teams_template_list_item": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "delete",
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('teamsTemplatesListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(items(',variables('singlequote'),'Loop_through_teams_templates_list_items',variables('singlequote'),')?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Loop_through_teams_templates_-_delete": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@variables('TeamsTemplateExists')",
+                                                            "@false"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Loop_through_teams_templates_-_delete": {
+                                            "foreach": "@body('Parse_teams_templates_JSON')?['value']",
+                                            "actions": {
+                                                "Check_if_the_template_id_matches": {
+                                                    "actions": {
+                                                        "Set_TeamsTemplateExists_variable": {
+                                                            "runAfter": {},
+                                                            "type": "SetVariable",
+                                                            "inputs": {
+                                                                "name": "TeamsTemplateExists",
+                                                                "value": "@true"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {},
+                                                    "expression": {
+                                                        "and": [
+                                                            {
+                                                                "equals": [
+                                                                    "@items('Loop_through_teams_templates_list_items')?['TemplateId']",
+                                                                    "@items('Loop_through_teams_templates_-_delete')?['id']"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type": "If"
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Reset_TeamsTemplateExists_variable": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Foreach"
+                                        },
+                                        "Reset_TeamsTemplateExists_variable": {
+                                            "runAfter": {},
+                                            "type": "SetVariable",
+                                            "inputs": {
+                                                "name": "TeamsTemplateExists",
+                                                "value": "@false"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Get_all_teams_templates_from_the_SharePoint_list": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach"
+                                }
+                            },
+                            "runAfter": {
+                                "Loop_through_teams_templates": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "keyvault": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-kv')]",
+                                "connectionName": "provisionassist-kv",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
+                            },
+                            "sharepointonline": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-spo')]",
+                                "connectionName": "provisionassist-spo",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/sharepointonline')]"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,391 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceGroupName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "subscriptionId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "tenantId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "location": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "requestsSiteUrl": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "requestsSettingsListId": {
+            "defaultvalue": "",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "Singlequote": "'"
+    },
+    "resources": [
+        {
+            "comments": "Logic apps",
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "SyncGroupSettings",
+            "location": "[parameters('location')]",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {
+                            },
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "Recurrence": {
+                            "recurrence": {
+                                "frequency": "Week",
+                                "interval": 1
+                            },
+                            "type": "Recurrence"
+                        }
+                    },
+                     "actions": {
+                     "Get_Client_ID": {
+                            "runAfter": {
+                                "Initialize_GraphURL_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                              "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/secrets/@{encodeURIComponent('appid')}/value"
+                            },
+                            "description": "Get Azure ad app client id from key vault.",
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
+                        "Get_Group_settings": {
+                            "runAfter": {
+                                "Get_secret": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "authentication": {
+                                    "audience": "https://graph.microsoft.com",
+                                     "clientId": "@body('Get_Client_ID')?['value']",
+                                    "secret": "@body('Get_secret')?['value']",
+                                    "tenant": "@variables('TenantID')",
+                                    "type": "ActiveDirectoryOAuth"
+                                },
+                                "headers": {
+                                    "content-type": "application/json"
+                                },
+                                "method": "GET",
+                                "uri": "https://graph.microsoft.com/v1.0/groupsettings/"
+                            }
+                        },
+                       "Get_secret": {
+                            "runAfter": {
+                                "Get_Client_ID": [
+                                    "Succeeded"
+                                ]
+                            },
+            "type": "ApiConnection",
+                            "inputs": {
+ "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                            }
+                        },
+     "method": "get",
+                                "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
+                            },
+                         "description": "Get Azure ad app client id from key vault.",
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                ]
+                            }
+                                  }
+                        },
+                        "Initialize_GraphURL_variable": {
+                            "runAfter": {
+                                      "Initialize_TenantID_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "GraphURL",
+                                        "type": "string",
+                                        "value": "https://graph.microsoft.com/v1.0"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_TenantID_variable": {
+                            "runAfter": {},
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "TenantID",
+                                        "type": "string",
+                                        "value": "[parameters('tenantId')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Loop_through_Group_settings": {
+                            "foreach": "@body('Parse_Group_settings_JSON')?['value']",
+                            "actions": {
+                                "Loop_through_Group_setting_values": {
+                                    "foreach": "@items('Loop_through_Group_settings')?['values']",
+                                    "actions": {
+                                            "Get_Group_blocked_words_setting": {
+                                            "actions": {
+                                                "Get_CustomBlockedWords_setting_item": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "get",                                                                                
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSettingsListId'),variables('singlequote'),'))}/items')]",
+                                                        "queries": {
+                                                            "$filter": "Title eq 'CustomBlockedWords'"
+                                                        }
+                                                    }
+                                                },
+                                                 "Loop_through_list_items_-_blocked_words": {
+                                                    "foreach": "@body('Get_CustomBlockedWords_setting_item')?['value']",
+                                                    "actions": {
+                                                        "Update_CustomBlockedWords_setting_item_value": {
+                                                            "runAfter": {},
+                                                            "type": "ApiConnection",
+                                                            "inputs": {
+                                                                "body": {
+                                                                    "BlockedWordsValue": "@items('Loop_through_Group_setting_values')?['value']",
+                                                                    "Title": "@items('Loop_through_list_items_-_blocked_words')?['Title']"
+                                                                },
+                                                                "host": {
+                                                                    "connection": {
+                                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                    }
+                                                                },
+                                                                "method": "patch",
+                                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSettingsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(items(',variables('singlequote'),'Loop_through_list_items_-_blocked_words',variables('singlequote'),')?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Get_CustomBlockedWords_setting_item": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Foreach"
+                                                }
+
+                                            },
+                                              "runAfter": {
+                                                "Get_Group_classifications_setting": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                              "expression": {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@items('Loop_through_Group_setting_values')?['name']",
+                                                            "CustomBlockedWordsList"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                            },
+                                        "Get_Group_classifications_setting": {
+                                            "actions": {
+                                                "Get_SiteClassifications_setting_item": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "get",
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSettingsListId'),variables('singlequote'),'))}/items')]",
+                                                        "queries": {
+                                                            "$filter": "Title eq 'SiteClassifications'"
+                                                        }
+                                                    }
+                                                },
+                                                "Loop_through_list_items": {
+                                                    "foreach": "@body('Get_SiteClassifications_setting_item')?['value']",
+                                                    "actions": {
+                                                        "Update_SiteClassifications_setting_item_value": {
+                                                            "runAfter": {},
+                                                            "type": "ApiConnection",
+                                                            "inputs": {
+                                                                "body": {
+                                                                    "Title": "@items('Loop_through_list_items')?['Title']",
+                                                                    "Value": "@items('Loop_through_Group_setting_values')?['value']"
+                                                                },
+                                                                "host": {
+                                                                    "connection": {
+                                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                    }
+                                                                },
+                                                                "method": "patch",
+                                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSettingsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(items(',variables('singlequote'),'loop_through_list_items',variables('singlequote'),')?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Get_SiteClassifications_setting_item": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Foreach"
+                                                }
+                                            },
+                                            "runAfter": {},
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@items('Loop_through_Group_setting_values')?['name']",
+                                                            "ClassificationList"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "type": "Foreach"
+                                }
+                            },
+                            "runAfter": {
+                                "Parse_Group_settings_JSON": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Parse_Group_settings_JSON": {
+                            "runAfter": {
+                                "Get_Group_settings": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Get_Group_settings')",
+                                "schema": {
+                                    "properties": {
+                                        "@@odata.context": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "items": {
+                                                "properties": {
+                                                    "displayName": {
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "templateId": {
+                                                        "type": "string"
+                                                    },
+                                                    "values": {
+                                                        "items": {
+                                                            "properties": {
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "value": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "name",
+                                                                "value"
+                                                            ],
+                                                            "type": "object"
+                                                        },
+                                                        "type": "array"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "displayName",
+                                                    "templateId",
+                                                    "values"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                  "parameters": {
+                    "$connections": {
+                        "value": {
+                                 "keyvault": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-kv')]",
+                                "connectionName": "provisionassist-kv",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
+                            },
+                            "sharepointonline": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-spo')]",
+                                "connectionName": "provisionassist-spo",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/sharepointonline')]"
+                            }
+                        }
+                    }
+                }
+        }
+        }
+    ]
+}
