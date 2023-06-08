@@ -1,0 +1,1177 @@
+<?xml version="1.0"?>
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2022/09/ProvisioningSchema">
+  <pnp:Preferences Generator="PnP.Framework, Version=1.11.2.0, Culture=neutral, PublicKeyToken=0d501f89f11b748c" />
+  <pnp:Templates ID="CONTAINER-TEMPLATE-4E16AF063ECA4BEBB9449333E54C87D9">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-4E16AF063ECA4BEBB9449333E54C87D9" Version="1" BaseSiteTemplate="GROUP#0" Scope="RootSite">
+      <pnp:WebSettings RequestAccessEmail="" NoCrawl="false" WelcomePage="SitePages/Home.aspx" SiteLogo="{site}/_api/GroupService/GetGroupImage?id='8f322650-6e5e-4042-9b6d-f40952999a29'&amp;hash=638206118883722716" AlternateCSS="" MasterPageUrl="{masterpagecatalog}/seattle.master" CustomMasterPageUrl="{masterpagecatalog}/seattle.master" CommentsOnSitePagesDisabled="false" QuickLaunchEnabled="false" MembersCanShare="true" SearchScope="DefaultScope" SearchBoxInNavBar="Inherit" />
+      <pnp:SiteSettings AllowDesigner="true" SearchBoxInNavBar="Inherit" SearchCenterUrl="" />
+      <pnp:RegionalSettings AdjustHijriDays="0" AlternateCalendarType="None" CalendarType="Gregorian" Collation="25" FirstDayOfWeek="Monday" FirstWeekOfYear="2" LocaleId="2049" ShowWeeks="false" Time24="true" TimeZone="88" WorkDayEndHour="5:00PM" WorkDays="62" WorkDayStartHour="8:00AM" />
+      <pnp:PropertyBagEntries>
+        <pnp:PropertyBagEntry Key="UseFastCloneFromSiteMaster" Value="TRUE" Overwrite="false" />
+        <pnp:PropertyBagEntry Key="SiteNotebookGuid" Value="55de6454-102c-447d-8f00-cfc35e83da7e" Overwrite="false" />
+      </pnp:PropertyBagEntries>
+      <pnp:Navigation AddNewPagesToNavigation="true" CreateFriendlyUrlsForNewPages="true">
+        <pnp:GlobalNavigation NavigationType="Structural">
+          <pnp:StructuralNavigation RemoveExistingNodes="false" />
+        </pnp:GlobalNavigation>
+        <pnp:CurrentNavigation NavigationType="StructuralLocal">
+          <pnp:StructuralNavigation RemoveExistingNodes="false">
+            <pnp:NavigationNode Title="Home" Url="{site}" />
+            <pnp:NavigationNode Title="Conversations" Url="{site}/_layouts/15/groupstatus.aspx?Target=CONVERSATIONS&amp;Source=QuickLaunch" IsExternal="true" />
+            <pnp:NavigationNode Title="Documents" Url="{site}/Shared Documents/Forms/AllItems.aspx" />
+            <pnp:NavigationNode Title="Notebook" Url="{site}/_layouts/15/WopiFrame.aspx?sourcedoc={0a2f8bc1-e454-43c4-97f7-2acd3d12d456}&amp;action=editnew" IsExternal="true" />
+            <pnp:NavigationNode Title="Pages" Url="{site}/SitePages/Forms/ByAuthor.aspx" />
+            <pnp:NavigationNode Title="Recent" Url="{site}">
+              <pnp:NavigationNode Title="Calendar" Url="{site}/Lists/Calendar/calendar.aspx" />
+            </pnp:NavigationNode>
+            <pnp:NavigationNode Title="Site contents" Url="{site}/_layouts/15/viewlsts.aspx" IsExternal="true" />
+            <pnp:NavigationNode Title="Recent" Url="{site}" />
+            <pnp:NavigationNode Title="Public Assets" Url="{site}/PublicAssets/Forms/AllItems.aspx" />
+            <pnp:NavigationNode Title="Hub Sites" Url="{site}/Lists/HubSites/AllItems.aspx" />
+            <pnp:NavigationNode Title="Teams Templates" Url="{site}/Lists/TeamsTemplates/AllItems.aspx" />
+            <pnp:NavigationNode Title="Recommendation Scoring" Url="{site}/Lists/RecommendationScoring/AllItems.aspx" />
+            <pnp:NavigationNode Title="Recent" Url="{site}" />
+            <pnp:NavigationNode Title="Time Zones" Url="{site}/Lists/TimeZones/AllItems.aspx" />
+            <pnp:NavigationNode Title="Locales" Url="{site}/Lists/Locales/AllItems.aspx" />
+            <pnp:NavigationNode Title="IP Labels" Url="{site}/Lists/IPLabels/AllItems.aspx" />
+            <pnp:NavigationNode Title="Retention Labels" Url="{site}/Lists/RetentionLabels/AllItems.aspx" />
+            <pnp:NavigationNode Title="PnP Templates" Url="{site}/PnPTemplates/Forms/AllItems.aspx" />
+            <pnp:NavigationNode Title="Recent" Url="" IsExternal="true" />
+            <pnp:NavigationNode Title="Site Templates" Url="{site}/Lists/SiteTemplates/AllItems.aspx" />
+            <pnp:NavigationNode Title="Provisioning Requests" Url="{site}/Lists/ProvisioningRequests/AllItems.aspx" />
+            <pnp:NavigationNode Title="Provisioning Types" Url="{site}/Lists/ProvisioningTypes/AllItems.aspx" />
+            <pnp:NavigationNode Title="Provisioning Request Settings" Url="{site}/Lists/ProvisioningRequestSettings/AllItems.aspx" />
+          </pnp:StructuralNavigation>
+        </pnp:CurrentNavigation>
+      </pnp:Navigation>
+      <pnp:SiteFields>
+        <Field ID="{9889a80f-c9ec-41d8-a359-ac5fb5c4cfa2}" Name="_SPCallToAction" StaticName="_SPCallToAction" DisplayName="Call To Action" Type="Note" SourceID="http://schemas.microsoft.com/sharepoint/v3" Group="_Hidden" Description="" AllowDeletion="FALSE" ShowInNewForm="FALSE" ShowInEditForm="FALSE" ShowInDisplayForm="FALSE" ShowInViewForms="FALSE" ShowInListSettings="FALSE" />
+        <Field ID="{cb19284a-cde7-4570-a980-1dab8bd74470}" Name="_ExtendedDescription" SourceID="http://schemas.microsoft.com/sharepoint/v3" StaticName="_ExtendedDescription" DisplayName="Description" Group="Extended Columns" RichText="TRUE" ShowInEditForm="FALSE" RichTextMode="Compatible" CanToggleHidden="TRUE" Type="Note" />
+        <Field ID="{AC9CE95B-F081-4B8A-BB19-2F4427D44674}" Name="_ExpirationDate" SourceID="http://schemas.microsoft.com/sharepoint/v3" StaticName="_ExpirationDate" Hidden="TRUE" Group="_Hidden" ReadOnly="TRUE" Type="Lookup" List="Docs" ShowField="ExpirationDate" DisplayName="Expiration Date" FromBaseType="TRUE" DisplaceOnUpgrade="TRUE" FieldRef="ID" JoinColName="DoclibRowId" JoinRowOrdinal="0" JoinType="INNER" />
+        <Field ID="{08D89A66-4634-42B8-9D5A-0C27395A48B3}" Name="TriggerFlowInfo" SourceID="http://schemas.microsoft.com/sharepoint/v3" Required="FALSE" ShowInFileDlg="FALSE" Hidden="TRUE" ShowInNewForm="FALSE" ShowInEditForm="FALSE" ReadOnlyEnforced="FALSE" ReadOnly="TRUE" DisplaceOnUpgrade="TRUE" StaticName="TriggerFlowInfo" Type="Text" DisplayName="Trigger Flow Info" Sortable="FALSE" />
+        <Field ID="{D8A77D76-536B-45D2-8B9B-E4E9B00CF3DC}" Name="_Emoji" SourceID="http://schemas.microsoft.com/sharepoint/v3" Required="FALSE" Hidden="TRUE" ShowInFileDlg="FALSE" ShowInNewForm="FALSE" ShowInEditForm="FALSE" DisplaceOnUpgrade="TRUE" StaticName="_Emoji" Type="Text" DisplayName="Emoji" Sortable="FALSE" />
+        <Field ID="{ff41708b-e251-4237-a060-bea44657e8dc}" Name="_SPAssetFolderId" StaticName="_SPAssetFolderId" DisplayName="Asset Folder Id" Type="Number" SourceID="http://schemas.microsoft.com/sharepoint/v3" Group="_Hidden" Description="" ReadOnly="TRUE" AllowDeletion="FALSE" Hidden="TRUE" />
+        <Field ID="{577d74a4-b828-4c3c-bfcd-b16d76cdbc0a}" Name="ComplianceTagAppId" SourceID="http://schemas.microsoft.com/sharepoint/v3" Required="FALSE" ShowInFileDlg="FALSE" ShowInNewForm="FALSE" ShowInEditForm="FALSE" Hidden="TRUE" DisplaceOnUpgrade="TRUE" ReadOnly="TRUE" StaticName="ComplianceTagAppId" Type="Text" DisplayName="Label applied by App Id" Sortable="FALSE" />
+        <Field ID="{3BDAB9AC-9E5D-44D4-BDE9-13B37E170618}" Name="_ColorHex" SourceID="http://schemas.microsoft.com/sharepoint/v3" Required="FALSE" Hidden="TRUE" ShowInFileDlg="FALSE" ShowInNewForm="FALSE" ShowInEditForm="FALSE" DisplaceOnUpgrade="TRUE" StaticName="_ColorHex" Type="Text" DisplayName="Color" Sortable="FALSE" />
+        <Field ID="{76D13CD2-1BAE-45A5-8B74-545B87B65037}" Name="_ColorTag" SourceID="http://schemas.microsoft.com/sharepoint/v3" Required="FALSE" ShowInFileDlg="FALSE" ShowInNewForm="FALSE" ShowInEditForm="FALSE" ReadOnly="TRUE" DisplaceOnUpgrade="TRUE" Type="Text" StaticName="_ColorTag" DisplayName="Color Tag" Sortable="TRUE" />
+        <Field ID="{3A8EE3F8-166B-4394-B3E2-E98DCF86A847}" Name="A2ODMountCount" SourceID="http://schemas.microsoft.com/sharepoint/v3" StaticName="A2ODMountCount" Hidden="TRUE" Group="_Hidden" ReadOnly="TRUE" Type="Lookup" List="Docs" ShowField="A2ODMountCount" DisplayName="A2OD Mount Count" FromBaseType="TRUE" DisplaceOnUpgrade="TRUE" FieldRef="ID" JoinColName="DoclibRowId" JoinRowOrdinal="0" JoinType="INNER" />
+      </pnp:SiteFields>
+      <pnp:Lists>
+        <pnp:ListInstance Title="Calendar" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="106" Url="Lists/Calendar" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-ec85-4903-972d-ebe475780106" ContentTypesEnabled="true" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Calendar/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Calendar/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Calendar/NewForm.aspx" ImageUrl="/_layouts/15/images/itevent.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0102" Default="true" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{A5E739E5-A4E0-4D34-869C-B89A3C5C97C9}" MobileView="TRUE" Type="HTML" DisplayName="All Events" Url="{site}/Lists/Calendar/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/events.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="EventDate" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="fRecurrence" />
+                <FieldRef Name="WorkspaceLink" />
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="Location" />
+                <FieldRef Name="EventDate" />
+                <FieldRef Name="EndDate" />
+                <FieldRef Name="fAllDayEvent" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{A6D6402C-4360-45A5-8443-9BC7BD030DC3}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="CALENDAR" RecurrenceRowset="TRUE" DisplayName="Calendar" Url="{site}/Lists/Calendar/calendar.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/events.png?rev=47">
+              <Query>
+                <Where>
+                  <DateRangesOverlap>
+                    <FieldRef Name="EventDate" />
+                    <FieldRef Name="EndDate" />
+                    <FieldRef Name="RecurrenceID" />
+                    <Value Type="DateTime">
+                      <Month />
+                    </Value>
+                  </DateRangesOverlap>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="EventDate" />
+                <FieldRef Name="EndDate" />
+                <FieldRef Name="fRecurrence" />
+                <FieldRef Name="EventType" />
+                <FieldRef Name="WorkspaceLink" />
+                <FieldRef Name="Title" />
+                <FieldRef Name="Location" />
+                <FieldRef Name="Description" />
+                <FieldRef Name="Workspace" />
+                <FieldRef Name="MasterSeriesItemID" />
+                <FieldRef Name="fAllDayEvent" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <ViewData>
+                <FieldRef Name="Title" Type="CalendarMonthTitle" />
+                <FieldRef Name="Title" Type="CalendarWeekTitle" />
+                <FieldRef Name="Location" Type="CalendarWeekLocation" />
+                <FieldRef Name="Title" Type="CalendarDayTitle" />
+                <FieldRef Name="Location" Type="CalendarDayLocation" />
+              </ViewData>
+            </View>
+            <View Name="{C3B6410B-74FB-4FB2-BCE8-0B36F7EA49CA}" MobileView="TRUE" Type="HTML" DisplayName="Current Events" Url="{site}/Lists/Calendar/MyItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/events.png?rev=47">
+              <Query>
+                <Where>
+                  <DateRangesOverlap>
+                    <FieldRef Name="EventDate" />
+                    <FieldRef Name="EndDate" />
+                    <FieldRef Name="RecurrenceID" />
+                    <Value Type="DateTime">
+                      <Now />
+                    </Value>
+                  </DateRangesOverlap>
+                </Where>
+                <OrderBy>
+                  <FieldRef Name="EventDate" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="fRecurrence" />
+                <FieldRef Name="WorkspaceLink" />
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="Location" />
+                <FieldRef Name="EventDate" />
+                <FieldRef Name="EndDate" />
+                <FieldRef Name="fAllDayEvent" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field ID="{8a4be162-151d-4a11-b9be-e7dc05196d73}" Name="BannerImageUrl" StaticName="BannerImageUrl" DisplayName="Banner Image URL" Type="Note" Sealed="TRUE" SourceID="http://schemas.microsoft.com/sharepoint/v3" Group="_Hidden" Description="" AllowDeletion="FALSE" ShowInNewForm="FALSE" ShowInEditForm="FALSE" ShowInDisplayForm="FALSE" ShowInViewForms="FALSE" ShowInListSettings="FALSE" ShowInVersionHistory="FALSE" ColName="ntext6" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="288f5f32-8462-4175-8f09-dd7ba29359a9" Name="Location" DisplayName="Location" />
+            <pnp:FieldRef ID="64cd368d-2f95-4bfc-a1f9-8d4324ecb007" Name="EventDate" Required="true" DisplayName="Start Time" />
+            <pnp:FieldRef ID="2684f9f2-54be-429f-ba06-76754fc056bf" Name="EndDate" Required="true" DisplayName="End Time" />
+            <pnp:FieldRef ID="9da97a8a-1da5-4a77-98d3-4bc10456e700" Name="Description" DisplayName="Description" />
+            <pnp:FieldRef ID="7d95d1f4-f5fd-4a70-90cd-b35abc9b5bc8" Name="fAllDayEvent" DisplayName="All Day Event" />
+            <pnp:FieldRef ID="f2e63656-135e-4f1c-8fc2-ccbe74071901" Name="fRecurrence" DisplayName="Recurrence" />
+            <pnp:FieldRef ID="6df9bd52-550e-4a30-bc31-a4366832a87d" Name="Category" DisplayName="Category" />
+          </pnp:FieldRefs>
+          <pnp:FieldDefaults>
+            <pnp:FieldDefault FieldName="Category" />
+          </pnp:FieldDefaults>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Documents" Description="" DocumentTemplate="{site}/Shared Documents/Forms/template.dotx" OnQuickLaunch="true" TemplateType="101" Url="Shared Documents" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" ListExperience="NewExperience" DefaultDisplayFormUrl="{site}/Shared Documents/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/Shared Documents/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/Shared Documents/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=45" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{5E64DA14-178C-46E8-837F-8A95B41E92E8}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="{site}/Shared Documents/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="ID" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="cb19284a-cde7-4570-a980-1dab8bd74470" Name="_ExtendedDescription" DisplayName="Description" />
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Comment count" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Like count" />
+          </pnp:FieldRefs>
+          <pnp:Security>
+            <pnp:BreakRoleInheritance CopyRoleAssignments="false" ClearSubscopes="false">
+              <pnp:RoleAssignment Principal="{associatedownergroupid}" RoleDefinition="Full Control" />
+              <pnp:RoleAssignment Principal="{associatedvisitorgroupid}" RoleDefinition="Read" />
+              <pnp:RoleAssignment Principal="{associatedmembergroupid}" RoleDefinition="Edit" />
+              <pnp:RoleAssignment Principal="i:0#.f|membership|admin@contosodev.sharepointalex.uk" RoleDefinition="Full Control" />
+            </pnp:BreakRoleInheritance>
+          </pnp:Security>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Form Templates" Description="This library contains administrator-approved form templates that were activated to this site collection." DocumentTemplate="" TemplateType="101" Url="FormServerTemplates" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/FormServerTemplates/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/FormServerTemplates/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/FormServerTemplates/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x010100F8EF98760CBA4A94994F13BA881038FA" Default="true" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{285B0806-BF4B-40C1-8199-1A55700D5BF4}" MobileView="TRUE" Type="HTML" DisplayName="All Documents" Url="{site}/FormServerTemplates/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{2A0C80EA-39AB-445F-BF37-2D48EA0F0D05}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Forms" Url="{site}/FormServerTemplates/Forms/All Forms.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <GroupBy Collapse="FALSE">
+                  <FieldRef Name="FormCategory" />
+                </GroupBy>
+                <OrderBy>
+                  <FieldRef Name="FormName" />
+                </OrderBy>
+                <Where>
+                  <Neq>
+                    <FieldRef Name="ShowInCatalog" />
+                    <Value Type="Boolean">0</Value>
+                  </Neq>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="FormName" />
+                <FieldRef Name="FormDescription" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="cb19284a-cde7-4570-a980-1dab8bd74470" Name="_ExtendedDescription" DisplayName="Description" />
+            <pnp:FieldRef ID="66b691cf-07a3-4ca6-ac6d-27fa969c8569" Name="FormName" DisplayName="Form Name" />
+            <pnp:FieldRef ID="65572d4d-445a-43f1-9c77-3358222a2c93" Name="FormCategory" DisplayName="Form Category" />
+            <pnp:FieldRef ID="94ad6f7c-09a1-42ca-974f-d24e080160c2" Name="FormVersion" DisplayName="Form Version" />
+            <pnp:FieldRef ID="1a03fa74-8c63-40cc-bd06-73b580bd8744" Name="FormId" DisplayName="Form ID" />
+            <pnp:FieldRef ID="96c27c9d-33f5-4f8e-893e-684014bc7090" Name="FormLocale" DisplayName="Form Locale" />
+            <pnp:FieldRef ID="1fff255c-6c88-4a76-957b-ae24bf07b78c" Name="FormDescription" DisplayName="Form Description" />
+            <pnp:FieldRef ID="4ef69ca4-4179-4d27-9e6c-f9544d45dfdc" Name="ShowInCatalog" DisplayName="Show in Catalog" />
+            <pnp:FieldRef ID="1a03fa74-8c63-40cc-bd06-73b580bd8743" Name="LinkTemplateName" DisplayName="Form Name" />
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Comment count" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Like count" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Hub Sites" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/HubSites" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/HubSites/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/HubSites/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/HubSites/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{2A68BF24-C4C7-4113-A4C3-933E2226D051}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/HubSites/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="ID" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="HubSiteId" />
+                <FieldRef Name="Owner" />
+                <FieldRef Name="SecondOwner" />
+                <FieldRef Name="Enabled" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field DisplayName="HubSiteId" Format="Dropdown" MaxLength="255" Name="HubSiteId" Title="HubSiteId" Type="Text" ID="{7ed5817d-9434-4910-a4b7-406c61e11d3b}" SourceID="{{listid:Hub Sites}}" StaticName="HubSiteId" ColName="nvarchar7" RowOrdinal="0" />
+            <Field DisplayName="Owner" Format="Dropdown" MaxLength="255" Name="Owner" Title="Owner" Type="Text" ID="{2210e750-936c-4eb6-b43b-9bdbc75aabe2}" SourceID="{{listid:Hub Sites}}" StaticName="Owner" ColName="nvarchar8" RowOrdinal="0" />
+            <Field DisplayName="SecondOwner" Format="Dropdown" MaxLength="255" Name="SecondOwner" Title="SecondOwner" Type="Text" ID="{fcd883a1-ccd6-4322-9e39-c3643a0828c8}" SourceID="{{listid:Hub Sites}}" StaticName="SecondOwner" ColName="nvarchar9" RowOrdinal="0" />
+            <Field DisplayName="Enabled" Format="Dropdown" IsModern="TRUE" Name="Enabled" Title="Enabled" Type="Boolean" ID="{4156fe87-10ca-43fb-a016-f6a1ad3fc2e8}" SourceID="{{listid:Hub Sites}}" StaticName="Enabled" ColName="bit1" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="IP Labels" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/IPLabels" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/IPLabels/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/IPLabels/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/IPLabels/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{812AE941-5557-4714-A4D0-253FCA5F1706}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/IPLabels/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="LabelName" />
+                <FieldRef Name="LabelId" />
+                <FieldRef Name="LabelDescription" />
+                <FieldRef Name="Enabled" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field Type="Text" DisplayName="Label Name" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{0a75288f-b51a-4561-9c2f-ec64437ac22e}" SourceID="{{listid:IP Labels}}" StaticName="LabelName" Name="LabelName" ColName="nvarchar7" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Label Id" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{ca381da2-a503-4d09-8b8d-2a6eb1d0536e}" SourceID="{{listid:IP Labels}}" StaticName="LabelId" Name="LabelId" ColName="nvarchar8" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Note" DisplayName="Label Description" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Direction="None" Sortable="FALSE" ID="{9b6e614c-539c-4032-869d-f9b74fd5dbb8}" SourceID="{{listid:IP Labels}}" StaticName="LabelDescription" Name="LabelDescription" ColName="ntext2" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" RichTextMode="Compatible" IsolateStyles="FALSE" AppendOnly="FALSE" Version="1" />
+            <Field Type="Boolean" DisplayName="Enabled" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{65bd9ad8-d1d9-4d05-b3f8-b90bde062207}" SourceID="{{listid:IP Labels}}" StaticName="Enabled" Name="Enabled" ColName="bit1" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Locales" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Locales" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Locales/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Locales/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Locales/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{28449826-AA41-45FF-BC60-EF32EF0FDE53}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/Locales/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="LCID" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="FALSE" Decimals="0" DisplayName="LCID" Format="Dropdown" Name="LCID" Percentage="FALSE" Title="LCID" Type="Number" ID="{b4e858c6-e961-408e-bc35-34a5ce313cd2}" Version="2" StaticName="LCID" SourceID="{{listid:Locales}}" ColName="float1" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="PnP Templates" Description="" DocumentTemplate="{site}/PnPTemplates/Forms/template.dotx" OnQuickLaunch="true" TemplateType="101" Url="PnPTemplates" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" DefaultDisplayFormUrl="{site}/PnPTemplates/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/PnPTemplates/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/PnPTemplates/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{0A603FD5-DF2E-4DE8-86CF-D16F9F689B2A}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="{site}/PnPTemplates/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="cb19284a-cde7-4570-a980-1dab8bd74470" Name="_ExtendedDescription" DisplayName="Description" />
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Comment count" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Like count" />
+          </pnp:FieldRefs>
+          <pnp:Security>
+            <pnp:BreakRoleInheritance CopyRoleAssignments="false" ClearSubscopes="false">
+              <pnp:RoleAssignment Principal="{associatedownergroupid}" RoleDefinition="Full Control" />
+              <pnp:RoleAssignment Principal="{associatedvisitorgroupid}" RoleDefinition="Read" />
+              <pnp:RoleAssignment Principal="{associatedmembergroupid}" RoleDefinition="Edit" />
+              <pnp:RoleAssignment Principal="i:0#.f|membership|admin@contosodev.sharepointalex.uk" RoleDefinition="Full Control" />
+            </pnp:BreakRoleInheritance>
+          </pnp:Security>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Provisioning Request Settings" Description=" " DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/ProvisioningRequestSettings" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ProvisioningRequestSettings/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ProvisioningRequestSettings/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ProvisioningRequestSettings/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{939CA068-1DD1-4A55-8F7E-0F0A35C05348}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/ProvisioningRequestSettings/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="Description" />
+                <FieldRef Name="Value" />
+                <FieldRef Name="PrefixAttribute" />
+                <FieldRef Name="SuffixAttribute" />
+                <FieldRef Name="PrefixText" />
+                <FieldRef Name="SuffixText" />
+                <FieldRef Name="PrefixUseAttribute" />
+                <FieldRef Name="SuffixUseAttribute" />
+                <FieldRef Name="ExternalSharingSetting" />
+                <FieldRef Name="BlockedWordsValue" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field AppendOnly="FALSE" DisplayName="Description" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="Description" RichText="FALSE" RichTextMode="Compatible" Title="Description" Type="Note" ID="{d51b8439-8b98-4ac6-a99a-f89bd152b9e3}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="Description" ColName="ntext2" RowOrdinal="0" CustomFormatter="" Required="TRUE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" NumLines="6" RestrictedMode="TRUE" Version="1" />
+            <Field AppendOnly="FALSE" DisplayName="Value" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="Value" RichText="FALSE" RichTextMode="Compatible" Title="Value" Type="Note" ID="{801fd2fd-0bbc-40db-ba65-343226d44a99}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="Value" ColName="ntext3" RowOrdinal="0" CustomFormatter="" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" NumLines="6" RestrictedMode="TRUE" Version="2" />
+            <Field AppendOnly="FALSE" ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Blocked Words Value" Format="Dropdown" IsolateStyles="FALSE" Name="BlockedWordsValue" RichText="FALSE" RichTextMode="Compatible" Title="Blocked Words Value" Type="Note" ID="{07d6bab4-a5bb-4603-87be-d1384d4637eb}" Version="2" StaticName="BlockedWordsValue" SourceID="{{listid:Provisioning Request Settings}}" ColName="ntext4" RowOrdinal="0" />
+            <Field DisplayName="Prefix Text" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="PrefixText" Title="Prefix Text" Type="Text" ID="{4a447fc2-5812-4823-bda9-430fcec956e8}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="PrefixText" ColName="nvarchar7" RowOrdinal="0" />
+            <Field DisplayName="Prefix Use Attribute" Format="Dropdown" IsModern="TRUE" Name="PrefixUseAttribute" Title="Prefix Use Attribute" Type="Boolean" ID="{0d25412b-923f-493f-923c-7417d2360950}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="PrefixUseAttribute" ColName="bit1" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field Type="Choice" DisplayName="Prefix Attribute" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{4dc6cea7-8613-4bef-b274-6cbac9511576}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="PrefixAttribute" Name="PrefixAttribute" ColName="nvarchar8" RowOrdinal="0" CustomFormatter="" Version="1">
+              <CHOICES>
+                <CHOICE>Department</CHOICE>
+                <CHOICE>Company</CHOICE>
+                <CHOICE>Office</CHOICE>
+                <CHOICE>StateOrProvince</CHOICE>
+                <CHOICE>CountryOrRegion</CHOICE>
+                <CHOICE>JobTitle</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field DisplayName="Suffix Text" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="SuffixText" Title="Suffix Text" Type="Text" ID="{30752d81-a448-4642-aa51-bb9c62503c35}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="SuffixText" ColName="nvarchar9" RowOrdinal="0" />
+            <Field DisplayName="Suffix Use Attribute" Format="Dropdown" IsModern="TRUE" Name="SuffixUseAttribute" Title="Suffix Use Attribute" Type="Boolean" ID="{9e642a68-ce85-4bb8-bb68-0779e3c04b65}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="SuffixUseAttribute" ColName="bit2" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field Type="Choice" DisplayName="Suffix Attribute" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{01872c1b-fb4d-43ac-8d50-358cd67f21fc}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="SuffixAttribute" Name="SuffixAttribute" ColName="nvarchar10" RowOrdinal="0" CustomFormatter="" Version="1">
+              <CHOICES>
+                <CHOICE>Department</CHOICE>
+                <CHOICE>Company</CHOICE>
+                <CHOICE>Office</CHOICE>
+                <CHOICE>StateOrProvince</CHOICE>
+                <CHOICE>CountryOrRegion</CHOICE>
+                <CHOICE>JobTitle</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field Type="Choice" DisplayName="External Sharing Setting" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{4d1c89a8-9264-40aa-91e9-17fcf824f701}" SourceID="{{listid:Provisioning Request Settings}}" StaticName="ExternalSharingSetting" Name="ExternalSharingSetting" ColName="nvarchar11" RowOrdinal="0" CustomFormatter="" Version="1">
+              <CHOICES>
+                <CHOICE>Anyone</CHOICE>
+                <CHOICE>NewExistingGuests</CHOICE>
+                <CHOICE>ExistingGuests</CHOICE>
+              </CHOICES>
+            </Field>
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://uksouth1-0.pushnp.svc.ms/notifications?token=30c5be89-3358-4351-a71a-95c15cac6810" ExpiresInDays="1" />
+          </pnp:Webhooks>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Provisioning Requests" Description=" " DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/ProvisioningRequests" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ProvisioningRequests/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ProvisioningRequests/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ProvisioningRequests/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{E9571364-851C-4657-8C05-9F8879ED06E9}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/ProvisioningRequests/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="Description" />
+                <FieldRef Name="BusinessJustification" />
+                <FieldRef Name="Requirements" />
+                <FieldRef Name="SpaceType" />
+                <FieldRef Name="Owners" />
+                <FieldRef Name="Members" />
+                <FieldRef Name="Visibility" />
+                <FieldRef Name="ConfidentialData" />
+                <FieldRef Name="ExternalSharingRequired" />
+                <FieldRef Name="ExternalSharingJustification" />
+                <FieldRef Name="Guests" />
+                <FieldRef Name="SiteURL" />
+                <FieldRef Name="SiteAlias" />
+                <FieldRef Name="TeamsURL" />
+                <FieldRef Name="SiteTemplate" />
+                <FieldRef Name="SiteTemplateTitle" />
+                <FieldRef Name="TeamsTemplate" />
+                <FieldRef Name="TeamsTemplateTitle" />
+                <FieldRef Name="JoinHub" />
+                <FieldRef Name="HubSite" />
+                <FieldRef Name="HubSiteJustification" />
+                <FieldRef Name="HubSiteTitle" />
+                <FieldRef Name="Stage" />
+                <FieldRef Name="Status" />
+                <FieldRef Name="Comments" />
+                <FieldRef Name="ApprovedDate" />
+                <FieldRef Name="GroupId" />
+                <FieldRef Name="AdminCenterTemplate" />
+                <FieldRef Name="MailboxAlias" />
+                <FieldRef Name="RequestKey" />
+                <FieldRef Name="Prefix" />
+                <FieldRef Name="Suffix" />
+                <FieldRef Name="TimeZoneId" />
+                <FieldRef Name="LCID" />
+                <FieldRef Name="SiteTemplateStore" />
+                <FieldRef Name="SensitivityLabelId" />
+                <FieldRef Name="SensitivityLabelName" />
+                <FieldRef Name="ExpirationDate" />
+                <FieldRef Name="SpaceDisplayName" />
+                <FieldRef Name="RetentionLabelName" />
+                <FieldRef Name="ApplyPnPTemplate" />
+                <FieldRef Name="PnPTemplateURL" />
+                <FieldRef Name="ThemeName" />
+                <FieldRef Name="VivaEngageCommunityURL" />
+                <FieldRef Name="SpaceTypeInternal" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field AppendOnly="FALSE" DisplayName="Description" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="Description" RichText="FALSE" RichTextMode="Compatible" Title="Description" Type="Note" ID="{748b2beb-10ed-4858-9493-c9159707d479}" SourceID="{{listid:Provisioning Requests}}" StaticName="Description" ColName="ntext2" RowOrdinal="0" />
+            <Field AppendOnly="FALSE" DisplayName="Business Justification" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="BusinessJustification" RichText="FALSE" RichTextMode="Compatible" Title="Business Justification" Type="Note" ID="{ea6d6e55-8b05-4c30-ad90-ca3e23d5eae5}" SourceID="{{listid:Provisioning Requests}}" StaticName="BusinessJustification" ColName="ntext3" RowOrdinal="0" />
+            <Field AppendOnly="FALSE" DisplayName="Requirements" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="Requirements" RichText="FALSE" RichTextMode="Compatible" Title="Requirements" Type="Note" ID="{4263a9c3-c180-40a7-a30e-7c13a64602a6}" SourceID="{{listid:Provisioning Requests}}" StaticName="Requirements" ColName="ntext4" RowOrdinal="0" />
+            <Field Type="Choice" DisplayName="Space Type" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{06a99ffa-db71-497a-871a-1bd2b908e312}" SourceID="{{listid:Provisioning Requests}}" StaticName="SpaceType" Name="SpaceType" ColName="nvarchar7" RowOrdinal="0" CustomFormatter="" Version="1">
+              <Default>Team Site</Default>
+              <CHOICES>
+                <CHOICE>Team Site</CHOICE>
+                <CHOICE>Office 365 Group</CHOICE>
+                <CHOICE>Microsoft Teams Team</CHOICE>
+                <CHOICE>Communication Site</CHOICE>
+                <CHOICE>Hub Site</CHOICE>
+                <CHOICE>Viva Engage Community</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field Type="UserMulti" DisplayName="Owners" List="UserInfo" Required="FALSE" EnforceUniqueValues="FALSE" Direction="None" ShowField="ImnName" UserSelectionMode="PeopleOnly" UserSelectionScope="0" ID="{3fee5a3c-2ee3-42b1-bff9-0e1ddef9122d}" SourceID="{{listid:Provisioning Requests}}" StaticName="Owners" Name="Owners" ColName="int1" RowOrdinal="0" Group="" Mult="TRUE" Sortable="FALSE" Version="1" />
+            <Field Type="UserMulti" DisplayName="Members" List="UserInfo" Required="FALSE" EnforceUniqueValues="FALSE" Direction="None" ShowField="ImnName" UserSelectionMode="PeopleOnly" UserSelectionScope="0" ID="{771276d0-9cb8-4403-b669-22dd7d366de4}" SourceID="{{listid:Provisioning Requests}}" StaticName="Members" Name="Members" ColName="int2" RowOrdinal="0" Group="" Mult="TRUE" Sortable="FALSE" Version="1" />
+            <Field Type="Choice" DisplayName="Visibility" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{cf70149b-423c-4ec2-892e-d78ae30ed893}" SourceID="{{listid:Provisioning Requests}}" StaticName="Visibility" Name="Visibility" ColName="nvarchar8" RowOrdinal="0">
+              <Default>Private</Default>
+              <CHOICES>
+                <CHOICE>Private</CHOICE>
+                <CHOICE>Public</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field DisplayName="Confidential Data" Format="Dropdown" IsModern="TRUE" Name="ConfidentialData" Title="Confidential Data" Type="Boolean" ID="{58e72dd3-b41b-4127-8c0d-8ba5ec62bdc2}" SourceID="{{listid:Provisioning Requests}}" StaticName="ConfidentialData" ColName="bit1" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field DisplayName="External Sharing Required" Format="Dropdown" IsModern="TRUE" Name="ExternalSharingRequired" Title="External Sharing Required" Type="Boolean" ID="{0e5892aa-284f-498c-8119-5db02d695e2a}" SourceID="{{listid:Provisioning Requests}}" StaticName="ExternalSharingRequired" ColName="bit2" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field AppendOnly="FALSE" DisplayName="External Sharing Justification" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="ExternalSharingJustification" RichText="FALSE" RichTextMode="Compatible" Title="External Sharing Justification" Type="Note" ID="{539e7932-17cf-4a19-af36-2330f3bf4540}" SourceID="{{listid:Provisioning Requests}}" StaticName="ExternalSharingJustification" ColName="ntext5" RowOrdinal="0" />
+            <Field AppendOnly="FALSE" DisplayName="Guests" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="Guests" RichText="FALSE" RichTextMode="Compatible" Title="Guests" Type="Note" ID="{c68979a7-0efb-4cc2-a861-2dfcb58394a4}" SourceID="{{listid:Provisioning Requests}}" StaticName="Guests" ColName="ntext6" RowOrdinal="0" />
+            <Field DisplayName="Site URL" Format="Hyperlink" IsModern="TRUE" Name="SiteURL" Title="Site URL" Type="URL" ID="{1fc19ef9-8141-4afd-9083-ee7eb7e3ed51}" SourceID="{{listid:Provisioning Requests}}" StaticName="SiteURL" ColName="nvarchar9" RowOrdinal="0" ColName2="nvarchar10" RowOrdinal2="0" />
+            <Field DisplayName="Site Alias" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="SiteAlias" Title="Site Alias" Type="Text" ID="{91cf7ab5-0397-4618-b117-6cc4b559ad2c}" SourceID="{{listid:Provisioning Requests}}" StaticName="SiteAlias" ColName="nvarchar11" RowOrdinal="0" />
+            <Field DisplayName="Teams URL" Format="Hyperlink" IsModern="TRUE" Name="TeamsURL" Title="Teams URL" Type="URL" ID="{ff7cb70c-fcbd-454b-afeb-683d6145a178}" SourceID="{{listid:Provisioning Requests}}" StaticName="TeamsURL" ColName="nvarchar12" RowOrdinal="0" ColName2="nvarchar13" RowOrdinal2="0" />
+            <Field Type="Text" DisplayName="Site Template" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{453d296a-e5ac-47c9-83be-e071259334d4}" SourceID="{{listid:Provisioning Requests}}" StaticName="SiteTemplate" Name="SiteTemplate" ColName="nvarchar14" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Site Template Title" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{bf4459ca-98ec-474d-ace1-e93c35f6538f}" SourceID="{{listid:Provisioning Requests}}" StaticName="SiteTemplateTitle" Name="SiteTemplateTitle" ColName="nvarchar15" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Teams Template" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{6db7f98e-cace-4954-8dc3-ae830a194162}" SourceID="{{listid:Provisioning Requests}}" StaticName="TeamsTemplate" Name="TeamsTemplate" ColName="nvarchar16" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Teams Template Title" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{72b2b19c-b593-4798-bcdb-fec27b4ab7c4}" SourceID="{{listid:Provisioning Requests}}" StaticName="TeamsTemplateTitle" Name="TeamsTemplateTitle" ColName="nvarchar17" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Boolean" DisplayName="Join Hub" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{6d759eb2-439f-4706-8da4-6d564a671e01}" SourceID="{{listid:Provisioning Requests}}" StaticName="JoinHub" Name="JoinHub" ColName="bit3" RowOrdinal="0" CustomFormatter="" Required="FALSE" Direction="none" Version="1">
+              <Default>0</Default>
+            </Field>
+            <Field Type="Text" DisplayName="Hub Site" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{b7836a8f-d3ac-4534-a983-ab95dcf7362a}" SourceID="{{listid:Provisioning Requests}}" StaticName="HubSite" Name="HubSite" ColName="nvarchar18" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Note" DisplayName="Hub Site Justification" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Direction="None" Sortable="FALSE" ID="{2da03309-773b-42b6-b441-9c463e34b9fb}" SourceID="{{listid:Provisioning Requests}}" StaticName="HubSiteJustification" Name="HubSiteJustification" ColName="ntext7" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" RichTextMode="Compatible" IsolateStyles="FALSE" AppendOnly="FALSE" Version="1" />
+            <Field Type="Text" DisplayName="Hub Site Title" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{e999034f-8df1-4e87-aebf-4cb83e71cb6f}" SourceID="{{listid:Provisioning Requests}}" StaticName="HubSiteTitle" Name="HubSiteTitle" ColName="nvarchar19" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Choice" DisplayName="Stage" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{bfc18de3-0b5c-4423-9b83-32a114714b01}" SourceID="{{listid:Provisioning Requests}}" StaticName="Stage" Name="Stage" ColName="nvarchar20" RowOrdinal="0">
+              <CHOICES>
+                <CHOICE>Requirements</CHOICE>
+                <CHOICE>Recommendation</CHOICE>
+                <CHOICE>Data Classification</CHOICE>
+                <CHOICE>Choose Template</CHOICE>
+                <CHOICE>Information</CHOICE>
+                <CHOICE>External Sharing</CHOICE>
+                <CHOICE>Join Hub</CHOICE>
+                <CHOICE>Review and Submit</CHOICE>
+                <CHOICE>Submitted</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field Type="Choice" DisplayName="Status" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{52b9dc12-9bd2-4e69-bbaa-eb3c2ad9f334}" SourceID="{{listid:Provisioning Requests}}" StaticName="Status" Name="Status" ColName="nvarchar21" RowOrdinal="0">
+              <Default>Not Submitted</Default>
+              <CHOICES>
+                <CHOICE>Not Submitted</CHOICE>
+                <CHOICE>Submitted</CHOICE>
+                <CHOICE>Pending Approval</CHOICE>
+                <CHOICE>Approved</CHOICE>
+                <CHOICE>Rejected</CHOICE>
+                <CHOICE>Space Creation</CHOICE>
+                <CHOICE>Space Created</CHOICE>
+                <CHOICE>Space Creation Failed</CHOICE>
+                <CHOICE>Space Already Exists</CHOICE>
+                <CHOICE>Team Requested</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field Type="Note" DisplayName="Comments" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Direction="None" Sortable="FALSE" ID="{366ef7ec-562f-4e35-9e36-aba6184ef8c8}" SourceID="{{listid:Provisioning Requests}}" StaticName="Comments" Name="Comments" ColName="ntext8" RowOrdinal="0" />
+            <Field Type="DateTime" DisplayName="Approved Date" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Direction="None" FriendlyDisplayFormat="Disabled" ID="{b3915046-5641-4b01-ace6-5d4eb10031b1}" SourceID="{{listid:Provisioning Requests}}" StaticName="ApprovedDate" Name="ApprovedDate" ColName="datetime1" RowOrdinal="0" CustomFormatter="" CalType="0" Version="1" />
+            <Field Type="Text" DisplayName="GroupId" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{0aa41f85-39ea-48e5-af0f-8f70e3141ab3}" SourceID="{{listid:Provisioning Requests}}" StaticName="GroupId" Name="GroupId" ColName="nvarchar22" RowOrdinal="0" />
+            <Field Type="Boolean" DisplayName="Admin Center Template" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{0d1ea6a2-b55f-4e81-9d77-046e0ffbc801}" SourceID="{{listid:Provisioning Requests}}" StaticName="AdminCenterTemplate" Name="AdminCenterTemplate" ColName="bit4" RowOrdinal="0" CustomFormatter="" Required="FALSE" Direction="none" Version="1">
+              <Default>0</Default>
+            </Field>
+            <Field Type="Text" DisplayName="Mailbox Alias" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{70a5d925-75da-45db-9908-68e014a22bf6}" SourceID="{{listid:Provisioning Requests}}" StaticName="MailboxAlias" Name="MailboxAlias" ColName="nvarchar23" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Request Key" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{20973700-ae2a-403c-bacb-b4fc448841c2}" SourceID="{{listid:Provisioning Requests}}" StaticName="RequestKey" Name="RequestKey" ColName="nvarchar24" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Prefix" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{fed312e4-66a7-4071-9f36-7925ee6c8f09}" SourceID="{{listid:Provisioning Requests}}" StaticName="Prefix" Name="Prefix" ColName="nvarchar25" RowOrdinal="0" />
+            <Field Type="Text" DisplayName="Suffix" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{96a51981-34b8-42f7-9bab-3fb9af9e87fa}" SourceID="{{listid:Provisioning Requests}}" StaticName="Suffix" Name="Suffix" ColName="nvarchar26" RowOrdinal="0" />
+            <Field Type="Number" DisplayName="Time Zone Id" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" ID="{e16b3999-de66-4544-852e-c6ca5cf89d02}" SourceID="{{listid:Provisioning Requests}}" StaticName="TimeZoneId" Name="TimeZoneId" ColName="float1" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+            <Field Type="Number" DisplayName="LCID" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" ID="{fd6d2a1c-3d23-4201-981b-a7f0a1053781}" SourceID="{{listid:Provisioning Requests}}" StaticName="LCID" Name="LCID" ColName="float2" RowOrdinal="0" />
+            <Field Type="Text" DisplayName="Site Template Store" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{67787e49-7ead-42a5-8900-faff09a779e6}" SourceID="{{listid:Provisioning Requests}}" StaticName="SiteTemplateStore" Name="SiteTemplateStore" ColName="nvarchar27" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Sensitivity Label Id" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{b1f45310-ef31-4812-b9f5-7bb5a2b94110}" SourceID="{{listid:Provisioning Requests}}" StaticName="SensitivityLabelId" Name="SensitivityLabelId" ColName="nvarchar28" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Sensitivity Label Name" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{3a0b1f74-2abf-4cc7-b8fb-c1cf4550f473}" SourceID="{{listid:Provisioning Requests}}" StaticName="SensitivityLabelName" Name="SensitivityLabelName" ColName="nvarchar29" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="DateTime" DisplayName="Expiration Date" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Direction="None" FriendlyDisplayFormat="Disabled" ID="{7231cdee-ed49-4744-b6a6-29dc0764f7a5}" SourceID="{{listid:Provisioning Requests}}" StaticName="ExpirationDate" Name="ExpirationDate" ColName="datetime2" RowOrdinal="0" CustomFormatter="" CalType="0" Version="1" />
+            <Field Type="Text" DisplayName="Space Display Name" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{0f9c9f53-942c-4a3e-ae0d-3383fcfe9224}" SourceID="{{listid:Provisioning Requests}}" StaticName="SpaceDisplayName" Name="SpaceDisplayName" ColName="nvarchar31" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Retention Label Name" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{692d4351-e455-4c50-a1eb-a9c7b1039f8f}" SourceID="{{listid:Provisioning Requests}}" StaticName="RetentionLabelName" Name="RetentionLabelName" ColName="nvarchar32" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="Boolean" DisplayName="Apply PnP Template" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{b57481ca-7ede-40f8-a340-93ac62b9e79e}" SourceID="{{listid:Provisioning Requests}}" StaticName="ApplyPnPTemplate" Name="ApplyPnPTemplate" ColName="bit5" RowOrdinal="0" CustomFormatter="" Required="FALSE" Direction="none" Version="1">
+              <Default>0</Default>
+            </Field>
+            <Field Type="URL" DisplayName="PnP Template URL" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Hyperlink" Direction="None" ID="{706060fe-f44b-43df-a4a9-f78218b5d0af}" SourceID="{{listid:Provisioning Requests}}" StaticName="PnPTemplateURL" Name="PnPTemplateURL" ColName="nvarchar33" RowOrdinal="0" ColName2="nvarchar34" RowOrdinal2="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Theme Name" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{cf173723-674c-4027-bf1b-a7655996e203}" SourceID="{{listid:Provisioning Requests}}" StaticName="ThemeName" Name="ThemeName" ColName="nvarchar35" RowOrdinal="0" CustomFormatter="" Version="1" />
+            <Field Type="URL" DisplayName="Viva Engage Community URL" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Hyperlink" Direction="None" ID="{dd032545-477a-4451-badc-c346bf73d2d7}" SourceID="{{listid:Provisioning Requests}}" StaticName="VivaEngageCommunityURL" Name="VivaEngageCommunityURL" ColName="nvarchar36" RowOrdinal="0" ColName2="nvarchar37" RowOrdinal2="0" CustomFormatter="" Version="1" />
+            <Field Type="Text" DisplayName="Space Type Internal" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{a5104a84-554a-4c7e-9bf1-a4664dda07e4}" SourceID="{{listid:Provisioning Requests}}" StaticName="SpaceTypeInternal" Name="SpaceTypeInternal" ColName="nvarchar30" RowOrdinal="0" CustomFormatter="" Version="1" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Space Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://uk-001.azure-apim.net/apim/sharepointonline/ontableupdatedhook?r=https%253a%252f%252fprod-06.uksouth.logic.azure.com%252fworkflows%252f5b7f4f30d1ec40688a10814f612fb537%252ftriggers%252fWhen_an_item_is_created_or_modified%252fpaths%252finvoke%253fapi-version%253d2016-06-01%2526sp%253d%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Frun%25252C%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Fread%2526sv%253d1.0%2526sig%253dccABL_25fnOazcyxQaA9ahOaBbylVtP7gmqH0902V4k" ExpiresInDays="3" />
+          </pnp:Webhooks>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Provisioning Types" Description=" " DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/ProvisioningTypes" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ProvisioningTypes/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ProvisioningTypes/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ProvisioningTypes/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{DA37249C-B7CF-421D-8646-5FDC8886E939}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/ProvisioningTypes/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="Description" />
+                <FieldRef Name="Allowed" />
+                <FieldRef Name="TemplateId" />
+                <FieldRef Name="Image" />
+                <FieldRef Name="WebTemplateId" />
+                <FieldRef Name="LearnVideoURL" />
+                <FieldRef Name="Icon" />
+                <FieldRef Name="PrefixText" />
+                <FieldRef Name="PrefixUseAttribute" />
+                <FieldRef Name="PrefixAttribute" />
+                <FieldRef Name="SuffixText" />
+                <FieldRef Name="SuffixUseAttribute" />
+                <FieldRef Name="SuffixAttribute" />
+                <FieldRef Name="VisibleTo" />
+                <FieldRef Name="InternalTitle" />
+                <FieldRef Name="ManagedPath" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field AppendOnly="FALSE" DisplayName="Description" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="Description" RichText="FALSE" RichTextMode="Compatible" Title="Description" Type="Note" ID="{fce3ede2-04f6-44b4-af05-99ef51838554}" SourceID="{{listid:Provisioning Types}}" StaticName="Description" ColName="ntext2" RowOrdinal="0" CustomFormatter="" Required="TRUE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" NumLines="6" RestrictedMode="TRUE" Version="1" />
+            <Field DisplayName="Allowed" Format="Dropdown" IsModern="TRUE" Name="Allowed" Title="Allowed" Type="Boolean" ID="{63d0f3ca-d186-4ee0-8d90-d0df0dfeabd0}" SourceID="{{listid:Provisioning Types}}" StaticName="Allowed" ColName="bit1" RowOrdinal="0">
+              <Default>1</Default>
+            </Field>
+            <Field DisplayName="TemplateId" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="TemplateId" Title="TemplateId" Type="Text" ID="{6c1454b6-4581-4995-a231-8953e586c788}" SourceID="{{listid:Provisioning Types}}" StaticName="TemplateId" ColName="nvarchar7" RowOrdinal="0" CustomFormatter="" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" Version="2" />
+            <Field Type="URL" DisplayName="Image" Required="TRUE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Image" Direction="None" ID="{8b72c1e6-d71d-4c3c-b79e-7409c8d85db2}" SourceID="{{listid:Provisioning Types}}" StaticName="Image" Name="Image" ColName="nvarchar8" RowOrdinal="0" ColName2="nvarchar9" RowOrdinal2="0" CustomFormatter="" Version="1" />
+            <Field DisplayName="WebTemplateId" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="WebTemplateId" Title="WebTemplateId" Type="Text" ID="{08df96d2-daa8-4430-8d05-96b807af02c4}" SourceID="{{listid:Provisioning Types}}" StaticName="WebTemplateId" ColName="nvarchar10" RowOrdinal="0" CustomFormatter="" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" Version="2" />
+            <Field Type="URL" DisplayName="Icon" Required="TRUE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Image" Direction="None" ID="{21b3b798-1a2d-403b-b6e3-404d45898760}" SourceID="{{listid:Provisioning Types}}" StaticName="Icon" Name="Icon" ColName="nvarchar11" RowOrdinal="0" ColName2="nvarchar12" RowOrdinal2="0" CustomFormatter="" Version="1" />
+            <Field DisplayName="Prefix Text" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="PrefixText" Title="Prefix Text" Type="Text" ID="{21454b5f-f2c7-4a79-8112-00568515a472}" SourceID="{{listid:Provisioning Types}}" StaticName="PrefixText" ColName="nvarchar13" RowOrdinal="0" />
+            <Field DisplayName="Prefix Use Attribute" Format="Dropdown" IsModern="TRUE" Name="PrefixUseAttribute" Title="Prefix Use Attribute" Type="Boolean" ID="{743f51c9-7c70-4a8e-ac78-4004a5178ede}" SourceID="{{listid:Provisioning Types}}" StaticName="PrefixUseAttribute" ColName="bit2" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field Type="Choice" DisplayName="Prefix Attribute" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{1ee308dc-9b4f-4e57-a68a-dc6f0e7266af}" SourceID="{{listid:Provisioning Types}}" StaticName="PrefixAttribute" Name="PrefixAttribute" ColName="nvarchar14" RowOrdinal="0" CustomFormatter="" Version="1">
+              <CHOICES>
+                <CHOICE>Department</CHOICE>
+                <CHOICE>Company</CHOICE>
+                <CHOICE>Office</CHOICE>
+                <CHOICE>StateOrProvince</CHOICE>
+                <CHOICE>CountryOrRegion</CHOICE>
+                <CHOICE>JobTitle</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field DisplayName="Suffix Text" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="SuffixText" Title="Suffix Text" Type="Text" ID="{c64d4657-345c-49b2-984e-1594470b7d01}" SourceID="{{listid:Provisioning Types}}" StaticName="SuffixText" ColName="nvarchar15" RowOrdinal="0" />
+            <Field DisplayName="Suffix Use Attribute" Format="Dropdown" IsModern="TRUE" Name="SuffixUseAttribute" Title="Suffix Use Attribute" Type="Boolean" ID="{83919718-954f-4b13-85ab-c0944ca37c9b}" SourceID="{{listid:Provisioning Types}}" StaticName="SuffixUseAttribute" ColName="bit3" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field Type="Choice" DisplayName="Suffix Attribute" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" Direction="None" FillInChoice="FALSE" ID="{c7fff1a1-fc01-433e-9824-a62b3574d130}" SourceID="{{listid:Provisioning Types}}" StaticName="SuffixAttribute" Name="SuffixAttribute" ColName="nvarchar16" RowOrdinal="0" CustomFormatter="" Version="1">
+              <CHOICES>
+                <CHOICE>Department</CHOICE>
+                <CHOICE>Company</CHOICE>
+                <CHOICE>Office</CHOICE>
+                <CHOICE>StateOrProvince</CHOICE>
+                <CHOICE>CountryOrRegion</CHOICE>
+                <CHOICE>JobTitle</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field DisplayName="Visible To" Format="Dropdown" IsModern="TRUE" List="UserInfo" Name="VisibleTo" Title="Visible To" Type="UserMulti" UserSelectionMode="PeopleAndGroups" UserSelectionScope="0" ID="{2325de22-60d1-4898-b2d1-66eb4081cad3}" SourceID="{{listid:Provisioning Types}}" StaticName="VisibleTo" ColName="int1" RowOrdinal="0" Required="FALSE" EnforceUniqueValues="FALSE" Group="" Direction="None" ShowField="ImnName" Mult="TRUE" Sortable="FALSE" Version="1" />
+            <Field DisplayName="Internal Title" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="InternalTitle" Title="Internal Title" Type="Text" ID="{adfbaed2-8037-451c-9693-0cb73647cfb0}" SourceID="{{listid:Provisioning Types}}" StaticName="InternalTitle" ColName="nvarchar17" RowOrdinal="0" CustomFormatter="" Required="TRUE" EnforceUniqueValues="FALSE" Indexed="FALSE" Direction="None" Version="1" />
+            <Field DisplayName="Managed Path" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="ManagedPath" Title="Managed Path" Type="Text" ID="{3733d280-f7f5-4edf-83e1-5d3b2a3212a2}" SourceID="{{listid:Provisioning Types}}" StaticName="ManagedPath" ColName="nvarchar18" RowOrdinal="0">
+              <Default>sites</Default>
+            </Field>
+            <Field Type="URL" DisplayName="Learn Video URL" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Hyperlink" Direction="None" ID="{8d4ab3e0-2f55-4687-adcb-45c53382e59f}" SourceID="{{listid:Provisioning Types}}" StaticName="LearnVideoURL" Name="LearnVideoURL" ColName="nvarchar19" RowOrdinal="0" ColName2="nvarchar20" RowOrdinal2="0" CustomFormatter="" Version="1" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Public Assets" Description="" DocumentTemplate="{site}/PublicAssets/Forms/template.dotx" OnQuickLaunch="true" TemplateType="101" Url="PublicAssets" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" DefaultDisplayFormUrl="{site}/PublicAssets/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/PublicAssets/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/PublicAssets/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{8F0B2CF2-3E97-4C5A-9BEB-00B3EFC2C0D7}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="{site}/PublicAssets/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="cb19284a-cde7-4570-a980-1dab8bd74470" Name="_ExtendedDescription" DisplayName="Description" />
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Comment count" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Like count" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Recommendation Scoring" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/RecommendationScoring" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/RecommendationScoring/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/RecommendationScoring/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/RecommendationScoring/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{8F16CB9D-60B9-4C8D-A559-8729F73D7530}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/RecommendationScoring/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="ID" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="ModernTeamSite" />
+                <FieldRef Name="ModernTeamSiteGroup" />
+                <FieldRef Name="CommunicationSite" />
+                <FieldRef Name="MicrosoftTeamsTeam" />
+                <FieldRef Name="HubSite" />
+                <FieldRef Name="VivaEngageCommunity" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field Type="Number" DisplayName="Modern Team Site" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{6efa9797-76aa-4eb6-b7a7-9c2eb2904d62}" SourceID="{{listid:Recommendation Scoring}}" StaticName="ModernTeamSite" Name="ModernTeamSite" ColName="float1" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+            <Field Type="Number" DisplayName="Modern Team Site Group" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{1043fdfa-941a-4230-8fe9-65e64793c077}" SourceID="{{listid:Recommendation Scoring}}" StaticName="ModernTeamSiteGroup" Name="ModernTeamSiteGroup" ColName="float2" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+            <Field Type="Number" DisplayName="Communication Site" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{269c3fcf-4fc2-41aa-8444-6da108bcdf0f}" SourceID="{{listid:Recommendation Scoring}}" StaticName="CommunicationSite" Name="CommunicationSite" ColName="float3" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+            <Field Type="Number" DisplayName="Microsoft Teams Team" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{5692e0d2-b5da-4a74-8cc5-a70977d2fa04}" SourceID="{{listid:Recommendation Scoring}}" StaticName="MicrosoftTeamsTeam" Name="MicrosoftTeamsTeam" ColName="float4" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+            <Field Type="Number" DisplayName="Hub Site" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{488f928c-c1da-411f-887c-a6ec85f6a4f7}" SourceID="{{listid:Recommendation Scoring}}" StaticName="HubSite" Name="HubSite" ColName="float5" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+            <Field Type="Number" DisplayName="Viva Engage Community" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{a0fe9b02-bf16-4584-a30d-e155f56120d5}" SourceID="{{listid:Recommendation Scoring}}" StaticName="VivaEngageCommunity" Name="VivaEngageCommunity" ColName="float6" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Requirement" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Retention Labels" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/RetentionLabels" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/RetentionLabels/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/RetentionLabels/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/RetentionLabels/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{862F9FE6-2827-40A2-9B54-EFF23F102876}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/RetentionLabels/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="LabelName" />
+                <FieldRef Name="LabelDescription" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field DisplayName="Label Name" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="LabelName" Title="Label Name" Type="Text" ID="{98c15772-99ee-4b7d-9e61-a7aa18699bc4}" SourceID="{{listid:Retention Labels}}" StaticName="LabelName" ColName="nvarchar7" RowOrdinal="0" />
+            <Field DisplayName="Label Description" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="LabelDescription" Title="Label Description" Type="Text" ID="{6cd39f84-309c-4437-96de-ec25702bb96f}" SourceID="{{listid:Retention Labels}}" StaticName="LabelDescription" ColName="nvarchar8" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Site Assets" Description="Use this library to store files which are included on pages within this site, such as images on Wiki pages." DocumentTemplate="{site}/SiteAssets/Forms/template.doc" TemplateType="101" Url="SiteAssets" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" DefaultDisplayFormUrl="{site}/SiteAssets/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/SiteAssets/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/SiteAssets/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="true" ValidationFormula="" ValidationMessage="">
+          <pnp:PropertyBagEntries>
+            <pnp:PropertyBagEntry Key="IsAttachmentLibrary" Value="1" Overwrite="false" />
+          </pnp:PropertyBagEntries>
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{285D2783-BB60-43F9-B57B-7D3DA9AAB911}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="{site}/SiteAssets/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field ID="{67aff0cf-8e19-43f2-9987-be89075e1467}" Type="Note" DisplayName="Extracted Text" Name="MediaServiceOCR" Group="_Hidden" Hidden="FALSE" Sealed="TRUE" ReadOnly="TRUE" ShowInNewForm="FALSE" ShowInDisplayForm="FALSE" ShowInEditForm="FALSE" ShowInListSettings="FALSE" Viewable="FALSE" Json="FALSE" SourceID="{{listid:Site Assets}}" StaticName="MediaServiceOCR" ColName="ntext3" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="cb19284a-cde7-4570-a980-1dab8bd74470" Name="_ExtendedDescription" DisplayName="Description" />
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Comment count" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Like count" />
+          </pnp:FieldRefs>
+          <pnp:Security>
+            <pnp:BreakRoleInheritance CopyRoleAssignments="false" ClearSubscopes="false">
+              <pnp:RoleAssignment Principal="{associatedownergroupid}" RoleDefinition="Full Control" />
+              <pnp:RoleAssignment Principal="{associatedvisitorgroupid}" RoleDefinition="Read" />
+              <pnp:RoleAssignment Principal="{associatedmembergroupid}" RoleDefinition="Edit" />
+              <pnp:RoleAssignment Principal="i:0#.f|membership|admin@contosodev.sharepointalex.uk" RoleDefinition="Full Control" />
+            </pnp:BreakRoleInheritance>
+          </pnp:Security>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Site Pages" Description="" DocumentTemplate="" TemplateType="119" Url="SitePages" EnableVersioning="true" EnableMinorVersions="true" MinorVersionLimit="500" MaxVersionLimit="500" DraftVersionVisibility="1" TemplateFeatureID="00bfea71-c796-4402-9f2f-0eb9a6e71b18" ContentTypesEnabled="true" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/SitePages/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/SitePages/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/SitePages/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="true" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x010108" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010901" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0101009D1CB255DA76424F860D91F20E6C4118" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0101009D1CB255DA76424F860D91F20E6C4118002A50BFCFB7614729B56886FADA02339B" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{C38DD8CE-8F33-470C-8EA5-C867EF09DA25}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="By Author" Url="{site}/SitePages/Forms/ByAuthor.aspx" Level="1" BaseViewID="4" ContentTypeID="0x" ToolbarTemplate="WikiLibraryViewToolBar" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <GroupBy Collapse="FALSE">
+                  <FieldRef Name="Author" />
+                </GroupBy>
+                <OrderBy>
+                  <FieldRef Name="Modified" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Created" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{142202B2-FAC4-48AB-AA97-E18DF52F6338}" Type="HTML" DisplayName="Recent Changes" Url="{site}/SitePages/Forms/RecentChanges.aspx" Level="1" BaseViewID="4" ContentTypeID="0x" ToolbarTemplate="WikiLibraryViewToolBar" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Modified" Ascending="FALSE" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Author" />
+                <FieldRef Name="Created" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{BF0C4DA5-F8EC-41F7-A243-DCCA21C0DC4A}" Type="HTML" DisplayName="By Editor" Url="{site}/SitePages/Forms/ByEditor.aspx" Level="1" BaseViewID="4" ContentTypeID="0x" ToolbarTemplate="WikiLibraryViewToolBar" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <GroupBy Collapse="FALSE">
+                  <FieldRef Name="Editor" />
+                </GroupBy>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Author" />
+                <FieldRef Name="Created" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{60881D81-45C4-43B5-A209-69E454D3204B}" Type="HTML" DisplayName="Created By Me" Url="{site}/SitePages/Forms/CreatedByMe.aspx" Level="1" BaseViewID="4" ContentTypeID="0x" ToolbarTemplate="WikiLibraryViewToolBar" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <Where>
+                  <Eq>
+                    <FieldRef Name="Author" />
+                    <Value Type="Integer">
+                      <UserID />
+                    </Value>
+                  </Eq>
+                </Where>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Author" />
+                <FieldRef Name="Created" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{94E6C643-36CB-4085-812C-433858C4A04E}" Type="HTML" DisplayName="All Pages" Url="{site}/SitePages/Forms/AllPages.aspx" Level="1" BaseViewID="4" ContentTypeID="0x" ToolbarTemplate="WikiLibraryViewToolBar" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Modified" Ascending="FALSE" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Author" />
+                <FieldRef Name="Created" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c33527b4-d920-4587-b791-45024d00068a" Name="WikiField" DisplayName="Wiki Content" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="4966388e-6e12-4bc6-8990-5b5b66153eae" Name="CanvasContent1" DisplayName="Authoring Canvas Content" />
+            <pnp:FieldRef ID="5baf6db5-9d25-4738-b15e-db5789298e82" Name="BannerImageUrl" DisplayName="Banner Image URL" />
+            <pnp:FieldRef ID="3f155110-a6a2-4d70-926c-94648101f0e8" Name="Description" DisplayName="Description" />
+            <pnp:FieldRef ID="f5ad16a2-85be-46b2-b5f0-2bb8b4a5074a" Name="PromotedState" DisplayName="Promoted State" />
+            <pnp:FieldRef ID="c84f8697-331e-457d-884a-c4fb8f30ea74" Name="FirstPublishedDate" DisplayName="First Published Date" />
+            <pnp:FieldRef ID="261075db-0525-4fb8-a6ea-772014186599" Name="LayoutWebpartsContent" DisplayName="Page Layout Content" />
+            <pnp:FieldRef ID="1a7348e7-1bb7-4a47-9790-088e7cb20b58" Name="_AuthorByline" DisplayName="Author Byline" />
+            <pnp:FieldRef ID="d60d65ff-ff42-4044-a684-ac3f7a5e598c" Name="_TopicHeader" DisplayName="Topic header" />
+            <pnp:FieldRef ID="9de685c5-fdf5-4319-b987-3edf55efb36f" Name="_SPSitePageFlags" DisplayName="Site Page Flags" />
+            <pnp:FieldRef ID="9889a80f-c9ec-41d8-a359-ac5fb5c4cfa2" Name="_SPCallToAction" DisplayName="Call To Action" />
+            <pnp:FieldRef ID="0e7b982f-698a-4d0c-aacb-f16906f66d30" Name="_OriginalSourceUrl" DisplayName="Original Source Url" />
+            <pnp:FieldRef ID="36193413-dd5c-4096-8c1e-1b40098b9ba3" Name="_OriginalSourceSiteId" DisplayName="Original Source Site ID" />
+            <pnp:FieldRef ID="3477a5bc-c605-4b2e-a7c1-8db8f13c017e" Name="_OriginalSourceWebId" DisplayName="Original Source Web ID" />
+            <pnp:FieldRef ID="139da674-dbf6-439f-98e0-4eb05fa9a669" Name="_OriginalSourceListId" DisplayName="Original Source List ID" />
+            <pnp:FieldRef ID="91e86a43-75f2-426f-80da-35edfb47d55d" Name="_OriginalSourceItemId" DisplayName="Original Source Item ID" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Site Templates" Description=" " DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/SiteTemplates" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/SiteTemplates/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/SiteTemplates/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/SiteTemplates/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{4148BE69-7427-4CE2-BE19-D24225013101}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/SiteTemplates/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="Description" />
+                <FieldRef Name="SiteTemplateId" />
+                <FieldRef Name="PreviewImage" />
+                <FieldRef Name="WebTemplate" />
+                <FieldRef Name="Store" />
+                <FieldRef Name="Enabled" />
+                <FieldRef Name="ApplyPnPTemplate" />
+                <FieldRef Name="PnPTemplateURL" />
+                <FieldRef Name="ThemeName" />
+                <FieldRef Name="VisibleTo" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field Type="Note" DisplayName="Description" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Direction="None" Sortable="FALSE" ID="{5fe244c7-5422-4fba-8e37-cbedb67253b1}" SourceID="{{listid:Site Templates}}" StaticName="Description" Name="Description" ColName="ntext2" RowOrdinal="0" />
+            <Field Type="Text" DisplayName="SiteTemplateId" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{6688ba30-e361-4f5d-b7d5-db5ba59933b5}" SourceID="{{listid:Site Templates}}" StaticName="SiteTemplateId" Name="SiteTemplateId" ColName="nvarchar7" RowOrdinal="0" />
+            <Field Type="URL" DisplayName="PreviewImage" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Image" Direction="None" ID="{d300fed5-7776-4c56-8d32-8dd73d8158c2}" SourceID="{{listid:Site Templates}}" StaticName="PreviewImage" Name="PreviewImage" ColName="nvarchar8" RowOrdinal="0" ColName2="nvarchar9" RowOrdinal2="0" />
+            <Field Type="Text" DisplayName="WebTemplate" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{77c99b5f-2fad-4c69-b4ba-c334e84d2e46}" SourceID="{{listid:Site Templates}}" StaticName="WebTemplate" Name="WebTemplate" ColName="nvarchar10" RowOrdinal="0" />
+            <Field Type="Text" DisplayName="Store" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{52f63b17-afb9-4dc2-9261-7d784168392b}" SourceID="{{listid:Site Templates}}" StaticName="Store" Name="Store" ColName="nvarchar11" RowOrdinal="0" />
+            <Field Type="Boolean" DisplayName="Enabled" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{e3fa72b4-ab5b-4f4c-a229-ca65234b1a9b}" SourceID="{{listid:Site Templates}}" StaticName="Enabled" Name="Enabled" ColName="bit1" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field Type="Boolean" DisplayName="ApplyPnPTemplate" EnforceUniqueValues="FALSE" Indexed="FALSE" ID="{15336e54-6278-4bd2-a2fd-be4ae311e287}" SourceID="{{listid:Site Templates}}" StaticName="ApplyPnPTemplate" Name="ApplyPnPTemplate" ColName="bit2" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field Type="URL" DisplayName="PnPTemplateURL" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Hyperlink" Direction="None" ID="{72fec803-5694-4d8d-9d59-0fafc21471e2}" SourceID="{{listid:Site Templates}}" StaticName="PnPTemplateURL" Name="PnPTemplateURL" ColName="nvarchar12" RowOrdinal="0" ColName2="nvarchar13" RowOrdinal2="0" />
+            <Field Type="Text" DisplayName="ThemeName" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Direction="None" ID="{64c3e6cb-3194-4faf-a42c-34f312c0d6e7}" SourceID="{{listid:Site Templates}}" StaticName="ThemeName" Name="ThemeName" ColName="nvarchar14" RowOrdinal="0" />
+            <Field Type="User" DisplayName="VisibleTo" List="UserInfo" Required="FALSE" EnforceUniqueValues="FALSE" Direction="None" ShowField="ImnName" UserSelectionMode="PeopleAndGroups" UserSelectionScope="0" ID="{2f639515-0228-486c-b628-c3b7c24c92b8}" SourceID="{{listid:Site Templates}}" StaticName="VisibleTo" Name="VisibleTo" ColName="int1" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Style Library" Description="Use the style library to store style sheets, such as CSS or XSL files. The style sheets in this gallery can be used by this site or any of its subsites." DocumentTemplate="" TemplateType="101" Url="Style Library" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" DefaultDisplayFormUrl="{site}/Style Library/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/Style Library/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/Style Library/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{19C4042D-E6F0-47C6-B4EB-C7C1920EE43B}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="{site}/Style Library/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Comment count" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Like count" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="cb19284a-cde7-4570-a980-1dab8bd74470" Name="_ExtendedDescription" DisplayName="Description" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Teams Templates" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/TeamsTemplates" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/TeamsTemplates/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/TeamsTemplates/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/TeamsTemplates/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{0E868BC6-834D-4793-811F-02B99DD84567}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/TeamsTemplates/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="ID" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="ID" />
+                <FieldRef Name="TemplateId" />
+                <FieldRef Name="TeamId" />
+                <FieldRef Name="Description" />
+                <FieldRef Name="AdminCenterTemplate" />
+                <FieldRef Name="PrefixText" />
+                <FieldRef Name="PrefixUseAttribute" />
+                <FieldRef Name="PrefixAttribute" />
+                <FieldRef Name="SuffixText" />
+                <FieldRef Name="SuffixUseAttribute" />
+                <FieldRef Name="SuffixAttribute" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+              <ViewData />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field DisplayName="Team Id" Format="Dropdown" MaxLength="255" Name="TeamId" Title="Team Id" Type="Text" ID="{2b628b4a-c311-4a22-8d76-a3a4eb7f2dc9}" SourceID="{{listid:Teams Templates}}" StaticName="TeamId" ColName="nvarchar7" RowOrdinal="0" Version="16" />
+            <Field Type="Note" DisplayName="Description" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Sortable="FALSE" ID="{8f13335c-72f6-46a8-8174-de063b73070e}" SourceID="{{listid:Teams Templates}}" StaticName="Description" Name="Description" ColName="ntext2" RowOrdinal="0" />
+            <Field DisplayName="Admin Center Template" Format="Dropdown" Name="AdminCenterTemplate" Title="Admin Center Template" Type="Boolean" ID="{621729c9-93d1-4b1f-a48d-865ccf148a5f}" SourceID="{{listid:Teams Templates}}" StaticName="AdminCenterTemplate" ColName="bit1" RowOrdinal="0" Version="16">
+              <Default>0</Default>
+            </Field>
+            <Field DisplayName="Template Id" Format="Dropdown" MaxLength="255" Name="TemplateId" Title="Template Id" Type="Text" ID="{9b89789b-53b9-4eea-8642-6ad4746f2557}" SourceID="{{listid:Teams Templates}}" StaticName="TemplateId" ColName="nvarchar8" RowOrdinal="0" Version="16" />
+            <Field DisplayName="Prefix Text" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="PrefixText" Title="Prefix Text" Type="Text" ID="{c0a4ea14-2282-4f23-9968-812105d25932}" SourceID="{{listid:Teams Templates}}" StaticName="PrefixText" ColName="nvarchar9" RowOrdinal="0" />
+            <Field DisplayName="Prefix Use Attribute" Format="Dropdown" IsModern="TRUE" Name="PrefixUseAttribute" Title="Prefix Use Attribute" Type="Boolean" ID="{eb67ec9b-34b4-4862-bfe3-b8face32c7c2}" SourceID="{{listid:Teams Templates}}" StaticName="PrefixUseAttribute" ColName="bit2" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field CustomFormatter="{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Department&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Company&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Office&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;StateOrProvince&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;CountryOrRegion&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;JobTitle&quot;]},&quot;&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}]}]}]}},&quot;children&quot;:[{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;line-height&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;14px&quot;},&quot;attributes&quot;:{&quot;iconName&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Department&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Company&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Office&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;StateOrProvince&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;CountryOrRegion&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;JobTitle&quot;]},&quot;&quot;,&quot;&quot;]}]}]}]}]}]}]}}},{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;padding&quot;:&quot;0 3px&quot;},&quot;txtContent&quot;:&quot;@currentField&quot;,&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Department&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Company&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Office&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;StateOrProvince&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;CountryOrRegion&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;JobTitle&quot;]},&quot;&quot;,&quot;&quot;]}]}]}]}]}]}]}}}]}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}" DisplayName="Prefix Attribute" FillInChoice="FALSE" Format="Dropdown" IsModern="TRUE" Name="PrefixAttribute" Title="Prefix Attribute" Type="Choice" ID="{0856395b-fe1f-4f60-8592-aa2a4a877fef}" SourceID="{{listid:Teams Templates}}" StaticName="PrefixAttribute" ColName="nvarchar10" RowOrdinal="0">
+              <CHOICES>
+                <CHOICE>Department</CHOICE>
+                <CHOICE>Company</CHOICE>
+                <CHOICE>Office</CHOICE>
+                <CHOICE>StateOrProvince</CHOICE>
+                <CHOICE>CountryOrRegion</CHOICE>
+                <CHOICE>JobTitle</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field DisplayName="Suffix Text" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="SuffixText" Title="Suffix Text" Type="Text" ID="{59cda947-9452-4c6a-ae05-0e15b7fded99}" SourceID="{{listid:Teams Templates}}" StaticName="SuffixText" ColName="nvarchar11" RowOrdinal="0" />
+            <Field DisplayName="Suffix Use Attribute" Format="Dropdown" IsModern="TRUE" Name="SuffixUseAttribute" Title="Suffix Use Attribute" Type="Boolean" ID="{7f96470e-f616-41d7-b3da-2de00bc0ba9c}" SourceID="{{listid:Teams Templates}}" StaticName="SuffixUseAttribute" ColName="bit3" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field CustomFormatter="{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Department&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Company&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Office&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;StateOrProvince&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;CountryOrRegion&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;JobTitle&quot;]},&quot;&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}]}]}]}},&quot;children&quot;:[{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;line-height&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;14px&quot;},&quot;attributes&quot;:{&quot;iconName&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Department&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Company&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Office&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;StateOrProvince&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;CountryOrRegion&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;JobTitle&quot;]},&quot;&quot;,&quot;&quot;]}]}]}]}]}]}]}}},{&quot;elmType&quot;:&quot;span&quot;,&quot;style&quot;:{&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;padding&quot;:&quot;0 3px&quot;},&quot;txtContent&quot;:&quot;@currentField&quot;,&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Department&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Company&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;Office&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;StateOrProvince&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;CountryOrRegion&quot;]},&quot;&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;JobTitle&quot;]},&quot;&quot;,&quot;&quot;]}]}]}]}]}]}]}}}]}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}" DisplayName="Suffix Attribute" FillInChoice="FALSE" Format="Dropdown" IsModern="TRUE" Name="SuffixAttribute" Title="Suffix Attribute" Type="Choice" ID="{7daa1c22-4130-4ab7-a567-0440de846ce7}" SourceID="{{listid:Teams Templates}}" StaticName="SuffixAttribute" ColName="nvarchar12" RowOrdinal="0">
+              <CHOICES>
+                <CHOICE>Department</CHOICE>
+                <CHOICE>Company</CHOICE>
+                <CHOICE>Office</CHOICE>
+                <CHOICE>StateOrProvince</CHOICE>
+                <CHOICE>CountryOrRegion</CHOICE>
+                <CHOICE>JobTitle</CHOICE>
+              </CHOICES>
+            </Field>
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Time Zones" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/TimeZones" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/TimeZones/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/TimeZones/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/TimeZones/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{5355FC91-B44D-440D-BA45-3A5DF8CFE0A9}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/TimeZones/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="TimeZoneId" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="FALSE" DisplayName="Time Zone Id" Format="Dropdown" Name="TimeZoneId" Percentage="FALSE" Title="Time Zone Id" Type="Number" ID="{96b4e26d-1e4b-49e9-bcb5-fd1822406e24}" Version="5" StaticName="TimeZoneId" SourceID="{{listid:Time Zones}}" ColName="float1" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Title" />
+            <pnp:FieldRef ID="76d13cd2-1bae-45a5-8b74-545b87b65037" Name="_ColorTag" DisplayName="Color Tag" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+      </pnp:Lists>
+      <pnp:Features>
+        <pnp:SiteFeatures>
+          <pnp:Feature ID="94280101-dc63-4b83-842a-8707b1afb62d" />
+        </pnp:SiteFeatures>
+        <pnp:WebFeatures>
+          <pnp:Feature ID="780ac353-eaf8-4ac2-8c47-536d93c03fd6" />
+          <pnp:Feature ID="f151bb39-7c3b-414f-bb36-6bf18872052f" />
+          <pnp:Feature ID="992f7f2f-1a54-4fb1-a29d-aca651e10c40" />
+        </pnp:WebFeatures>
+      </pnp:Features>
+      <pnp:Header Layout="Standard" ShowSiteTitle="false" ShowSiteNavigation="false" />
+    </pnp:ProvisioningTemplate>
+  </pnp:Templates>
+</pnp:Provisioning>
