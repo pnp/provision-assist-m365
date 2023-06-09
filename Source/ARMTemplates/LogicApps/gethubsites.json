@@ -593,18 +593,18 @@
                     "$connections": {
                         "value": {
                             "azureautomation": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/collabrequest-automation')]",
-                                "connectionName": "collabrequest-automation",
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-automation')]",
+                                "connectionName": "provisionassist-automation",
                                 "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/azureautomation')]"
                             },
                             "sharepointonline": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/collabrequest-spo')]",
-                                "connectionName": "collabrequest-spo",
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-spo')]",
+                                "connectionName": "provisionassist-spo",
                                 "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/sharepointonline')]"
                             },
                             "keyvault": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/collabrequest-kv')]",
-                                "connectionName": "collabrequest-kv",
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-kv')]",
+                                "connectionName": "provisionassist-kv",
                                 "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
                             }
                         }

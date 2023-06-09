@@ -1,0 +1,58 @@
+{
+    "tenantId": {
+        "Value": "<<value>>",
+        "Description": "Id of the tenant to deploy to. Can be found in the Azure Active Directory blade."
+    },
+    "spoTenantName": {
+        "Value": "<<value>>",
+        "Description": "Name of the SharePoint tenant to deploy to (excluding onmicrosoft.com) e.g. contoso"
+    },
+    "requestsSiteName": {
+        "Value": "<<value>>",
+        "Description": "Name of the SharePoint site to store the requests, can include spaces (URL/Alias auomatically generated). If the site exists, it will prompt to overwrite and will apply the provisioning template."
+    },
+    "requestsSiteDesc": {
+        "Value": "<<value>>",
+        "Description": "Description for the site that will be created above."
+    },
+    "managedPath": {
+        "Value": "<<value>>",
+        "Description": "Managed path configured in the tenant e.g. 'sites' or 'teams' (no forward slash)."
+    },
+    "subscriptionId": {
+        "Value": "<<value>>",
+        "Description": "Azure subscription id to deploy the solution to. All resources in an Azure subscription are billed together."
+    },
+    "region": {
+        "Value": "<<value>>",
+        "Description": "The Azure region to deploy to. The internal name should be used. Not every resource is available in every region."
+    },
+    "resourceGroupName": {
+        "Value": "<<value>>",
+        "Description": "A name for a new resource group to deploy the solution to - if the resource group does not exist it will be created."
+    },
+    "appName": {
+        "Value": "<<value>>",
+        "Description": "Name for the Azure ad app that will be created."
+    },
+    "siteLogoPath": {
+        "Value": "<<value>>",
+        "Description": "Path to a company logo which will be set as the site logo for Communication sites and no Group Team Sites when provisioned."
+    },
+    "serviceAccountUPN": {
+        "Value": "<<value>>",
+        "Description": " UPN of Service Account to be used for the solution - used to connect to SharePoint and send Emails in the Logic App."
+    },
+    "isEdu": {
+        "Value": false,
+        "Description": "Specifies whether the current tenant is an Education tenant. If set to true, the Education Teams Templates will be deployed. These will be skipped if set to false or left blank."
+    },
+    "keyVaultName": {
+      "Value": "<<value>>",
+        "Description": "Name for the Key Vault that will be provisioned to store the Azure ad app ID and secret. The Key Vault name must be unique and not exist in another subscription."
+    },
+    "enableSensitivity": {
+        "Value": false,
+        "Description": "Enable the sensitivity label functionality."
+    }
+}

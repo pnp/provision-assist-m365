@@ -1,10 +1,10 @@
-#Runbook to configure sites post provisioning - for use with the Collaboration Area Request solution
+#Runbook to configure collaboration spaces post provisioning - for use with the Provision Assist solution
 [CmdletBinding()]
 Param
 (
     [Parameter (Mandatory = $false)]
     [String] $siteUrl,
-    [String] $siteType,
+    [String] $spaceType,
     [String] $externalSharing,
     [String] $owners,
     [String] $members,
@@ -25,7 +25,9 @@ Param
 	[String] $featuresToActivate,
 	[String] $applyPnPTemplate,
 	[String] $pnpTemplateUrl,
-	[String] $themeName
+	[String] $themeName,
+	[String] $siteTemplateTitle,
+	[String] $siteCollectionAdmins
 )
 
 $appId = Get-AutomationVariable -Name "appClientId"
@@ -34,7 +36,7 @@ $logoUrl = Get-AutomationVariable -Name "logoUrl"
 $tenantName = $siteUrl.Substring(0, $siteUrl.IndexOf(".")).Replace("https://", "")
 
 function SetSiteLogo {
-    if ($siteType -ne "Office 365 Group" -and $logoUrl -ne "") {
+    if ($spaceType -ne "Office 365 Group" -and $logoUrl -ne "") {
         Write-Output "Setting site logo"
         Set-PnPWeb -SiteLogoUrl $logoUrl
         Write-Output "Finished setting site logo"
@@ -42,19 +44,19 @@ function SetSiteLogo {
 }
 
 function AddOwners {
-    if ($siteType -ne "Office 365 Group") {
+    if ($spaceType -ne "Office 365 Group") {
         Write-Output "Updating SP owners group"
+		$group = Get-PnPGroup | Where-Object { $_.Title -like "*Owners" }
         ForEach ($owner in $owners -split ",") {
             #Get the group
-            $group = Get-PnPGroup | Where-Object { $_.Title -like "*Owners" }
             Add-PnPGroupMember -LoginName $owner -Identity $group
         }
-        Write-Output "Finished updating SP owners group"
-    }
+
+}
 }
 
 function AddMembers {
-    If ($members -ne "" -and $siteType -ne "Office 365 Group") {
+    If ($members -ne "" -and $spaceType -ne "Office 365 Group") {
         Write-Output "Updating SP members group"
         ForEach ($member in $members -split ",") {
             #Get the group
@@ -79,6 +81,16 @@ function AddVisitors {
     }
 }
 
+function AddSiteCollectionAdmins {
+    if ($spaceType -ne "Office 365 Group") {
+        Write-Output "Adding Site Collection Administrators"
+        ForEach ($sca in $siteCollectionAdmins -split ",") {
+            #Add the sca
+			Add-PnPSiteCollectionAdmin -Owners $sca
+        }
+        Write-Output "Finished adding Site Collection Administrators"
+    }
+}
 
 function SetExternalSharing($group) {
     If ($externalSharing -eq "True") {
@@ -118,7 +130,7 @@ function SetAccessRequestSettings {
 }
 
 function SetSiteClassification {
-    If ($siteType -ne "Office 365 Group") {
+    If ($spaceType -ne "Office 365 Group") {
         If ($null -ne $classification) {
             Set-PnPSite -Classification $classification
         }
@@ -126,8 +138,8 @@ function SetSiteClassification {
 }
 
 function JoinOrRegisterHubSite {
-    #Join hub site if site type is not a hub
-    if ($joinHub -eq $true -and $siteType -ne "Hub Site") {
+    #Join hub site if space type is not a hub
+    if ($joinHub -eq $true -and $spaceType -ne "Hub Site") {
         Write-Output "Joining hub site"
         Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ClientId $appId -ClientSecret $appSecret
 
@@ -140,7 +152,7 @@ function JoinOrRegisterHubSite {
     else {
         
         #Register as a hub site
-        if ($siteType -eq "Hub Site") {
+        if ($spaceType -eq "Hub Site") {
         
             try {
                 Write-Output "Registering site as a hub"
@@ -304,7 +316,7 @@ try {
     if ($context) {
         Write-Output "Connected to SharePoint Online"
 
-        if ($siteType -ne "Viva Engage Community") {
+        if ($spaceType -ne "Viva Engage Community") {
 
             SetExternalSharing
 
@@ -313,6 +325,7 @@ try {
             AddOwners
             AddMembers
             AddVisitors
+			AddSiteCollectionAdmins
             SetAccessRequestSettings
             SetSiteLogo
             SetRegionalSettings
