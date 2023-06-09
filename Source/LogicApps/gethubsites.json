@@ -1,0 +1,616 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceGroupName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "subscriptionId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "automationAccountName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "location": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "requestsSiteUrl": {
+            "defaultvalue": "",
+            "type": "string"
+        },
+        "hubSitesListId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "tenantId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "tenantName": {
+            "defaultValue": "",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "Singlequote": "'",
+        "ID": "ID",
+        "LoopName": "Loop_through_list_items"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "GetHubSites",
+            "location": "[parameters('location')]",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {
+                            },
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "Recurrence": {
+                            "recurrence": {
+                                "frequency": "Week",
+                                "interval": 1
+                            },
+                            "type": "Recurrence"
+                        }
+                    },
+                    "actions": {
+                        "@": {
+                            "runAfter": {
+                                "Get_Client_Secret": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Compose",
+                            "inputs": "@"
+                        },
+                        "Get_Bearer_Token": {
+                            "runAfter": {
+                                "@": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "body": "grant_type=client_credentials&client_id=@{body('Get_Client_ID')?['value']}@{outputs('@')}@{variables('TenantID')}&client_secret=@{body('Get_Client_Secret')?['value']}&resource=00000003-0000-0ff1-ce00-000000000000/@{variables('TenantName')}.sharepoint.com@{outputs('@')}@{variables('TenantID')}",
+                                "headers": {
+                                    "content-type": "application/x-www-form-urlencoded"
+                                },
+                                "method": "POST",
+                                "uri": "https://accounts.accesscontrol.windows.net//tokens/OAuth/2"
+                            }
+                        },
+                        "Get_Client_ID": {
+                            "runAfter": {
+                                "Initialize_HubSiteExists_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/secrets/@{encodeURIComponent('appid')}/value"
+                            },
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
+                        "Get_Client_Secret": {
+                            "runAfter": {
+                                "Get_Client_ID": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
+                            },
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
+                        "Get_Hub_Sites": {
+                            "runAfter": {
+                                "Parse_Bearer_Token_Response": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "headers": {
+                                    "Accept": "application/json;odata=verbose",
+                                    "Authorization": "@{body('Parse_Bearer_Token_Response')?['token_type']} @{body('Parse_Bearer_Token_Response')?['access_token']}"
+                                },
+                                "method": "GET",
+                                "uri": "[concat(parameters('requestsSiteUrl'),'/_api/HubSites')]"
+                            }
+                        },
+                        "Initialize_HubListItemID_variable": {
+                            "runAfter": {
+                                "Initialize_Hubs_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "HubListItemID",
+                                        "type": "integer"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_HubSiteExists_variable": {
+                            "runAfter": {
+                                "Initialize_TenantName_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "HubSiteExists",
+                                        "type": "boolean",
+                                        "value": "@false"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_Hubs_variable": {
+                            "runAfter": {},
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "Hubs",
+                                        "type": "array"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_TenantID_variable": {
+                            "runAfter": {
+                                "Initialize_HubListItemID_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "TenantID",
+                                        "type": "string",
+                                        "value": "[parameters('tenantId')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_TenantName_variable": {
+                            "runAfter": {
+                                "Initialize_TenantID_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "TenantName",
+                                        "type": "string",
+                                        "value": "[parameters('tenantName')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Parse_Bearer_Token_Response": {
+                            "runAfter": {
+                                "Get_Bearer_Token": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Get_Bearer_Token')",
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "type": "string"
+                                        },
+                                        "expires_on": {
+                                            "type": "string"
+                                        },
+                                        "not_before": {
+                                            "type": "string"
+                                        },
+                                        "resource": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "Parse_hub_sites_JSON": {
+                            "runAfter": {
+                                "Get_Hub_Sites": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('Get_Hub_Sites')",
+                                "schema": {
+                                    "properties": {
+                                        "d": {
+                                            "properties": {
+                                                "results": {
+                                                    "items": {
+                                                        "properties": {
+                                                            "Description": {},
+                                                            "EnablePermissionsSync": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "EnforcedECTs": {},
+                                                            "EnforcedECTsVersion": {
+                                                                "type": "integer"
+                                                            },
+                                                            "HideNameInNavigation": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "ID": {
+                                                                "type": "string"
+                                                            },
+                                                            "ParentHubSiteId": {
+                                                                "type": "string"
+                                                            },
+                                                            "PermissionsSyncTag": {
+                                                                "type": "integer"
+                                                            },
+                                                            "RequiresJoinApproval": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "SiteDesignId": {
+                                                                "type": "string"
+                                                            },
+                                                            "SiteId": {
+                                                                "type": "string"
+                                                            },
+                                                            "SiteUrl": {
+                                                                "type": "string"
+                                                            },
+                                                            "Targets": {},
+                                                            "TenantInstanceId": {
+                                                                "type": "string"
+                                                            },
+                                                            "Title": {
+                                                                "type": "string"
+                                                            },
+                                                            "__metadata": {
+                                                                "properties": {
+                                                                    "etag": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "uri": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "__metadata",
+                                                            "Description",
+                                                            "EnablePermissionsSync",
+                                                            "EnforcedECTs",
+                                                            "EnforcedECTsVersion",
+                                                            "HideNameInNavigation",
+                                                            "ID",
+                                                            "ParentHubSiteId",
+                                                            "PermissionsSyncTag",
+                                                            "RequiresJoinApproval",
+                                                            "SiteDesignId",
+                                                            "SiteId",
+                                                            "SiteUrl",
+                                                            "Targets",
+                                                            "TenantInstanceId",
+                                                            "Title"
+                                                        ],
+                                                        "type": "object"
+                                                    },
+                                                    "type": "array"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "Process_deleted_hub_sites": {
+                            "actions": {
+                                "Get_all_hub_sites_from_the_SharePoint_list": {
+                                    "runAfter": {},
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                            }
+                                        },
+                                        "method": "get",
+                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('hubSitesListId'),variables('singlequote'),'))}/items')]"
+                                    }
+                                },
+                                "Loop_through_hub_site_list_items": {
+                                    "foreach": "@body('Get_all_hub_sites_from_the_SharePoint_list')?['value']",
+                                    "actions": {
+                                        "Check_if_hub_site_exists": {
+                                            "actions": {
+                                                "Delete_hub_site_list_item": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "delete",
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('hubSitesListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(items(',variables('singlequote'),'Loop_through_hub_site_list_items',variables('singlequote'),')?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Loop_through_hub_sites_-_delete": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@variables('HubSiteExists')",
+                                                            "@false"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Loop_through_hub_sites_-_delete": {
+                                            "foreach": "@body('Parse_hub_sites_JSON')?['d']?['results']",
+                                            "actions": {
+                                                "Check_if_hub_site_id_matches": {
+                                                    "actions": {
+                                                        "Set_HubSiteExists_variable": {
+                                                            "runAfter": {},
+                                                            "type": "SetVariable",
+                                                            "inputs": {
+                                                                "name": "HubSiteExists",
+                                                                "value": "@true"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {},
+                                                    "expression": {
+                                                        "and": [
+                                                            {
+                                                                "equals": [
+                                                                    "@items('Loop_through_hub_site_list_items')?['HubSiteId']",
+                                                                    "@items('Loop_through_hub_sites_-_delete')?['SiteId']"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type": "If"
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Reset_HubSiteExists_variable": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Foreach",
+                                            "runtimeConfiguration": {
+                                                "concurrency": {
+                                                    "repetitions": 1
+                                                }
+                                            }
+                                        },
+                                        "Reset_HubSiteExists_variable": {
+                                            "runAfter": {},
+                                            "type": "SetVariable",
+                                            "inputs": {
+                                                "name": "HubSiteExists",
+                                                "value": "@false"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Get_all_hub_sites_from_the_SharePoint_list": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Foreach",
+                                    "runtimeConfiguration": {
+                                        "concurrency": {
+                                            "repetitions": 1
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Process_hub_sites": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Process_hub_sites": {
+                            "actions": {
+                                "Loop_through_hub_sites": {
+                                    "foreach": "@body('Parse_hub_sites_JSON')?['d']?['results']",
+                                    "actions": {
+                                        "Check_if_the_hub_site_was_found_in_the_list": {
+                                            "actions": {
+                                                "Create_hub_site_list_item": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "body": {
+                                                            "HubSiteId": "@items('Loop_through_hub_sites')?['SiteId']",
+                                                            "Title": "@items('Loop_through_hub_sites')?['Title']"
+                                                        },
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "post",
+                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('hubSitesListId'),variables('singlequote'),'))}/items')]"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Get_hub_site_from_the_SharePoint_list": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "else": {
+                                                "actions": {
+                                                    "Update_hub_site_list_item": {
+                                                        "runAfter": {},
+                                                        "type": "ApiConnection",
+                                                        "inputs": {
+                                                            "body": {
+                                                                "HubSiteId": "@items('Loop_through_hub_sites')?['SiteId']",
+                                                                "Title": "@items('Loop_through_hub_sites')?['Title']"
+                                                            },
+                                                            "host": {
+                                                                "connection": {
+                                                                    "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                                }
+                                                            },
+                                                            "method": "patch",
+                                                            "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('hubSitesListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(first(body(',variables('singlequote'),'Get_hub_site_from_the_sharepoint_list',variables('singlequote'),')?[',variables('singlequote'),'Value',variables('singlequote'),'])?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@empty(body('Get_hub_site_from_the_SharePoint_list')?['value'])",
+                                                            "@true"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Get_hub_site_from_the_SharePoint_list": {
+                                            "runAfter": {},
+                                            "type": "ApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connection": {
+                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                                    }
+                                                },
+                                                "method": "get",
+                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('hubSitesListId'),variables('singlequote'),'))}/items')]",
+                                                "queries": {
+                                                    "$filter": "HubSiteId eq '@{items('Loop_through_hub_sites')?['SiteId']}' or Title eq '@{items('Loop_through_hub_sites')?['Title']}'"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "type": "Foreach"
+                                }
+                            },
+                            "runAfter": {
+                                "Parse_hub_sites_JSON": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azureautomation": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/collabrequest-automation')]",
+                                "connectionName": "collabrequest-automation",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/azureautomation')]"
+                            },
+                            "sharepointonline": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/collabrequest-spo')]",
+                                "connectionName": "collabrequest-spo",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/sharepointonline')]"
+                            },
+                            "keyvault": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/collabrequest-kv')]",
+                                "connectionName": "collabrequest-kv",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

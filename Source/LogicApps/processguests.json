@@ -1,0 +1,479 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceGroupName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "subscriptionId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "appId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "appSecret": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "tenantId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "location": {
+            "defaultvalue": "",
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "comments": "Logic apps",
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "ProcessGuests",
+            "location": "[parameters('location')]",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {
+                            },
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "schema": {
+                                    "properties": {
+                                        "CompanyName": {
+                                            "type": "string"
+                                        },
+                                        "EmailAccentColor": {
+                                            "type": "string"
+                                        },
+                                        "Guests": {
+                                            "type": "string"
+                                        },
+                                        "LogoPath": {
+                                            "type": "string"
+                                        },
+                                        "SiteTitle": {
+                                            "type": "string"
+                                        },
+                                        "SiteUrl": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "actions": {
+                                "Get_Client_ID": {
+                "description": "Get Azure ad app client id from key vault.",
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['keyvault']['connectionId']"
+                        }
+                    },
+                    "method": "get",
+                    "path": "/secrets/@{encodeURIComponent('appid')}/value"
+                },
+                "runAfter": {
+                    "Initialize_Guests_array": [
+                        "Succeeded"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "secureData": {
+                        "properties": [
+                            "inputs",
+                            "outputs"
+                        ]
+                    }
+                },
+                "type": "ApiConnection"
+            },
+              "Get_Client_Secret": {
+                "description": "Get Azure ad app secret from key vault.",
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['keyvault']['connectionId']"
+                        }
+                    },
+                    "method": "get",
+                    "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
+                },
+                "runAfter": {
+                    "Get_Client_ID": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+                        "Initialize_GraphURL_variable": {
+                            "runAfter": {
+                                "Initialize_TenantID_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "GraphURL",
+                                        "type": "String",
+                                        "value": "https://graph.microsoft.com/v1.0"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_Guests_array": {
+                            "runAfter": {
+                                "Initialize_GraphURL_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "Guests",
+                                        "type": "Array"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_TenantID_variable": {
+                            "runAfter": {
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "TenantID",
+                                        "type": "String",
+                                        "value": "[parameters('tenantId')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Loop_through_Guests": {
+                            "foreach": "@outputs('Split_Guest_Users_string')",
+                            "actions": {
+                                "Check_if_Guest_exists": {
+                                    "actions": {
+                                        "Append_invited_guest_to_Guests_variable": {
+                                            "runAfter": {
+                                                "Parse_invitation_json": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "AppendToArrayVariable",
+                                            "inputs": {
+                                                "name": "Guests",
+                                                "value": {
+                                                    "GuestEmail": "@{body('Parse_invitation_JSON')?['invitedUserEmailAddress']}",
+                                                    "GuestId": "@{body('Parse_invitation_JSON')?['invitedUser']?['id']}",
+                                                    "InviteRedeemUrl": "@{body('Parse_invitation_JSON')?['inviteRedeemUrl']}"
+                                                }
+                                            }
+                                        },
+                                        "Parse_invitation_JSON": {
+                                            "runAfter": {
+                                                "Send_guest_invitation": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('Send_guest_invitation')",
+                                                "schema": {
+                                                    "properties": {
+                                                        "@@odata.context": {
+                                                            "type": "string"
+                                                        },
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "inviteRedeemUrl": {
+                                                            "type": "string"
+                                                        },
+                                                        "inviteRedirectUrl": {
+                                                            "type": "string"
+                                                        },
+                                                        "invitedUser": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "invitedUserDisplayName": {
+                                                        },
+                                                        "invitedUserEmailAddress": {
+                                                            "type": "string"
+                                                        },
+                                                        "invitedUserMessageInfo": {
+                                                            "properties": {
+                                                                "ccRecipients": {
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "emailAddress": {
+                                                                                "properties": {
+                                                                                    "address": {
+                                                                                    },
+                                                                                    "name": {
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "emailAddress"
+                                                                        ],
+                                                                        "type": "object"
+                                                                    },
+                                                                    "type": "array"
+                                                                },
+                                                                "customizedMessageBody": {
+                                                                    "type": "string"
+                                                                },
+                                                                "messageLanguage": {
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "invitedUserType": {
+                                                            "type": "string"
+                                                        },
+                                                        "sendInvitationMessage": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "status": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "Send_guest_invitation": {
+                                            "runAfter": {
+                                            },
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "audience": "https://graph.microsoft.com",
+                                     "clientId": "@body('Get_Client_ID')?['value']",
+                                        "secret": "@body('Get_Client_Secret')?['value']",
+                                                    "tenant": "@variables('TenantID')",
+                                                    "type": "ActiveDirectoryOAuth"
+                                                },
+                                                "body": {
+                                                    "inviteRedirectUrl": "@{triggerBody()?['SiteUrl']}",
+                                                    "invitedUserEmailAddress": "@{items('Loop_through_Guests')}",
+                                                    "invitedUserMessageInfo": {
+                                                        "customizedMessageBody": "You have been invited to collaborate with Contoso. <a href='www.google.com'>Here is a test link</a>Please redeem the invite using the button below to access Test",
+                                                        "messageLanguage": "string"
+                                                    },
+                                                    "sendInvitationMessage": false
+                                                },
+                                                "headers": {
+                                                    "Content-Type": "application/json"
+                                                },
+                                                "method": "POST",
+                                                "uri": "@{variables('GraphURL')}/invitations"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Parse_Guest_JSON": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "Loop_through_existing_guests_collection": {
+                                                "foreach": "@body('Parse_Guest_JSON')?['value']",
+                                                "actions": {
+                                                    "Append_existing_guest_to_Guests_variable": {
+                                                        "runAfter": {
+                                                        },
+                                                        "type": "AppendToArrayVariable",
+                                                        "inputs": {
+                                                            "name": "Guests",
+                                                            "value": {
+                                                                "GuestEmail": "@{items('Loop_through_existing_guests_collection')?['mail']}",
+                                                                "GuestId": "@{items('Loop_through_existing_guests_collection')?['id']}",
+                                                                "InviteRedeemUrl": ""
+
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "runAfter": {
+                                                },
+                                                "type": "Foreach",
+                                                "description": "Should only be a single guest as we are filtering using Graph to external users matching the exact email address."
+                                            }
+                                        }
+                                    },
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "equals": [
+                                                    "@empty(body('Parse_Guest_JSON')?['value'])",
+                                                    true
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If"
+                                },
+                                "Get_Guest": {
+                                    "runAfter": {
+                                    },
+                                    "type": "Http",
+                                    "inputs": {
+                                        "authentication": {
+                                            "audience": "https://graph.microsoft.com",
+                                "clientId": "@body('Get_Client_ID')?['value']",
+                                "secret": "@body('Get_Client_Secret')?['value']",
+                                            "tenant": "@variables('TenantID')",
+                                            "type": "ActiveDirectoryOAuth"
+                                        },
+                                        "method": "GET",
+                                        "uri": "@{variables('GraphURL')}/users?$filter=userType eq 'Guest' and mail eq '@{items('Loop_through_Guests')}'"
+                                    }
+                                },
+                                "Parse_Guest_JSON": {
+                                    "runAfter": {
+                                        "Get_Guest": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": "@body('Get_Guest')",
+                                        "schema": {
+                                            "properties": {
+                                                "@@odata.context": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "items": {
+                                                        "properties": {
+                                                            "businessPhones": {
+                                                                "type": "array"
+                                                            },
+                                                            "displayName": {
+                                                                "type": "string"
+                                                            },
+                                                            "givenName": {
+                                                            },
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "jobTitle": {
+                                                            },
+                                                            "mail": {
+                                                                "type": "string"
+                                                            },
+                                                            "mobilePhone": {
+                                                            },
+                                                            "officeLocation": {
+                                                            },
+                                                            "preferredLanguage": {
+                                                            },
+                                                            "surname": {
+                                                            },
+                                                            "userPrincipalName": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "businessPhones",
+                                                            "displayName",
+                                                            "givenName",
+                                                            "jobTitle",
+                                                            "mail",
+                                                            "mobilePhone",
+                                                            "officeLocation",
+                                                            "preferredLanguage",
+                                                            "surname",
+                                                            "userPrincipalName",
+                                                            "id"
+                                                        ],
+                                                        "type": "object"
+                                                    },
+                                                    "type": "array"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Split_Guest_Users_string": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "Loop_through_Guests": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "body": "@variables('Guests')",
+                                "statusCode": 200
+                            }
+                        },
+                        "Split_Guest_Users_string": {
+                            "runAfter": {
+                                "Get_Client_Secret": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Compose",
+                            "inputs": "@split(triggerBody()?['Guests'],';')"
+                        }
+                    },
+                    "outputs": {
+                    }
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                             "keyvault": {
+                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/collabrequest-kv')]",
+                                "connectionName": "collabrequest-kv",
+                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
+                            }
+                     
+                        }
+                    }
+                }
+            }
+
+        }
+    ]
+}
