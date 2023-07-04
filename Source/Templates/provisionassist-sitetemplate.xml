@@ -198,7 +198,6 @@
               <pnp:RoleAssignment Principal="{associatedownergroupid}" RoleDefinition="Full Control" />
               <pnp:RoleAssignment Principal="{associatedvisitorgroupid}" RoleDefinition="Read" />
               <pnp:RoleAssignment Principal="{associatedmembergroupid}" RoleDefinition="Edit" />
-              <pnp:RoleAssignment Principal="i:0#.f|membership|admin@contosodev.sharepointalex.uk" RoleDefinition="Full Control" />
             </pnp:BreakRoleInheritance>
           </pnp:Security>
         </pnp:ListInstance>
@@ -391,7 +390,6 @@
               <pnp:RoleAssignment Principal="{associatedownergroupid}" RoleDefinition="Full Control" />
               <pnp:RoleAssignment Principal="{associatedvisitorgroupid}" RoleDefinition="Read" />
               <pnp:RoleAssignment Principal="{associatedmembergroupid}" RoleDefinition="Edit" />
-              <pnp:RoleAssignment Principal="i:0#.f|membership|admin@contosodev.sharepointalex.uk" RoleDefinition="Full Control" />
             </pnp:BreakRoleInheritance>
           </pnp:Security>
         </pnp:ListInstance>
@@ -859,7 +857,6 @@
               <pnp:RoleAssignment Principal="{associatedownergroupid}" RoleDefinition="Full Control" />
               <pnp:RoleAssignment Principal="{associatedvisitorgroupid}" RoleDefinition="Read" />
               <pnp:RoleAssignment Principal="{associatedmembergroupid}" RoleDefinition="Edit" />
-              <pnp:RoleAssignment Principal="i:0#.f|membership|admin@contosodev.sharepointalex.uk" RoleDefinition="Full Control" />
             </pnp:BreakRoleInheritance>
           </pnp:Security>
         </pnp:ListInstance>
