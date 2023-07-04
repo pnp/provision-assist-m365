@@ -71,7 +71,7 @@ function CreateAzureADApp {
             # Update azure ad app registration using CLI
             Write-Host "Azure AD App $($appName) already exists - updating existing app..." -ForegroundColor Yellow
 
-            az ad app update --id $app.appId --required-resource-accesses './manifest.json'
+            az ad app update --id $app.appId --required-resource-accesses './appmanifest.json'
 
             $adAppId = $app.appId
             
@@ -87,7 +87,7 @@ function CreateAzureADApp {
             Write-Host "Creating Azure AD App - $($appName)..." -ForegroundColor Yellow
 
             # Create azure ad app registration using CLI
-            $app = az ad app create --display-name $appName --required-resource-accesses './manifest.json'
+            $app = az ad app create --display-name $appName --required-resource-accesses './appmanifest.json'
 
             $appId = $app | ConvertFrom-Json | Select-Object appid
 

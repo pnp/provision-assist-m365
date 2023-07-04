@@ -339,7 +339,10 @@
                                                                             "type": "object"
                                                                         }
                                                                     },
-                                                                    "type": "object"
+                                                                 "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ]
                                                                 },
                                                                 "lastModifiedDateTime": {
                                                                     "type": "string"

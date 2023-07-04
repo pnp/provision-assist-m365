@@ -56,10 +56,10 @@ If (-not (Test-Path -Path "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2")) {
 
 # Variables
 $packageRootPath = "..\"
-$imagesDir = "Source\Assets\ProvTypesImages"
-$iconsDir = "Source\Assets\ProvTypesIcons"
-$templatePath = "Source\Templates\provisionassist-sitetemplate.xml"
-$settingsPath = "Source\Settings\SharePoint List items.xlsx"
+$imagesDir = "Assets\ProvTypesImages"
+$iconsDir = "Assets\ProvTypesIcons"
+$templatePath = "Templates\provisionassist-sitetemplate.xml"
+$settingsPath = "Settings\SharePoint List items.xlsx"
 
 # Required PS modules
 $preReqModules = "PnP.PowerShell", "Az", "AzureADPreview", "ImportExcel", "WriteAscii"
@@ -215,6 +215,17 @@ function ValidateParameters {
     }
 
     return $isValid
+}
+
+# Verifies installation of required PowerShell modules - throws error if a module is not installed
+function VerifyModules {
+    foreach ($module in $preReqModules) {
+        $instModule = Get-InstalledModule -Name $module -ErrorAction:SilentlyContinue
+        if ($null -eq $instModule) {
+            throw('{0} module not installed. Please install all required modules.' -f $module)
+        }
+    }
+    
 }
 
 # Installs the required PowerShell modules
@@ -489,11 +500,11 @@ function ConfigureSharePointSite {
             $newitem["Title"] = $provType.Title
             $newitem["Description"] = $provType.Description
             $newitem["Allowed"] = $provType.Allowed
-            $newitem["TemplateID"] = $provType.TemplateID
+            $newitem["TemplateId"] = $provType.TemplateID
             $newitem["Image"] = "$requestsSiteUrl/$imageFolderUpload/$($provType.Image)"
             $newItem["Icon"] = "$requestsSiteUrl/$iconFolderUpload/$($provType.Icon)"
-            $newitem["WebTemplateID"] = $provType.WebTemplateID
-            $newitem["LearnVideo"] = $provType.LearnVideo
+            $newitem["WebTemplateId"] = $provType.WebTemplateID
+            $newitem["LearnVideoURL"] = $provType.LearnVideo
             $newItem["InternalTitle"] = $provType.InternalTitle
             $newitem.Update()
             $context.ExecuteQuery()
@@ -648,7 +659,7 @@ function ConfigureSharePointSite {
         $context.ExecuteQuery()
 
         # Hide space type internal field - provisioning requests list
-        $field = Get-PnPField -Identity "spaceTypeInternal" -List "Provisioning Requests"
+        $field = Get-PnPField -Identity "SpaceTypeInternal" -List "Provisioning Requests"
 
         $field.SetShowInEditForm($false)
         $field.SetShowInNewForm($false)
@@ -675,7 +686,7 @@ function ConfigureSharePointSite {
 # Get configured site classifications
 function GetSiteClassifications {
     try {
-        $groupDirectorySetting = Get-AzureADDirectorySetting | Where-Object DisplayName -eq "Group.Unified"
+        $groupDirectorySetting = AzureADPreview\Get-AzureADDirectorySetting | Where-Object DisplayName -eq "Group.Unified"
         $classifications = $groupDirectorySetting.Values | Where-Object Name -eq "ClassificationList" | Select-Object Value
 
         $global:siteClassifications = $classifications.Value
@@ -851,11 +862,11 @@ function DeployAutomationAssets {
 
         # Import automation runbooks
 
-        Import-AzAutomationRunbook -Name "GetSiteTemplates" -Path "./runbooks/getsitetemplates.ps1" `
+        Import-AzAutomationRunbook -Name "GetSiteTemplates" -Path "../Runbooks/getsitetemplates.ps1" `
             -ResourceGroupName $parameters.resourceGroupName.Value -AutomationAccountName $automationAccountName `
             -Type PowerShell
 
-        Import-AzAutomationRunbook -Name "ConfigureSpace" -Path "./runbooks/configurespace.ps1" `
+        Import-AzAutomationRunbook -Name "ConfigureSpace" -Path "../Runbooks/configurespace.ps1" `
             -ResourceGroupName $parameters.resourceGroupName.Value -AutomationAccountName $automationAccountName `
             -Type PowerShell
 
@@ -898,7 +909,7 @@ function DeployARMTemplate {
         # Deploy ARM templates
         Write-Host "Deploying api connections..." -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/apiconnections.json' --parameters "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "appId=$global:appId" "appSecret=$global:appSecret" "location=$($global:location)" "keyvaultName=$($parameters.keyVaultName.Value)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/apiconnections.json' --parameters "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "appId=$global:appId" "appSecret=$global:appSecret" "location=$($global:location)" "keyvaultName=$($parameters.keyVaultName.Value)"
 
         Write-Host "Finished deploying api connections..." -ForegroundColor Green
        
@@ -906,35 +917,35 @@ function DeployARMTemplate {
 
         Write-Host "ProcessGuests" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/processguests.json' --parameters  "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "appId=$global:appId" "appSecret=$global:appSecret" "location=$($global:location)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/processguests.json' --parameters  "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "location=$($global:location)"
 
         Write-Host "CheckSiteExists" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/checksiteexists.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "spoTenantName=$($parameters.spoTenantName.Value).sharepoint.com" "location=$($global:location)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/checksiteexists.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "spoTenantName=$($parameters.spoTenantName.Value).sharepoint.com" "location=$($global:location)"
         
-        Write-Host "Processprovisionassist" -ForegroundColor Yellow
+        Write-Host "ProcessProvisionRequest" -ForegroundColor Yellow
         
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/processprovisionassist.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "automationAccountName=$automationAccountName" "requestsSiteUrl=$requestsSiteUrl" "requestsListId=$global:requestsListId" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId" "tenantName=$($parameters.spoTenantName.Value)" "serviceAccountUPN=$($parameters.serviceAccountUPN.value)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/processprovisionrequest.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "automationAccountName=$automationAccountName" "requestsSiteUrl=$requestsSiteUrl" "requestsListId=$global:requestsListId" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId" "tenantName=$($parameters.spoTenantName.Value)" "serviceAccountUPN=$($parameters.serviceAccountUPN.value)"
     
         Write-Host "SyncGroupSettings" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/syncgroupsettings.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/syncgroupsettings.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId"
 
         Write-Host "GetSiteTemplates" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/getsitetemplates.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "siteTemplatesListId=$global:siteTemplatesListId" "automationAccountName=$automationAccountName"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/getsitetemplates.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "siteTemplatesListId=$global:siteTemplatesListId" "automationAccountName=$automationAccountName"
         
         Write-Host "GetHubSites" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/gethubsites.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "tenantName=$($parameters.spoTenantName.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "hubSitesListId=$global:hubSitesListId" "automationAccountName=$automationAccountName"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/gethubsites.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "tenantName=$($parameters.spoTenantName.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "hubSitesListId=$global:hubSitesListId" "automationAccountName=$automationAccountName"
         
         Write-Host "SyncLabels" -ForegroundColor Yellow
         
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/synclabels.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "location=$($global:location)" "requestsSiteUrl=$requestsSiteUrl" "ipLabelsListId=$global:ipLabelsListId"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/synclabels.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "location=$($global:location)" "requestsSiteUrl=$requestsSiteUrl" "ipLabelsListId=$global:ipLabelsListId"
 
         Write-Host "GetTeamsTemplates" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file './ARMTemplates/LogicApps/getteamstemplates.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "teamsTemplatesListId=$global:teamsTemplatesListId" "tenantId=$($parameters.tenantId.Value)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/getteamstemplates.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "teamsTemplatesListId=$global:teamsTemplatesListId" "tenantId=$($parameters.tenantId.Value)"
         
         Write-Host "Finished deploying logic apps" -ForegroundColor Green
     }
@@ -1023,22 +1034,14 @@ function ValidateKeyVault {
 
 }
 
-
 $ErrorActionPreference = "stop"
 
 Write-Host "###  DEPLOYMENT SCRIPT STARTED `n(c) Microsoft Corporation ###" -ForegroundColor Magenta
 
-# Install required PS Modules
-Write-Host "Installing required PowerShell Modules..." -ForegroundColor Yellow
-InstallModules -Modules $preReqModules
-foreach ($module in $preReqModules) {
-    $instModule = Get-InstalledModule -Name $module -ErrorAction:SilentlyContinue
-    if (!$instModule) {
-        throw('Failed to install module {0}' -f $module)
-    }
-}
-
-Write-Host "Installed modules" -ForegroundColor Green
+# Verify required PS Modules
+Write-Host "Verifying installation of required PowerShell Modules..." -ForegroundColor Yellow
+VerifyModules
+Write-Host "Required modules are installed" -ForegroundColor Green
 
 # Load Parameters from json file
 $parametersListContent = Get-Content '.\parameters.json' -ErrorAction Stop
@@ -1066,7 +1069,7 @@ $azConnect = Connect-AzAccount -Subscription $parameters.subscriptionId.Value -T
 ValidateKeyVault
 ValidateAzureLocation
 Write-Host "Launching Azure AD sign-in..." -ForegroundColor Yellow
-Connect-AzureAD
+AzureADPreview\Connect-AzureAD
 Write-Host "Launching Azure CLI sign-in..." -ForegroundColor Yellow
 $cliLogin = az login
 Write-Host "Connected to Azure" -ForegroundColor Green
@@ -1099,3 +1102,4 @@ DeployARMTemplate
 
 Write-Host "Azure resources deployed`n### AZURE RESOURCES DEPLOYMENT COMPLETE ###" -ForegroundColor Green
 Write-Host "### DEPLOYMENT COMPLETED SUCCESSFULLY ###" -ForegroundColor Green
+Write-Host "### Don't forget to authorise the API Connections in the Azure Portal. ###" -ForegroundColor Green
