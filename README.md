@@ -12,3 +12,6 @@ Provision Assist provides the following capabilities:
 - Requestor dashboard showing past and current requests with the approval status.
 - Automated provisioning using Azure Logic Apps and Azure Automation.
   
+## Architecture
+
+## Getting Started
