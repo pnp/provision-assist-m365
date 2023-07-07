@@ -24,3 +24,9 @@ For more details on the archictured please read the [Architecture](www.microsoft
 
 
 ## Getting Started
+
+To get started please follow the [Deployment guide](www.microsoft.com). 
+
+## Contributing
+
+## Support
