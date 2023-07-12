@@ -132,7 +132,7 @@ App Id: Application ID of the Azure AD app (Locate the Azure AD app created by t
 5. Click 'Create'.
 6. Click 'Trust It'.
 
- ## Step 5 (Optional): Create Admin group
+ ## Step 5 (Optional): Create Admin Group/Team
 
 Approval of requests in the solution can take place in two ways -
 
