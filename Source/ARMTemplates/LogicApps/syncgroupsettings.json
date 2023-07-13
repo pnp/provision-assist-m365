@@ -52,7 +52,7 @@
                     "triggers": {
                         "Recurrence": {
                             "recurrence": {
-                                "frequency": "Day",
+                                "frequency": "Week",
                                 "interval": 1
                             },
                             "type": "Recurrence"
