@@ -24,12 +24,12 @@ Application permissions are used through an Azure AD app registration, the secre
 
 Provisioning and other automation tasks in the solution is achieved through Azure Logic apps, ensuring a low runtime cost and the ability to secure access to all resources.
 
-For more details on the archictured please read the [Architecture](www.microsoft.com) documentation.
+For more details on the archictured please read the [Architecture](Architecture.md) documentation.
 
 
 ## Getting Started
 
-To get started please follow the [Deployment guide](www.microsoft.com). 
+To get started please follow the [Deployment guide](Deployment-guide.md). 
 
 ## Issues
 
