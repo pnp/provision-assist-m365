@@ -84,7 +84,7 @@ You may refer to the following to understand each parameter:
 
 ### Azure AD App Creation
 
-The first step is to execute the dedicated script response for creating the Azure AD app and granting admin consent for the Microsoft Graph API permissions. 
+The first step is to execute the dedicated script responsible for creating the Azure AD app and granting admin consent for the Microsoft Graph API permissions. 
 
 **This part of the deployment requires a user account with Global Administrator access.**
 
