@@ -195,12 +195,7 @@ function ValidateParameters {
         Write-Host "Invalid serviceAccountUPN" -ForegroundColor Red
         $isValid = $false;
     }
-
-    if (-not (IsValidParam($parameters.serviceAccountUPN))) {
-        Write-Host "Invalid serviceAccountUPN" -ForegroundColor Red
-        $isValid = $false;
-    }
-
+    
     if (-not (IsValidParam($parameters.keyVaultName))) {
         Write-Host "Invalid keyVaultName" -ForegroundColor Red
         $isValid = $false;
