@@ -218,7 +218,7 @@ The approvals will now use adaptive cards in Teams. Please revisit this section 
 
 ![Power Apps browse solution import screenshot](/Images/PASolutionImport.png)
 
-4. Browse and select the ProvisionAssist managed solution file.
+4. Browse and select the ProvisionAssist managed solution file (choose ProvisionAssist_1_0_0_1_managed for multilingual support)
 5. Click 'Next'.
 
 ![Power Apps import solution screenshot](/Images/PASolutionImport1.png)
