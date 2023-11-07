@@ -397,6 +397,11 @@
                                                     "Succeeded"
                                                 ]
                                             },
+                                            "runtimeConfiguration": {
+                                                "concurrency": {
+                                                    "repetitions": 1
+                                                }
+                                            },
                                             "type": "Foreach"
                                         },
                                         "Parse_site_templates_JSON": {
