@@ -749,6 +749,52 @@ function CreateAutomationRoleAssignments {
 
 }
 
+function AssignManagedIdentityPermissions {
+    # NEED TO ADD CODE TO CHECK IF THE PERMISSIONS EXIST FIRST
+
+    try {
+        Write-Host "### ASSIGNING SITES.FULLCONTROL.ALL APP ROLE TO MANAGED IDENTITY ###" -ForegroundColor Yellow
+
+        # Get service principal for the automation account
+        $paAutoServicePrincipal = Get-MgServicePrincipal -Filter "DisplayName eq '$($automationAccountName)'"
+
+        # Get graph and spo resources
+        $graphResource = Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'"
+
+        $spoResource = Get-MgServicePrincipal -Filter "DisplayName eq 'Office 365 SharePoint Online'"
+
+        # Get the app roles we need to assign
+        $spoFullControlAppRole = $spoResource.AppRoles | Where-Object {$_.value -eq 'Sites.FullControl.All'}
+
+        $groupReadAllAppRole = $graphResource.AppRoles | Where-Object {$_.value -eq 'Group.Read.All'}
+
+        # Build the params
+        $graphParams = @{
+            "PrincipalId" = $paAutoServicePrincipal.Id
+            "ResourceId" = $graphResource.Id 
+            "AppRoleId" = $groupReadAllAppRole.Id
+        }
+
+        $spoParams = @{
+            "PrincipalId" = $paAutoServicePrincipal.Id 
+            "ResourceId" = $spoResource.Id
+            "AppRoleId" = $spoFullControlAppRole.Id
+        }
+
+        # Assign the app roles to the service principal
+
+        New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $graphParams
+
+        New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $spoParams
+
+        Write-Host "### SITES.FULLCONTROL.ALL APP ROLE ASSIGNED TO MANAGED IDENTITY ###" -ForegroundColor Green
+    }
+    catch {
+        throw('Failed to assign the Sites.FullControl.All app role to the managed identity {0}', $_.Exception.Message)
+    }
+}
+
+
 # Deploy ARM templates
 function DeployARMTemplates {
     try { 
@@ -920,6 +966,16 @@ AzureADPreview\Connect-AzureAD
 Write-Host "Launching Azure CLI sign-in..." -ForegroundColor Yellow
 $cliLogin = az login
 Write-Host "Connected to Azure" -ForegroundColor Green
+
+# Connect to Microsfot Graph
+
+# Define the scopes to use
+$scopes = @("AppRoleAssignment.ReadWrite.All", "Application.Read.All", "Directory.Read.All")
+
+# Connect to Microsoft Graph using the specified scopes
+Write-Host "Launching Microsoft Graph sign-in...please consent"
+Connect-MgGraph -Scopes $scopes
+Write-Host "Connected to Microsoft Graph" -ForegroundColor Green
 
 # Connect to PnP
 Write-Host "Launching PnP sign-in..." -ForegroundColor Yellow

@@ -82,6 +82,9 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2019-06-01' 
     sku: {
       name: 'Free'
     }
+    identity: {
+      type: 'SystemAssigned'
+    }
   }
 }
 
