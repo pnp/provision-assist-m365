@@ -62,7 +62,7 @@ $templatePath = "Templates\provisionassist-sitetemplate.xml"
 $settingsPath = "Settings\SharePoint List items.xlsx"
 
 # Required PS modules
-$preReqModules = "PnP.PowerShell", "Az", "AzureADPreview", "ImportExcel", "WriteAscii"
+$preReqModules = "PnP.PowerShell", "Az", "AzureADPreview", "ImportExcel", "WriteAscii", "Microsoft.Graph"
 
 #  Worksheets
 $provRequestSettingsWorksheetName = "Provisioning Request Settings"
