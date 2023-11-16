@@ -753,7 +753,7 @@ function AssignManagedIdentityPermissions {
     # NEED TO ADD CODE TO CHECK IF THE PERMISSIONS EXIST FIRST
 
     try {
-        Write-Host "### ASSIGNING SITES.FULLCONTROL.ALL APP ROLE TO MANAGED IDENTITY ###" -ForegroundColor Yellow
+        Write-Host "### ASSIGNING GRAPH AND SHAREPOINT APP ROLES TO MANAGED IDENTITY ###" -ForegroundColor Yellow
 
         # Get service principal for the automation account
         $paAutoServicePrincipal = Get-MgServicePrincipal -Filter "DisplayName eq '$($automationAccountName)'"
@@ -768,8 +768,11 @@ function AssignManagedIdentityPermissions {
 
         $groupReadAllAppRole = $graphResource.AppRoles | Where-Object {$_.value -eq 'Group.Read.All'}
 
-        # Build the params
-        $graphParams = @{
+        # Get existing role assignments
+        $roles = Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id
+
+         # Build the params
+         $graphParams = @{
             "PrincipalId" = $paAutoServicePrincipal.Id
             "ResourceId" = $graphResource.Id 
             "AppRoleId" = $groupReadAllAppRole.Id
@@ -781,16 +784,26 @@ function AssignManagedIdentityPermissions {
             "AppRoleId" = $spoFullControlAppRole.Id
         }
 
-        # Assign the app roles to the service principal
+        # Check that the role assigments do not already exist
 
-        New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $graphParams
+        If($null -ne ($roles | Where-Object ResourceId -eq $graphResource.Id))
+        {
+            # Assign graph app roles to the service principal
 
-        New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $spoParams
+            New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $graphParams
+        }
 
-        Write-Host "### SITES.FULLCONTROL.ALL APP ROLE ASSIGNED TO MANAGED IDENTITY ###" -ForegroundColor Green
+        If($null -ne ($roles | Where-Object ResourceId -eq $spoResource.Id))
+        {
+            # Assign sharepoint app roles to the service principal
+
+            New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $spoParams
+        }
+
+        Write-Host "### GRAPH AND SHAREPOINT APP ROLES ASSIGNED TO MANAGED IDENTITY ###" -ForegroundColor Green
     }
     catch {
-        throw('Failed to assign the Sites.FullControl.All app role to the managed identity {0}', $_.Exception.Message)
+        throw('Failed to assign graph and SharePoint app roles to the managed identity {0}', $_.Exception.Message)
     }
 }
 
