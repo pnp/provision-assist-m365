@@ -758,26 +758,15 @@ function AssignManagedIdentityPermissions {
         # Get service principal for the automation account
         $paAutoServicePrincipal = Get-MgServicePrincipal -Filter "DisplayName eq '$($automationAccountName)'"
 
-        # Get graph and spo resources
-        $graphResource = Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'"
-
         $spoResource = Get-MgServicePrincipal -Filter "DisplayName eq 'Office 365 SharePoint Online'"
 
-        # Get the app roles we need to assign
+        # Get the app role we need to assign
         $spoFullControlAppRole = $spoResource.AppRoles | Where-Object {$_.value -eq 'Sites.FullControl.All'}
-
-        $groupReadAllAppRole = $graphResource.AppRoles | Where-Object {$_.value -eq 'Group.Read.All'}
 
         # Get existing role assignments
         $roles = Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id
 
          # Build the params
-         $graphParams = @{
-            "PrincipalId" = $paAutoServicePrincipal.Id
-            "ResourceId" = $graphResource.Id 
-            "AppRoleId" = $groupReadAllAppRole.Id
-        }
-
         $spoParams = @{
             "PrincipalId" = $paAutoServicePrincipal.Id 
             "ResourceId" = $spoResource.Id
@@ -785,13 +774,6 @@ function AssignManagedIdentityPermissions {
         }
 
         # Check that the role assigments do not already exist
-
-        If($null -ne ($roles | Where-Object ResourceId -eq $graphResource.Id))
-        {
-            # Assign graph app roles to the service principal
-
-            New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $graphParams
-        }
 
         If($null -ne ($roles | Where-Object ResourceId -eq $spoResource.Id))
         {
@@ -1023,7 +1005,7 @@ If ($parameters.enableSensitivity.Value) {
 }
 
 Write-Host "Deploying key vault and automation account..." -ForegroundColor Yellow
-az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "appClientId=$($global:appId)" "appSecret=$($global:appSecret)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)"
+az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)"
 CreateAutomationRoleAssignments
 Write-Host "Finished deploying key vault and automation account..." -ForegroundColor Green
 
