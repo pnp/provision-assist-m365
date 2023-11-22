@@ -9,7 +9,7 @@
 
 .DESCRIPTION
     Deploys the Provision Assist solution (excluding the PowerApp and Flows).
-    This script uses the Azure CLI, Azure Az PowerShell and SharePoint PnP PowerShell to perform the deployment.
+    This script uses the Azure CLI, Azure Az PowerShell, SharePoint PnP PowerShell and the Microsoft Graph PowerShell Modules to perform the deployment.
 
     As part of the deployment, the script will generate a secet for the Azure AD App created by the 'createadapp.ps1' script. 
 
@@ -17,7 +17,7 @@
 
     The script requires input during execution, requires sign-in to a number of services and therefore should be monitored.
 
-    Parameters should be filled out in the parameters.json file before executing the script. 
+    Parameters should be filled out in the parameters.json file before executing the script.
 
 .EXAMPLE
     deploy.ps1 
@@ -753,7 +753,7 @@ function AssignManagedIdentityPermissions {
     # NEED TO ADD CODE TO CHECK IF THE PERMISSIONS EXIST FIRST
 
     try {
-        Write-Host "### ASSIGNING GRAPH AND SHAREPOINT APP ROLES TO MANAGED IDENTITY ###" -ForegroundColor Yellow
+        Write-Host "Assigning SharePoint app role to managed identity" -ForegroundColor Yellow
 
         # Get service principal for the automation account
         $paAutoServicePrincipal = Get-MgServicePrincipal -Filter "DisplayName eq '$($automationAccountName)'"
@@ -775,14 +775,14 @@ function AssignManagedIdentityPermissions {
 
         # Check that the role assigments do not already exist
 
-        If($null -ne ($roles | Where-Object ResourceId -eq $spoResource.Id))
-        {
-            # Assign sharepoint app roles to the service principal
+        $existingRoleAssignment = $roles | Where-Object { $_.ResourceId -eq $spoResource.Id }
 
+        if ($null -eq $existingRoleAssignment) {
+            # Assign SharePoint app roles to the service principal
             New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $spoParams
         }
 
-        Write-Host "### GRAPH AND SHAREPOINT APP ROLES ASSIGNED TO MANAGED IDENTITY ###" -ForegroundColor Green
+        Write-Host "Finished assigning SharePoint app role to managed identity" -ForegroundColor Green
     }
     catch {
         throw('Failed to assign graph and SharePoint app roles to the managed identity {0}', $_.Exception.Message)
@@ -1005,8 +1005,9 @@ If ($parameters.enableSensitivity.Value) {
 }
 
 Write-Host "Deploying key vault and automation account..." -ForegroundColor Yellow
-az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)"
+az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "appClientId=$($global:appId)" "appSecret=$($global:appSecret)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)"
 CreateAutomationRoleAssignments
+AssignManagedIdentityPermissions
 Write-Host "Finished deploying key vault and automation account..." -ForegroundColor Green
 
 DeployARMTemplates

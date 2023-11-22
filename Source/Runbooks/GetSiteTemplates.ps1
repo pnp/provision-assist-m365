@@ -53,7 +53,6 @@ try {
     $siteTemplatesJson = "[$siteTemplatesJson]"
   }
   
-  Write-Output $siteTemplatesJson
 }
 
 catch {

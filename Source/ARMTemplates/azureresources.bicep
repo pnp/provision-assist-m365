@@ -75,15 +75,15 @@ resource keyVaultsaPasswordSecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01'
 }
 
 // Automation account
-resource automationAccount 'Microsoft.Automation/automationAccounts@2019-06-01' = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' = {
   name: automationAccountName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     sku: {
       name: 'Free'
-    }
-    identity: {
-      type: 'SystemAssigned'
     }
   }
 }
@@ -123,7 +123,7 @@ resource getSiteTemplatesRunbook 'Microsoft.Automation/automationAccounts/runboo
     logProgress: true
     runbookType: 'PowerShell'
     publishContentLink: {
-      uri: 'https://raw.githubusercontent.com/alexc-MSFT/viva-connections-cards/main/GetSiteTemplates.ps1'
+      uri: 'https://raw.githubusercontent.com/pnp/provision-assist-m365/alexc-msft/automation-managedidentity/Source/Runbooks/GetSiteTemplates.ps1'
       version: '1.0.0.0'
     }
   }
@@ -138,7 +138,7 @@ resource configureSpaceRunbook 'Microsoft.Automation/automationAccounts/runbooks
     logProgress: true
     runbookType: 'PowerShell'
     publishContentLink: {
-      uri: 'https://raw.githubusercontent.com/alexc-MSFT/viva-connections-cards/main/ConfigureSpace.ps1'
+      uri: 'https://raw.githubusercontent.com/pnp/provision-assist-m365/alexc-msft/automation-managedidentity/Source/Runbooks/ConfigureSpace.ps1'
       version: '1.0.0.0'
     }
   }
