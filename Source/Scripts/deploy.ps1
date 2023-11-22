@@ -9,7 +9,7 @@
 
 .DESCRIPTION
     Deploys the Provision Assist solution (excluding the PowerApp and Flows).
-    This script uses the Azure CLI, Azure Az PowerShell and SharePoint PnP PowerShell to perform the deployment.
+    This script uses the Azure CLI, Azure Az PowerShell, SharePoint PnP PowerShell and the Microsoft Graph PowerShell Modules to perform the deployment.
 
     As part of the deployment, the script will generate a secet for the Azure AD App created by the 'createadapp.ps1' script. 
 
@@ -17,7 +17,7 @@
 
     The script requires input during execution, requires sign-in to a number of services and therefore should be monitored.
 
-    Parameters should be filled out in the parameters.json file before executing the script. 
+    Parameters should be filled out in the parameters.json file before executing the script.
 
 .EXAMPLE
     deploy.ps1 
@@ -62,7 +62,7 @@ $templatePath = "Templates\provisionassist-sitetemplate.xml"
 $settingsPath = "Settings\SharePoint List items.xlsx"
 
 # Required PS modules
-$preReqModules = "PnP.PowerShell", "Az", "AzureADPreview", "ImportExcel", "WriteAscii"
+$preReqModules = "PnP.PowerShell", "Az", "AzureADPreview", "ImportExcel", "WriteAscii", "Microsoft.Graph"
 
 #  Worksheets
 $provRequestSettingsWorksheetName = "Provisioning Request Settings"
@@ -749,6 +749,47 @@ function CreateAutomationRoleAssignments {
 
 }
 
+function AssignManagedIdentityPermissions {
+    # NEED TO ADD CODE TO CHECK IF THE PERMISSIONS EXIST FIRST
+
+    try {
+        Write-Host "Assigning SharePoint app role to managed identity" -ForegroundColor Yellow
+
+        # Get service principal for the automation account
+        $paAutoServicePrincipal = Get-MgServicePrincipal -Filter "DisplayName eq '$($automationAccountName)'"
+
+        $spoResource = Get-MgServicePrincipal -Filter "DisplayName eq 'Office 365 SharePoint Online'"
+
+        # Get the app role we need to assign
+        $spoFullControlAppRole = $spoResource.AppRoles | Where-Object {$_.value -eq 'Sites.FullControl.All'}
+
+        # Get existing role assignments
+        $roles = Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id
+
+         # Build the params
+        $spoParams = @{
+            "PrincipalId" = $paAutoServicePrincipal.Id 
+            "ResourceId" = $spoResource.Id
+            "AppRoleId" = $spoFullControlAppRole.Id
+        }
+
+        # Check that the role assigments do not already exist
+
+        $existingRoleAssignment = $roles | Where-Object { $_.ResourceId -eq $spoResource.Id }
+
+        if ($null -eq $existingRoleAssignment) {
+            # Assign SharePoint app roles to the service principal
+            New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $spoParams
+        }
+
+        Write-Host "Finished assigning SharePoint app role to managed identity" -ForegroundColor Green
+    }
+    catch {
+        throw('Failed to assign graph and SharePoint app roles to the managed identity {0}', $_.Exception.Message)
+    }
+}
+
+
 # Deploy ARM templates
 function DeployARMTemplates {
     try { 
@@ -921,6 +962,16 @@ Write-Host "Launching Azure CLI sign-in..." -ForegroundColor Yellow
 $cliLogin = az login
 Write-Host "Connected to Azure" -ForegroundColor Green
 
+# Connect to Microsfot Graph
+
+# Define the scopes to use
+$scopes = @("AppRoleAssignment.ReadWrite.All", "Application.Read.All", "Directory.Read.All")
+
+# Connect to Microsoft Graph using the specified scopes
+Write-Host "Launching Microsoft Graph sign-in...please consent"
+Connect-MgGraph -Scopes $scopes
+Write-Host "Connected to Microsoft Graph" -ForegroundColor Green
+
 # Connect to PnP
 Write-Host "Launching PnP sign-in..." -ForegroundColor Yellow
 Connect-PnPOnline -Url "https://$($parameters.spoTenantName.Value)-admin.sharepoint.com" -Interactive
@@ -956,6 +1007,7 @@ If ($parameters.enableSensitivity.Value) {
 Write-Host "Deploying key vault and automation account..." -ForegroundColor Yellow
 az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "appClientId=$($global:appId)" "appSecret=$($global:appSecret)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)"
 CreateAutomationRoleAssignments
+AssignManagedIdentityPermissions
 Write-Host "Finished deploying key vault and automation account..." -ForegroundColor Green
 
 DeployARMTemplates

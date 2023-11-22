@@ -30,8 +30,6 @@ Param
 	[String] $siteCollectionAdmins
 )
 
-$appId = Get-AutomationVariable -Name "appClientId"
-$appSecret = Get-AutomationVariable -Name "appSecret"
 $logoUrl = Get-AutomationVariable -Name "logoUrl"
 $tenantName = $siteUrl.Substring(0, $siteUrl.IndexOf(".")).Replace("https://", "")
 
@@ -92,7 +90,7 @@ function AddSiteCollectionAdmins {
     }
 }
 
-function SetExternalSharing($group) {
+function SetExternalSharing {
     If ($externalSharing -eq "True") {
 
         Write-Output "External sharing is required - configuring sharing settings"
@@ -141,7 +139,7 @@ function JoinOrRegisterHubSite {
     #Join hub site if space type is not a hub
     if ($joinHub -eq $true -and $spaceType -ne "Hub Site") {
         Write-Output "Joining hub site"
-        Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ClientId $appId -ClientSecret $appSecret
+        Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ManagedIdentity
 
         #Get hub site url
         $hubSite = Get-PnPHubSite | Where-Object SiteId -eq $hubSiteId | Select-Object -Property SiteUrl
@@ -156,7 +154,7 @@ function JoinOrRegisterHubSite {
         
             try {
                 Write-Output "Registering site as a hub"
-                Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ClientId $appId -ClientSecret $appSecret
+                Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ManagedIdentity
                 Register-PnPHubSite -Site $siteUrl
                 Write-Output "Finished registering site as a hub"
 
@@ -191,7 +189,7 @@ function SetStorageQuota {
     If ($storageQuota -ne 0 -and $storageQuotaWarning -ne 0) {
         Write-Output "Setting site storage quota"
 
-        Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ClientId $appId -ClientSecret $appSecret
+        Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ManagedIdentity
         Set-PnPTenantSite -Url $siteUrl -StorageMaximumLevel $storageQuota -StorageWarningLevel $storageQuotaWarning
 
         Write-Output "Finished setting storage quota"
@@ -309,7 +307,7 @@ function ApplyTheme {
 try {
 
     #Connect to spo
-    Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ClientId $appId -ClientSecret $appSecret
+    Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ManagedIdentity
 
     #Check connection
     $context = Get-PnPContext
@@ -320,7 +318,7 @@ try {
 
             SetExternalSharing
 
-            Connect-PnPOnline -Url $siteUrl -ClientId $appId -ClientSecret $appSecret
+            Connect-PnPOnline -Url $siteUrl -ManagedIdentity
 
             AddOwners
             AddMembers

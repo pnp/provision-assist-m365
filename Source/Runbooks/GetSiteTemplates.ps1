@@ -5,13 +5,11 @@ Param
   [String] $siteURL
 )
 
-$appId = Get-AutomationVariable -Name "appClientId"
-$appSecret = Get-AutomationVariable -Name "appSecret"
 $tenantName = $siteUrl.Substring(0, $siteUrl.IndexOf(".")).Replace("https://", "")
 
 try {
   #Connect to admin site
-  Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ClientId $appId -ClientSecret $appSecret
+  Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ManagedIdentity
 
   #Get all site templates
   $siteTemplates = Get-PnPSiteDesign
@@ -55,7 +53,6 @@ try {
     $siteTemplatesJson = "[$siteTemplatesJson]"
   }
   
-  Write-Output $siteTemplatesJson
 }
 
 catch {
