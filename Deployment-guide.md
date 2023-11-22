@@ -39,7 +39,7 @@ You can delete this Azure AD app registration AFTER deployment of Provision Assi
 
 ## Step 1: Configuring PowerShell
 
-1. Download the [latest release](https://github.com/pnp/provision-assist-m365/releases/tag/Latest) of Provision Assist.
+1. Download the [latest release](https://github.com/pnp/provision-assist-m365/releases/latest) of Provision Assist.
 2. Launch PowerShell as an Administrator.
 3. Set the PowerShell Execution Policy to 'Unrestricted' by running the following cmdlet - ```Set-ExecutionPolicy -ExecutionPolicy unrestricted```
 
