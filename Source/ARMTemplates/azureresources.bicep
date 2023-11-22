@@ -123,7 +123,7 @@ resource getSiteTemplatesRunbook 'Microsoft.Automation/automationAccounts/runboo
     logProgress: true
     runbookType: 'PowerShell'
     publishContentLink: {
-      uri: 'https://raw.githubusercontent.com/pnp/provision-assist-m365/alexc-msft/automation-managedidentity/Source/Runbooks/GetSiteTemplates.ps1'
+      uri: 'https://raw.githubusercontent.com/pnp/provision-assist-m365/main/Source/Runbooks/GetSiteTemplates.ps1'
       version: '1.0.0.0'
     }
   }
@@ -138,7 +138,7 @@ resource configureSpaceRunbook 'Microsoft.Automation/automationAccounts/runbooks
     logProgress: true
     runbookType: 'PowerShell'
     publishContentLink: {
-      uri: 'https://raw.githubusercontent.com/pnp/provision-assist-m365/alexc-msft/automation-managedidentity/Source/Runbooks/ConfigureSpace.ps1'
+      uri: 'https://raw.githubusercontent.com/pnp/provision-assist-m365/main/Source/Runbooks/ConfigureSpace.ps1'
       version: '1.0.0.0'
     }
   }
