@@ -44,7 +44,7 @@ Param
 )
 
 # Check for presence of Azure CLI
-If (-not (Test-Path -Path "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2")) {
+If (-not (Test-Path -Path "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2") -and -not (Test-Path -Path "C:\Program Files\Microsoft SDKs\Azure\CLI2")) {
     Write-Host "AZURE CLI NOT INSTALLED!`nPLEASE INSTALL THE CLI FROM https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest and re-run this script in a new PowerShell session" -ForegroundColor Red
     break
 }
