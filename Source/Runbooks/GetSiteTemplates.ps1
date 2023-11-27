@@ -52,7 +52,8 @@ try {
   if ($siteTemplatesArr.Count -eq 1) {
     $siteTemplatesJson = "[$siteTemplatesJson]"
   }
-  
+
+  Write-Output $siteTemplatesJson
 }
 
 catch {
