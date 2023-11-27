@@ -19,7 +19,7 @@ To create a reference to a PnP template, create an item in the Site Templates li
 - PnPTemplateURL - Paste the URL to your PnP template file from the **'PnP Templates'** document library. **IMPORTANT: Ensure that this is the full path to the file and not a shortcut URL**. 
 - ThemeName - Name of a SharePoint theme in your tenant to apply after the site is created. Themes cannot be set in PnP templates so this offers the ability to apply a theme. Simply set this to a valid theme in your tenant, can be out of the box or a custom theme. 
 
-See the below screenshot which shows a PnP template in the Site Designs list. Please leave all other columns empty. 
+See the below screenshot which shows a PnP template in the Site Templates list. Please leave all other columns empty. 
 
 ![Linking PnP template to a site template screenshot](./Images//PnPTemplate.png)
 
