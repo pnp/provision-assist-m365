@@ -58,6 +58,10 @@ Special thanks to those below who have helped build this awesome solution.
 
 This solution is open-source and community provided with no active community providing support for it. This solution is maintained by both Microsoft employees and community contributors and is not a Microsoft provided solution so there is no SLA or direct support for this from Microsoft. Please report any issues by raising an [issue](https://github.com/pnp/provision-assist-m365/issues/new/choose).
 
+If you like this project, please buy us some pizza 🍕🍕 to say thanks - your support is greatly received.
+
+<a href="https://www.buymeacoffee.com/provisionassist" target="_blank"><img src="./Images/buypizza.png" alt="Buy us some pizza" ></a>
+
 ## Microsoft 365 & Power Platform Community
 
 Provision Assist is a Microsoft 365 & Power Platform Community (PnP) project. Microsoft 365 & Power Platform Community is a virtual team consisting of Microsoft employees and community members focused on helping the community make the best use of Microsoft products. Provision Assist is an open-source project not affiliated with Microsoft and not covered by Microsoft support. If you experience any issues using Provision Assist, please submit an issue in the [issues list](https://github.com/pnp/provision-assist-m365/issues).
