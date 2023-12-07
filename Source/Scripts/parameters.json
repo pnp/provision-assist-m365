@@ -43,10 +43,6 @@
         "Value": "<<value>>",
         "Description": "Name for the self signed certificate that will be created (if createSelfSignedCert is set to true)."
     },
-    "certPath": {
-        "Value": "<<value>>",
-        "Description": "Output path for the self signed certificate that will be created (if createSelfSignedCert is set to true)."
-    },
     "certValidityDays": {
         "Value": 365,
         "Description": "Number of days the self signed certificate will be valid for (if createSelfSignedCert is set to true)."
