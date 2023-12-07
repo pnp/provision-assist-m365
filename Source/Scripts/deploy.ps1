@@ -921,6 +921,25 @@ function ValidateKeyVault {
 
 }
 
+function GenerateSelfSignedCertificate {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$CertName,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$CertPath,
+        
+        [int]$CertValidityDays = 365
+    )
+
+    Write-Host "Generating self-signed certificate..." -ForegroundColor Yellow
+
+    az ad app credential reset --id $global:appId --create-cert --keyvault $parameters.keyVaultName --cert $CertName --end-date '2025-12-31'
+    
+    Write-Host "Finished creating self-signed certificate." -ForegroundColor Green
+}
+
+
 $ErrorActionPreference = "stop"
 
 Write-Host "###  DEPLOYMENT SCRIPT STARTED `n(c) Microsoft Corporation ###" -ForegroundColor Magenta

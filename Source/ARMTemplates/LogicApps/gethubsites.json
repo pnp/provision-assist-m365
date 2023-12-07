@@ -29,6 +29,14 @@
         "tenantName": {
             "defaultValue": "",
             "type": "string"
+        },
+        "certName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "spoRootSiteUrl": {
+            "defaultValue": "",
+            "type": "string"
         }
     },
     "variables": {
@@ -64,29 +72,29 @@
                         }
                     },
                     "actions": {
-                        "@": {
+                            "Get_Certificate": {
                             "runAfter": {
-                                "Get_Client_Secret": [
+                                           "Get_Client_ID": [
                                     "Succeeded"
                                 ]
                             },
-                            "type": "Compose",
-                            "inputs": "@"
-                        },
-                        "Get_Bearer_Token": {
-                            "runAfter": {
-                                "@": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "Http",
+                          "type": "ApiConnection",
                             "inputs": {
-                                "body": "grant_type=client_credentials&client_id=@{body('Get_Client_ID')?['value']}@{outputs('@')}@{variables('TenantID')}&client_secret=@{body('Get_Client_Secret')?['value']}&resource=00000003-0000-0ff1-ce00-000000000000/@{variables('TenantName')}.sharepoint.com@{outputs('@')}@{variables('TenantID')}",
-                                "headers": {
-                                    "content-type": "application/x-www-form-urlencoded"
-                                },
-                                "method": "POST",
-                                "uri": "https://accounts.accesscontrol.windows.net//tokens/OAuth/2"
+                                   "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                      },
+                                "method": "get",
+                                "path": "[concat('/secrets/@{encodeURIComponent(',variables('singlequote'),parameters('certName'),variables('singlequote'),')}/value')]"
+                            },
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
                             }
                         },
                         "Get_Client_ID": {
@@ -114,42 +122,25 @@
                                 }
                             }
                         },
-                        "Get_Client_Secret": {
-                            "runAfter": {
-                                "Get_Client_ID": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
-                                    }
-                                },
-                                "method": "get",
-                                "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
-                            },
-                            "runtimeConfiguration": {
-                                "secureData": {
-                                    "properties": [
-                                        "inputs",
-                                        "outputs"
-                                    ]
-                                }
-                            }
-                        },
                         "Get_Hub_Sites": {
                             "runAfter": {
-                                "Parse_Bearer_Token_Response": [
+                                  "Get_Certificate": [
                                     "Succeeded"
                                 ]
                             },
                             "type": "Http",
                             "inputs": {
+                                 "authentication": {
+                                    "audience": "[parameters('spoRootSiteUrl')]",
+                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                    "password": "@null",
+                                    "pfx": "@body('Get_Certificate')?['value']",
+                                    "tenant": "@variables('TenantID')",
+                                    "type": "ActiveDirectoryOAuth"
+                                },
                                 "headers": {
                                     "Accept": "application/json;odata=verbose",
-                                    "Authorization": "@{body('Parse_Bearer_Token_Response')?['token_type']} @{body('Parse_Bearer_Token_Response')?['access_token']}"
+                                     "Content-Type": "application/json;odata=verbose;charset=utf-8"
                                 },
                                 "method": "GET",
                                 "uri": "[concat(parameters('requestsSiteUrl'),'/_api/HubSites')]"
@@ -232,40 +223,6 @@
                                         "value": "[parameters('tenantName')]"
                                     }
                                 ]
-                            }
-                        },
-                        "Parse_Bearer_Token_Response": {
-                            "runAfter": {
-                                "Get_Bearer_Token": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "ParseJson",
-                            "inputs": {
-                                "content": "@body('Get_Bearer_Token')",
-                                "schema": {
-                                    "properties": {
-                                        "access_token": {
-                                            "type": "string"
-                                        },
-                                        "expires_in": {
-                                            "type": "string"
-                                        },
-                                        "expires_on": {
-                                            "type": "string"
-                                        },
-                                        "not_before": {
-                                            "type": "string"
-                                        },
-                                        "resource": {
-                                            "type": "string"
-                                        },
-                                        "token_type": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
                             }
                         },
                         "Parse_hub_sites_JSON": {

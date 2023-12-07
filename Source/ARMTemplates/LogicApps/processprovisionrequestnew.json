@@ -2,65 +2,50 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "resourceGroupName": {
-            "defaultValue": "",
-            "type": "string"
+        "workflows_ProcessProvisionRequest_name": {
+            "defaultValue": "ProcessProvisionRequest",
+            "type": "String"
         },
-        "subscriptionId": {
-            "defaultValue": "",
-            "type": "string"
+        "workflows_CheckSiteExists_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Logic/workflows/CheckSiteExists",
+            "type": "String"
         },
-        "automationAccountName": {
-            "defaultValue": "",
-            "type": "string"
+        "workflows_ProcessGuests_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Logic/workflows/ProcessGuests",
+            "type": "String"
         },
-        "tenantId": {
-            "defaultValue": "",
-            "type": "string"
+        "connections_provisionassist_automation_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Web/connections/provisionassist-automation",
+            "type": "String"
         },
-        "location": {
-            "defaultvalue": "",
-            "type": "string"
+        "connections_provisionassist_kv_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Web/connections/provisionassist-kv",
+            "type": "String"
         },
-        "requestsSiteUrl": {
-            "defaultvalue": "",
-            "type": "string"
+        "connections_provisionassist_o365_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Web/connections/provisionassist-o365",
+            "type": "String"
         },
-        "requestsListId": {
-            "defaultvalue": "",
-            "type": "string"
+        "connections_provisionassist_o365users_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Web/connections/provisionassist-o365users",
+            "type": "String"
         },
-        "requestsSettingsListId": {
-            "defaultvalue": "",
-            "type": "string"
+        "connections_provisionassist_spo_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Web/connections/provisionassist-spo",
+            "type": "String"
         },
-        "tenantName": {
-            "defaultvalue": "",
-            "type": "string"
-        },
-        "serviceAccountUPN": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "certName": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "spoRootSiteUrl": {
-            "defaultValue": "",
-            "type": "string"
+        "connections_provisionassist_teams_externalid": {
+            "defaultValue": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/resourceGroups/provisionassistrg/providers/Microsoft.Web/connections/provisionassist-teams",
+            "type": "String"
         }
     },
-    "variables": {
-        "Singlequote": "'"
-    },
+    "variables": {},
     "resources": [
         {
-            "comments": "Logic apps",
             "type": "Microsoft.Logic/workflows",
             "apiVersion": "2017-07-01",
-            "name": "ProcessProvisionRequest",
-            "location": "[parameters('location')]",
+            "name": "[parameters('workflows_ProcessProvisionRequest_name')]",
+            "location": "uksouth",
             "properties": {
                 "state": "Enabled",
                 "definition": {
@@ -68,14 +53,17 @@
                     "contentVersion": "1.0.0.0",
                     "parameters": {
                         "$connections": {
-                            "defaultValue": {
-                            },
+                            "defaultValue": {},
                             "type": "Object"
                         }
                     },
                     "triggers": {
                         "When_an_item_is_created_or_modified": {
                             "recurrence": {
+                                "frequency": "Hour",
+                                "interval": 1
+                            },
+                            "evaluatedRecurrence": {
                                 "frequency": "Hour",
                                 "interval": 1
                             },
@@ -88,7 +76,7 @@
                                     }
                                 },
                                 "method": "get",
-                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/onupdateditems')]"
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://m365x98525433.sharepoint.com/sites/ProvisionAssist'))}/tables/@{encodeURIComponent(encodeURIComponent('28446b2f-830e-4d93-a6a9-d1d271bc8e93'))}/onupdateditems"
                             },
                             "conditions": [
                                 {
@@ -111,7 +99,7 @@
                                             "type": "Http",
                                             "inputs": {
                                                 "authentication": {
-                                                    "audience": "[parameters('spoRootSiteUrl')]",
+                                                    "audience": "https://m365x98525433.sharepoint.com",
                                                     "clientId": "@body('Get_Client_ID')?['value']",
                                                     "password": "@null",
                                                     "pfx": "@body('Get_Certificate')?['value']",
@@ -201,7 +189,7 @@
                                             "type": "Http",
                                             "inputs": {
                                                 "authentication": {
-                                                    "audience": "[parameters('spoRootSiteUrl')]",
+                                                    "audience": "https://graph.microsoft.com",
                                                     "clientId": "@body('Get_Client_ID')?['value']",
                                                     "password": "@null",
                                                     "pfx": "@body('Get_Certificate')?['value']",
@@ -276,6 +264,14 @@
                                                             "outputs"
                                                         ]
                                                     }
+                                                }
+                                            },
+                                            "runtimeConfiguration": {
+                                                "secureData": {
+                                                    "properties": [
+                                                        "inputs",
+                                                        "outputs"
+                                                    ]
                                                 }
                                             }
                                         },
@@ -494,7 +490,7 @@
                                                     }
                                                 },
                                                 "method": "patch",
-                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(triggerBody()?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://m365x98525433.sharepoint.com/sites/ProvisionAssist'))}/tables/@{encodeURIComponent(encodeURIComponent('28446b2f-830e-4d93-a6a9-d1d271bc8e93'))}/items/@{encodeURIComponent(triggerBody()?['ID'])}"
                                             }
                                         }
                                     },
@@ -545,7 +541,7 @@
                                         "host": {
                                             "triggerName": "manual",
                                             "workflow": {
-                                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Logic/workflows/CheckSiteExists')]"
+                                                "id": "[parameters('workflows_CheckSiteExists_externalid')]"
                                             }
                                         }
                                     }
@@ -1105,7 +1101,7 @@
                                                 "type": "Http",
                                                 "inputs": {
                                                     "authentication": {
-                                                        "audience": "[parameters('spoRootSiteUrl')]",
+                                                        "audience": "https://m365x98525433.sharepoint.com",
                                                         "clientId": "@body('Get_Client_ID')?['value']",
                                                         "password": "@null",
                                                         "pfx": "@body('Get_Certificate')?['value']",
@@ -1118,7 +1114,7 @@
                                                         "Content-Type": "application/json"
                                                     },
                                                     "method": "POST",
-                                                    "uri": "[concat(parameters('requestsSiteUrl'),'/_api/SPSiteManager/create')]"
+                                                    "uri": "https://m365x98525433.sharepoint.com/sites/ProvisionAssist/_api/SPSiteManager/create"
                                                 }
                                             },
                                             "Set_SiteCreationBody_variable": {
@@ -1331,8 +1327,7 @@
                                                                                 "default_thread_starter_type": {
                                                                                     "type": "string"
                                                                                 },
-                                                                                "description": {
-                                                                                },
+                                                                                "description": {},
                                                                                 "email": {
                                                                                     "type": "string"
                                                                                 },
@@ -2100,7 +2095,7 @@
                                     }
                                 },
                                 "method": "put",
-                                "path": "[concat('/subscriptions/@{encodeURIComponent(''',parameters('subscriptionId'),''')}/resourceGroups/@{encodeURIComponent(''',parameters('resourceGroupName'),''')}/providers/Microsoft.Automation/automationAccounts/@{encodeURIComponent(''',parameters('automationAccountName'),''')}/jobs')]",
+                                "path": "/subscriptions/@{encodeURIComponent('37a84d8d-449b-4477-acb9-f4246d678ae5')}/resourceGroups/@{encodeURIComponent('provisionassistrg')}/providers/Microsoft.Automation/automationAccounts/@{encodeURIComponent('provisionassist-auto')}/jobs",
                                 "queries": {
                                     "runbookName": "ConfigureSpace",
                                     "wait": true,
@@ -2152,7 +2147,7 @@
                                     }
                                 },
                                 "method": "get",
-                                "path": "[concat('/secrets/@{encodeURIComponent(',variables('singlequote'),parameters('certName'),variables('singlequote'),')}/value')]"
+                                "path": "/secrets/@{encodeURIComponent('provisionassist')}/value"
                             }
                         },
                         "Get_Client_ID": {
@@ -2846,7 +2841,7 @@
                                     {
                                         "name": "ServiceAccountUPN",
                                         "type": "string",
-                                        "value": "[parameters('serviceAccountUPN')]"
+                                        "value": "provisioning@contosoviva.sharepointalex.uk"
                                     }
                                 ]
                             }
@@ -3248,7 +3243,7 @@
                                                         "host": {
                                                             "triggerName": "manual",
                                                             "workflow": {
-                                                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Logic/workflows/ProcessGuests')]"
+                                                                "id": "[parameters('workflows_ProcessGuests_externalid')]"
                                                             }
                                                         }
                                                     }
@@ -3289,7 +3284,7 @@
                                                                             "type": "ActiveDirectoryOAuth"
                                                                         },
                                                                         "body": {
-                                                                            "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{items('Loop_through_guests_in_Guests_JSON')['GuestId']}"
+                                                                            "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{items('For_each')['GuestId']}"
                                                                         },
                                                                         "headers": {
                                                                             "content-type": "application/json"
@@ -4087,7 +4082,7 @@
                                                             "actions": {
                                                                 "Get_team_owners": {
                                                                     "runAfter": {
-                                                                    },
+                                                                                                                                        },
                                                                     "type": "Http",
                                                                     "inputs": {
                                                                         "authentication": {
@@ -4825,7 +4820,7 @@
                                                                     }
                                                                 },
                                                                 "method": "patch",
-                                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(triggerBody()?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://m365x98525433.sharepoint.com/sites/ProvisionAssist'))}/tables/@{encodeURIComponent(encodeURIComponent('28446b2f-830e-4d93-a6a9-d1d271bc8e93'))}/items/@{encodeURIComponent(triggerBody()?['ID'])}"
                                                             }
                                                         }
                                                     },
@@ -5094,7 +5089,7 @@
                                     }
                                 },
                                 "method": "patch",
-                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(triggerBody()?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://m365x98525433.sharepoint.com/sites/ProvisionAssist'))}/tables/@{encodeURIComponent(encodeURIComponent('28446b2f-830e-4d93-a6a9-d1d271bc8e93'))}/items/@{encodeURIComponent(triggerBody()?['ID'])}"
                             }
                         },
                         "Update_status_to_Space_Creation": {
@@ -5114,7 +5109,7 @@
                                     }
                                 },
                                 "method": "patch",
-                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(triggerBody()?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent('https://m365x98525433.sharepoint.com/sites/ProvisionAssist'))}/tables/@{encodeURIComponent(encodeURIComponent('28446b2f-830e-4d93-a6a9-d1d271bc8e93'))}/items/@{encodeURIComponent(triggerBody()?['ID'])}"
                             }
                         }
                     },
@@ -5123,35 +5118,35 @@
                 "parameters": {
                     "$connections": {
                         "value": {
-                            "sharepointonline": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-spo')]",
-                                "connectionName": "provisionassist-spo",
-                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/sharepointonline')]"
-                            },
                             "azureautomation": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-automation')]",
+                                "connectionId": "[parameters('connections_provisionassist_automation_externalid')]",
                                 "connectionName": "provisionassist-automation",
-                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/azureautomation')]"
-                            },
-                            "office365": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-o365')]",
-                                "connectionName": "provisionassist-o365",
-                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/office365')]"
-                            },
-                            "office365users": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-o365users')]",
-                                "connectionName": "provisionassist-o365users",
-                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/office365users')]"
-                            },
-                            "teams": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-teams')]",
-                                "connectionName": "provisionassist-teams",
-                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/teams')]"
+                                "id": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/providers/Microsoft.Web/locations/uksouth/managedApis/azureautomation"
                             },
                             "keyvault": {
-                                "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-kv')]",
+                                "connectionId": "[parameters('connections_provisionassist_kv_externalid')]",
                                 "connectionName": "provisionassist-kv",
-                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
+                                "id": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/providers/Microsoft.Web/locations/uksouth/managedApis/keyvault"
+                            },
+                            "office365": {
+                                "connectionId": "[parameters('connections_provisionassist_o365_externalid')]",
+                                "connectionName": "provisionassist-o365",
+                                "id": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/providers/Microsoft.Web/locations/uksouth/managedApis/office365"
+                            },
+                            "office365users": {
+                                "connectionId": "[parameters('connections_provisionassist_o365users_externalid')]",
+                                "connectionName": "provisionassist-o365users",
+                                "id": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/providers/Microsoft.Web/locations/uksouth/managedApis/office365users"
+                            },
+                            "sharepointonline": {
+                                "connectionId": "[parameters('connections_provisionassist_spo_externalid')]",
+                                "connectionName": "provisionassist-spo",
+                                "id": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/providers/Microsoft.Web/locations/uksouth/managedApis/sharepointonline"
+                            },
+                            "teams": {
+                                "connectionId": "[parameters('connections_provisionassist_teams_externalid')]",
+                                "connectionName": "provisionassist-teams",
+                                "id": "/subscriptions/37a84d8d-449b-4477-acb9-f4246d678ae5/providers/Microsoft.Web/locations/uksouth/managedApis/teams"
                             }
                         }
                     }

@@ -17,7 +17,14 @@
         "location": {
             "defaultvalue": "",
             "type": "string"
+        },
+        "certName": {
+            "defaultValue": "",
+            "type": "string"
         }
+    },
+    "variables": {
+        "Singlequote": "'"
     },
     "resources": [
         {
@@ -70,50 +77,57 @@
                         }
                     },
                     "actions": {
-                                "Get_Client_ID": {
-                "description": "Get Azure ad app client id from key vault.",
-                "inputs": {
-                    "host": {
-                        "connection": {
-                            "name": "@parameters('$connections')['keyvault']['connectionId']"
-                        }
-                    },
-                    "method": "get",
-                    "path": "/secrets/@{encodeURIComponent('appid')}/value"
-                },
-                "runAfter": {
-                    "Initialize_Guests_array": [
-                        "Succeeded"
-                    ]
-                },
-                "runtimeConfiguration": {
-                    "secureData": {
-                        "properties": [
-                            "inputs",
-                            "outputs"
-                        ]
-                    }
-                },
-                "type": "ApiConnection"
-            },
-              "Get_Client_Secret": {
-                "description": "Get Azure ad app secret from key vault.",
-                "inputs": {
-                    "host": {
-                        "connection": {
-                            "name": "@parameters('$connections')['keyvault']['connectionId']"
-                        }
-                    },
-                    "method": "get",
-                    "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
-                },
-                "runAfter": {
-                    "Get_Client_ID": [
-                        "Succeeded"
-                    ]
-                },
-                "type": "ApiConnection"
-            },
+                        "Get_Certificate": {
+                            "runAfter": {
+                                "Get_Client_ID": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "[concat('/secrets/@{encodeURIComponent(',variables('singlequote'),parameters('certName'),variables('singlequote'),')}/value')]"
+                            },
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
+                        "Get_Client_ID": {
+                            "runAfter": {
+                                "Initialize_Guests_array": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/secrets/@{encodeURIComponent('appid')}/value"
+                            },
+                            "description": "Get Azure ad app client id from key vault.",
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
                         "Initialize_GraphURL_variable": {
                             "runAfter": {
                                 "Initialize_TenantID_variable": [
@@ -168,7 +182,7 @@
                                     "actions": {
                                         "Append_invited_guest_to_Guests_variable": {
                                             "runAfter": {
-                                                "Parse_invitation_json": [
+                                                "Parse_invitation_JSON": [
                                                     "Succeeded"
                                                 ]
                                             },
@@ -269,8 +283,9 @@
                                             "inputs": {
                                                 "authentication": {
                                                     "audience": "https://graph.microsoft.com",
-                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                        "secret": "@body('Get_Client_Secret')?['value']",
+                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                     "tenant": "@variables('TenantID')",
                                                     "type": "ActiveDirectoryOAuth"
                                                 },
@@ -342,8 +357,9 @@
                                     "inputs": {
                                         "authentication": {
                                             "audience": "https://graph.microsoft.com",
-                                "clientId": "@body('Get_Client_ID')?['value']",
-                                "secret": "@body('Get_Client_Secret')?['value']",
+                                            "clientId": "@body('Get_Client_ID')?['value']",
+                                            "password": "@null",
+                                            "pfx": "@body('Get_Certificate')?['value']",
                                             "tenant": "@variables('TenantID')",
                                             "type": "ActiveDirectoryOAuth"
                                         },
@@ -441,7 +457,7 @@
                         },
                         "Split_Guest_Users_string": {
                             "runAfter": {
-                                "Get_Client_Secret": [
+                                "Get_Certificate": [
                                     "Succeeded"
                                 ]
                             },
@@ -455,12 +471,12 @@
                 "parameters": {
                     "$connections": {
                         "value": {
-                             "keyvault": {
+                            "keyvault": {
                                 "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-kv')]",
                                 "connectionName": "provisionassist-kv",
                                 "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
                             }
-                     
+
                         }
                     }
                 }
