@@ -7,6 +7,7 @@ param appSecret string
 param logoUrl string
 param keyVaultName string
 param appServicePrincipalId string
+param currentUserobjectId string
 param saUsername string
 @secure()
 param saPassword string
@@ -34,6 +35,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
           ]
         }
       }
+      {
+      tenantId: tenantId
+      objectId: currentUserobjectId
+      permissions: {
+        certificates:[
+          'create'
+          'get'
+        ]
+      }
+    }
     ]
     sku: {
       name: 'standard'

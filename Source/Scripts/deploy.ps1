@@ -202,6 +202,16 @@ function ValidateParameters {
         $isValid = $false;
     }
 
+    if (-not (IsValidParam($parameters.certName))) {
+        Write-Host "Invalid certName" -ForegroundColor Red
+        $isValid = $false;
+    }
+
+    if (-not (IsValidParam($parameters.certValidityDays))) {
+        Write-Host "Invalid certValidityDays" -ForegroundColor Red
+        $isValid = $false;
+    }
+
     return $isValid
 }
 
@@ -922,11 +932,26 @@ function ValidateKeyVault {
 
 function GenerateSelfSignedCertificate {
     try {
-        Write-Host "Generating self-signed certificate..." -ForegroundColor Yellow
 
-        az ad app credential reset --id $global:appId --create-cert --keyvault $parameters.keyVaultName --cert $parameters.certName.Value --end-date '2025-12-31'
+        If ($parameters.createSelfSignedCert.Value) {
+
+            Write-Host "Generating self-signed certificate..." -ForegroundColor Yellow
+
+            $currDate = Get-Date
+
+            $certEndDate = $currDate.AddDays($parameters.certValidityDays.Value) | Get-Date -Format 'yyyy/MM/dd'
+
+            az ad app credential reset --id $global:appId --create-cert --keyvault $parameters.keyVaultName.Value --cert $parameters.certName.Value --end-date $certEndDate --append
     
-        Write-Host "Finished creating self-signed certificate." -ForegroundColor Green
+            Write-Host "Finished creating self-signed certificate." -ForegroundColor Green
+        }
+        else {
+            Write-Host "You chose not to generate a self signed certificate. Please upload your certificate to the app registration and key vault. Ensure the certificate name matches that in the parameters.json file." -ForegroundColor Yellow
+
+            Write-Host "Press enter to continue..." -ForegroundColor Yellow   
+    
+            Read-Host
+        }
     }
     catch {
         throw('Failed to generate self-signed certificate {0}', $_.Exception.Message)
@@ -957,7 +982,7 @@ Write-Host "Parameters are valid" -ForegroundColor Green
 
 Write-Ascii -InputObject "Provision Assist" -ForegroundColor Green
 
-$global:tenantUrl= "https://$($parameters.spoTenantName.Value).sharepoint.com"
+$global:tenantUrl = "https://$($parameters.spoTenantName.Value).sharepoint.com"
 $requestsSiteAlias = $parameters.requestsSiteName.Value -replace (' ', '')
 $requestsSiteUrl = "https://$($parameters.spoTenantName.Value).sharepoint.com/$($parameters.managedPath.Value)/$requestsSiteAlias"
 
@@ -989,6 +1014,7 @@ Write-Host "Launching PnP sign-in..." -ForegroundColor Yellow
 Connect-PnPOnline -Url "https://$($parameters.spoTenantName.Value)-admin.sharepoint.com" -Interactive
 Write-Host "Connected to SPO" -ForegroundColor Green
 
+$currUserId = az ad signed-in-user show --query id | ConvertFrom-Json
 CreateAzureADAppSecret
 GetSiteClassifications
 CreateRequestsSharePointSite
@@ -1017,7 +1043,7 @@ If ($parameters.enableSensitivity.Value) {
 }
 
 Write-Host "Deploying key vault and automation account..." -ForegroundColor Yellow
-az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "appClientId=$($global:appId)" "appSecret=$($global:appSecret)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)"
+az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "appClientId=$($global:appId)" "appSecret=$($global:appSecret)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)" "currentUserobjectId=$($currUserId)"
 CreateAutomationRoleAssignments
 AssignManagedIdentityPermissions
 Write-Host "Finished deploying key vault and automation account..." -ForegroundColor Green
