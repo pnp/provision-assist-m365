@@ -817,7 +817,7 @@ function DeployARMTemplates {
 
         Write-Host "CheckSiteExists" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/checksiteexists.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "spoTenantName=$($parameters.spoTenantName.Value).sharepoint.com" "location=$($global:location)" "certName=$($parameters.certName.Value)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/checksiteexists.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "spoTenantName=$($parameters.spoTenantName.Value)" "location=$($global:location)" "certName=$($parameters.certName.Value)"
         
         Write-Host "ProcessProvisionRequest" -ForegroundColor Yellow
         

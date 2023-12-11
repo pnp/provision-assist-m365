@@ -201,7 +201,7 @@
                                             "type": "Http",
                                             "inputs": {
                                                 "authentication": {
-                                                    "audience": "[parameters('spoRootSiteUrl')]",
+                                                    "audience": "https://graph.microsoft.com",
                                                     "clientId": "@body('Get_Client_ID')?['value']",
                                                     "password": "@null",
                                                     "pfx": "@body('Get_Certificate')?['value']",
@@ -1094,7 +1094,7 @@
                                             "Build_sitedesign_JSON_properties": {
                                                 "runAfter": {},
                                                 "type": "Compose",
-                                                "inputs": "@if(equals(triggerBody()?['SiteTemplate'],'6142d2a0-63a5-4ba0-aede-d9fefca2c767'),'\"SiteDesignId\":\"6142d2a0-63a5-4ba0-aede-d9fefca2c767\",\"WebTemplateExtensionId\":\"00000000-0000-0000-0000-000000000000\"',if(equals(triggerBody()?['SiteTemplate'],'f6cc5403-0d63-442e-96c0-285923709ffc'),'\"SiteDesignId\":\"f6cc5403-0d63-442e-96c0-285923709ffc\",\"WebTemplateExtensionId\":\"00000000-0000-0000-0000-000000000000\"',if(equals(empty(triggerBody()?['SiteTemplate']),true),'',concat('\"SiteDesignId\":\"00000000-0000-0000-0000-000000000000\",\"WebTemplateExtensionId\":\"',triggerBody()?['SiteTemplate'],'\"'))))"
+                                                "inputs": "@if(equals(triggerBody()?['SiteTemplate'],'6142d2a0-63a5-4ba0-aede-d9fefca2c767'),',\"SiteDesignId\":\"6142d2a0-63a5-4ba0-aede-d9fefca2c767\",\"WebTemplateExtensionId\":\"00000000-0000-0000-0000-000000000000\"',if(equals(triggerBody()?['SiteTemplate'],'f6cc5403-0d63-442e-96c0-285923709ffc'),',\"SiteDesignId\":\"f6cc5403-0d63-442e-96c0-285923709ffc\",\"WebTemplateExtensionId\":\"00000000-0000-0000-0000-000000000000\"',if(equals(empty(triggerBody()?['SiteTemplate']),true),'',concat(',\"SiteDesignId\":\"00000000-0000-0000-0000-000000000000\",\"WebTemplateExtensionId\":\"',triggerBody()?['SiteTemplate'],'\"'))))"
                                             },
                                             "Create_Site": {
                                                 "runAfter": {
@@ -1130,7 +1130,7 @@
                                                 "type": "SetVariable",
                                                 "inputs": {
                                                     "name": "SiteCreationBody",
-                                                    "value": "{\n  \"request\": {\n    \"Description\": \"@{triggerBody()?['Description']}\",\n    \"Lcid\": 1033,\n    \"Owner\": \"@{first(variables('OwnerUPNs'))}\",\n    \"ShareByEmailEnabled\": false,\n@{if(equals(empty(triggerBody()?['SensitivityLabelId']),true),'',concat('\"SensitivityLabel\":\"',triggerBody()?['SensitivityLabelId'],'\",'))}\n    \"Title\": \"@{If(equals(variables('UseNamingConventions'), true), If(and(equals(empty(triggerBody()?['Prefix']), true), equals(empty(triggerBody()?['Suffix']), true)), triggerBody()?['Title'], concat(triggerBody()?['Prefix'], triggerBody()?['SiteAlias'], triggerBody()?['Suffix'])), triggerBody()?['Title'])}\",\n    \"Url\": \"@{triggerBody()?['SiteURL']}\",\n    \"WebTemplate\": \"@{variables('WebTemplate')}\",\n@{outputs('Build_sitedesign_JSON_properties')}\n  }\n}\n"
+                                                    "value": "{\n  \"request\": {\n    \"Description\": \"@{triggerBody()?['Description']}\",\n    \"Lcid\": 1033,\n    \"Owner\": \"@{first(variables('OwnerUPNs'))}\",\n    \"ShareByEmailEnabled\": false,\n@{if(equals(empty(triggerBody()?['SensitivityLabelId']),true),'',concat('\"SensitivityLabel\":\"',triggerBody()?['SensitivityLabelId'],'\",'))}\n    \"Title\": \"@{If(equals(variables('UseNamingConventions'), true), If(and(equals(empty(triggerBody()?['Prefix']), true), equals(empty(triggerBody()?['Suffix']), true)), triggerBody()?['Title'], concat(triggerBody()?['Prefix'], triggerBody()?['SiteAlias'], triggerBody()?['Suffix'])), triggerBody()?['Title'])}\",\n    \"Url\": \"@{triggerBody()?['SiteURL']}\",\n    \"WebTemplate\": \"@{variables('WebTemplate')}\"\n@{outputs('Build_sitedesign_JSON_properties')}\n  }\n}\n"
                                                 }
                                             },
                                             "Wait_for_site_to_provision": {
