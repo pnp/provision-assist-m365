@@ -25,6 +25,10 @@
         "requestsSettingsListId": {
             "defaultvalue": "",
             "type": "string"
+        },
+        "certName": {
+            "defaultvalue": "",
+            "type": "string"
         }
     },
     "variables": {
@@ -58,14 +62,39 @@
                             "type": "Recurrence"
                         }
                     },
-                     "actions": {
-                     "Get_Client_ID": {
+                    "actions": {
+                        "Get_Certificate": {
+                            "runAfter": {
+                                "Get_Client_ID": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "[concat('/secrets/@{encodeURIComponent(',variables('singlequote'),parameters('certName'),variables('singlequote'),')}/value')]"
+                            },
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
+                        "Get_Client_ID": {
                             "runAfter": {
                                 "Initialize_GraphURL_variable": [
                                     "Succeeded"
                                 ]
                             },
-                              "type": "ApiConnection",
+                            "type": "ApiConnection",
                             "inputs": {
                                 "host": {
                                     "connection": {
@@ -87,7 +116,7 @@
                         },
                         "Get_Group_settings": {
                             "runAfter": {
-                                "Get_secret": [
+                                "Get_Certificate": [
                                     "Succeeded"
                                 ]
                             },
@@ -95,8 +124,9 @@
                             "inputs": {
                                 "authentication": {
                                     "audience": "https://graph.microsoft.com",
-                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                    "secret": "@body('Get_secret')?['value']",
+                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                    "password": "@null",
+                                    "pfx": "@body('Get_Certificate')?['value']",
                                     "tenant": "@variables('TenantID')",
                                     "type": "ActiveDirectoryOAuth"
                                 },
@@ -107,35 +137,9 @@
                                 "uri": "https://graph.microsoft.com/v1.0/groupsettings/"
                             }
                         },
-                       "Get_secret": {
-                            "runAfter": {
-                                "Get_Client_ID": [
-                                    "Succeeded"
-                                ]
-                            },
-            "type": "ApiConnection",
-                            "inputs": {
- "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
-                            }
-                        },
-     "method": "get",
-                                "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
-                            },
-                         "description": "Get Azure ad app client id from key vault.",
-                            "runtimeConfiguration": {
-                                "secureData": {
-                                    "properties": [
-                                        "inputs",
-                                        "outputs"
-                                ]
-                            }
-                                  }
-                        },
                         "Initialize_GraphURL_variable": {
                             "runAfter": {
-                                      "Initialize_TenantID_variable": [
+                                "Initialize_TenantID_variable": [
                                     "Succeeded"
                                 ]
                             },
@@ -169,7 +173,7 @@
                                 "Loop_through_Group_setting_values": {
                                     "foreach": "@items('Loop_through_Group_settings')?['values']",
                                     "actions": {
-                                            "Get_Group_blocked_words_setting": {
+                                        "Get_Group_blocked_words_setting": {
                                             "actions": {
                                                 "Get_CustomBlockedWords_setting_item": {
                                                     "runAfter": {},
@@ -180,14 +184,14 @@
                                                                 "name": "@parameters('$connections')['sharepointonline']['connectionId']"
                                                             }
                                                         },
-                                                        "method": "get",                                                                                
+                                                        "method": "get",
                                                         "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSettingsListId'),variables('singlequote'),'))}/items')]",
                                                         "queries": {
                                                             "$filter": "Title eq 'CustomBlockedWords'"
                                                         }
                                                     }
                                                 },
-                                                 "Loop_through_list_items_-_blocked_words": {
+                                                "Loop_through_list_items_-_blocked_words": {
                                                     "foreach": "@body('Get_CustomBlockedWords_setting_item')?['value']",
                                                     "actions": {
                                                         "Update_CustomBlockedWords_setting_item_value": {
@@ -215,14 +219,13 @@
                                                     },
                                                     "type": "Foreach"
                                                 }
-
                                             },
-                                              "runAfter": {
+                                            "runAfter": {
                                                 "Get_Group_classifications_setting": [
                                                     "Succeeded"
                                                 ]
                                             },
-                                              "expression": {
+                                            "expression": {
                                                 "and": [
                                                     {
                                                         "equals": [
@@ -233,7 +236,7 @@
                                                 ]
                                             },
                                             "type": "If"
-                                            },
+                                        },
                                         "Get_Group_classifications_setting": {
                                             "actions": {
                                                 "Get_SiteClassifications_setting_item": {
@@ -369,10 +372,10 @@
                     },
                     "outputs": {}
                 },
-                  "parameters": {
+                "parameters": {
                     "$connections": {
                         "value": {
-                                 "keyvault": {
+                            "keyvault": {
                                 "connectionId": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Web/connections/provisionassist-kv')]",
                                 "connectionName": "provisionassist-kv",
                                 "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/keyvault')]"
@@ -385,7 +388,7 @@
                         }
                     }
                 }
-        }
+            }
         }
     ]
 }

@@ -25,6 +25,10 @@
         "ipLabelsListId": {
             "defaultValue": "",
             "type": "string"
+        },
+        "certName": {
+            "defaultValue": "",
+            "type": "string"
         }
     },
     "variables": {
@@ -61,9 +65,34 @@
                         }
                     },
                     "actions": {
+                        "Get_Certificate": {
+                            "runAfter": {
+                                "Get_Client_ID": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "[concat('/secrets/@{encodeURIComponent(',variables('singlequote'),parameters('certName'),variables('singlequote'),')}/value')]"
+                            },
+                            "runtimeConfiguration": {
+                                "secureData": {
+                                    "properties": [
+                                        "inputs",
+                                        "outputs"
+                                    ]
+                                }
+                            }
+                        },
                         "Get_Client_ID": {
                             "runAfter": {
-                                "Initialize_GraphURL_variable": [
+                                "Initialize_LabelExists_variable": [
                                     "Succeeded"
                                 ]
                             },
@@ -78,32 +107,6 @@
                                 "path": "/secrets/@{encodeURIComponent('appid')}/value"
                             },
                             "description": "Get Azure ad app client id from key vault.",
-                            "runtimeConfiguration": {
-                                "secureData": {
-                                    "properties": [
-                                        "inputs",
-                                        "outputs"
-                                    ]
-                                }
-                            }
-                        },
-                        "Get_Client_Secret": {
-                            "runAfter": {
-                                "Get_Client_ID": [
-                                    "Succeeded"
-                                ]
-                            },
-                            "type": "ApiConnection",
-                            "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
-                                    }
-                                },
-                                "method": "get",
-                                "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
-                            },
-                            "description": "Get Azure ad app secret from key vault.",
                             "runtimeConfiguration": {
                                 "secureData": {
                                     "properties": [
@@ -162,7 +165,7 @@
                         },
                         "List_sensitivity_labels": {
                             "runAfter": {
-                                "Get_Client_Secret": [
+                                "Get_Certificate": [
                                     "Succeeded"
                                 ]
                             },
@@ -171,7 +174,8 @@
                                 "authentication": {
                                     "audience": "https://graph.microsoft.com",
                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                    "password": "@null",
+                                    "pfx": "@body('Get_Certificate')?['value']",
                                     "tenant": "@variables('TenantID')",
                                     "type": "ActiveDirectoryOAuth"
                                 },

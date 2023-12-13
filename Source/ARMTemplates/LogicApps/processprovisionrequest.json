@@ -41,6 +41,14 @@
         "serviceAccountUPN": {
             "defaultValue": "",
             "type": "string"
+        },
+        "certName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "spoRootSiteUrl": {
+            "defaultValue": "",
+            "type": "string"
         }
     },
     "variables": {
@@ -91,144 +99,32 @@
                     },
                     "actions": {
                         "Apply_Site_Template": {
-                                            "actions": {
-                                "Check_Site_Template_is_populated": {
-                                                    "actions": {
-                                        "Apply_Site_Template_to_site": {
+                            "actions": {
+                                "Check_if_space_type_is_a_Group_and_Site_Template_is_populated": {
+                                    "actions": {
+                                        "Apply_site_template_to_site": {
                                             "runAfter": {
-                                                "Wait_for_owner_to_be_added_-_apply_site_template": [
+                                                "Check_site_template_store_value": [
                                                     "Succeeded"
                                                 ]
                                             },
-                                            "type": "ApiConnection",
+                                            "type": "Http",
                                             "inputs": {
-                                                "body": {
-                                                    "body": "@variables('SiteTemplateRequestBody')",
-                                                    "headers": {
-                                                        "content-type": "application/json"
-                                                    },
-                                                    "method": "POST",
-                                                    "uri": "_api/Microsoft.Sharepoint.Utilities.WebTemplateExtensions.SiteScriptUtility.ApplySiteDesign"
+                                                "authentication": {
+                                                    "audience": "[parameters('spoRootSiteUrl')]",
+                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                    "tenant": "@variables('TenantID')",
+                                                    "type": "ActiveDirectoryOAuth"
                                                 },
-                                                "host": {
-                                                    "connection": {
-                                                        "name": "@parameters('$connections')['sharepointonline']['connectionId']"
-                                                    }
+                                                "body": "@variables('SiteTemplateRequestBody')",
+                                                "headers": {
+                                                    "Content-Type": "application/json"
                                                 },
-                                                "method": "post",
-                                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(triggerBody()?['SiteURL']))}/httprequest"
+                                                "method": "POST",
+                                                "uri": "@{triggerBody()?['SiteURL']}/_api/Microsoft.Sharepoint.Utilities.WebTemplateExtensions.SiteScriptUtility.ApplySiteDesign"
                                             }
-                                        },
-                                        "Check_if_space_type_is_a_Group_-_add_service_account": {
-                                            "actions": {
-                                                "Add_service_account_to_group_-_apply_site_template": {
-                                                    "runAfter": {},
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "authentication": {
-                                                                    "audience": "https://graph.microsoft.com",
-                                                                    "clientId": "@body('Get_Client_ID')?['value']",
-                                                                    "secret": "@body('Get_Client_Secret')?['value']",
-                                                                    "tenant": "@variables('TenantID')",
-                                                                    "type": "ActiveDirectoryOAuth"
-                                                                },
-                                                                "body": {
-                                                                    "@@odata.id": "https://graph.microsoft.com/v1.0/users/@{body('Get_service_account_user_profile')?['id']}"
-                                                                },
-                                                                "method": "POST",
-                                                                "uri": "@{variables('GraphURL')}/groups/@{body('Parse_Group_JSON')?['id']}/owners/$ref"
-                                                            },
-                                                    "description": "Add service account to the group so we can apply the site template. We will remove the service account after."
-                                                }
-                                                        },
-                                                       "runAfter": {},
-                                            "else": {
-                                                "actions": {
-                                                    "Add_service_account_to_site": {
-                                                        "runAfter": {},
-                                                        "type": "Http",
-                                                            "inputs": {
-                                                                "body": {
-                                                                        "LoginName": "@{concat('i:0#.f|membership|',variables('ServiceAccountUPN'))}"
-                                                            },
-                                                                    "headers": {
-                                                                           "Authorization": "@{body('Parse_Bearer_Token_Response')?['token_type']} @{body('Parse_Bearer_Token_Response')?['access_token']}",
-                                                                "accept": "application/json;odata.metadata=none",
-                                                                        "content-type": "application/json"
-                                                                    },
-                                                                    "method": "POST",
-                                                            "uri": "@{triggerBody()?['SiteURL']}/_api/web/sitegroups/GetByName('@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])} Owners')/users"
-                                                                  }
-                                                    }
-                                                                    }
-                                                                },
-                                                               "expression": {
-                                                "and": [
-                                                    {
-                                                        "equals": [
-                                                            "@triggerBody()?['SpaceTypeInternal']",
-                                                            "Office 365 Group"
-                                                        ]
-                                                    }
-                                                ]
-                                                        },
-                                                                "type": "If",
-                                            "description": "If this is a group we will add the service account to the group owners rather than the SharePoint owners group to avoid an unathorized error."
-                                        },
-                                        "Check_if_space_type_is_a_Group_-_remove_service_account": {
-                                            "actions": {
-                                                "Remove_service_account_from_group_-_apply_site_template": {
-                                                            "runAfter": {},
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "authentication": {
-                                                                    "audience": "https://graph.microsoft.com",
-                                                                    "clientId": "@body('Get_Client_ID')?['value']",
-                                                                    "secret": "@body('Get_Client_Secret')?['value']",
-                                                                    "tenant": "@variables('TenantID')",
-                                                                    "type": "ActiveDirectoryOAuth"
-                                                                },
-                                                                "method": "DELETE",
-                                                                "uri": "@{variables('GraphURL')}/groups/@{body('Parse_Group_JSON')?['id']}/owners/@{body('Get_service_account_user_profile')?['id']}/$ref"
-                                                            }
-                                                               }
-                                            },
-                                            "runAfter": {
-                                                "Apply_Site_Template_to_site": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                              "else": {
-                                                "actions": {
-                                                    "Remove_service_account_from_site": {
-                                                        "runAfter": {},
-                                                        "type": "Http",
-                                                        "inputs": {
-                                                            "body": {
-                                                                "loginName": "@{concat('i:0#.f|membership|',variables('ServiceAccountUPN'))}"
-                                                            },
-                                                            "headers": {
-                                                                "Authorization": "@{body('Parse_Bearer_Token_Response')?['token_type']} @{body('Parse_Bearer_Token_Response')?['access_token']}",
-                                                                "accept": "application/json;odata.metadata=none",
-                                                                "content-type": "application/json"
-                                                            },
-                                                            "method": "POST",
-                                                            "uri": "@{triggerBody()?['SiteURL']}/_api/web/sitegroups/GetByName('@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])} Owners')/users/removeByLoginName"
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                                 "expression": {
-                                                "and": [
-                                                    {
-                                                        "equals": [
-                                                            "@triggerBody()?['SpaceTypeInternal']",
-                                                            "Office 365 Group"
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            "type": "If"
                                         },
                                         "Check_site_template_store_value": {
                                             "actions": {
@@ -241,11 +137,7 @@
                                                     }
                                                 }
                                             },
-                                            "runAfter": {
-                                                "Check_if_space_type_is_a_Group_-_add_service_account": [
-                                                    "Succeeded"
-                                                ]
-                                            },
+                                            "runAfter": {},
                                             "else": {
                                                 "actions": {
                                                     "Set_SiteTemplateRequestBody_variable_-_custom_template_-_group": {
@@ -257,8 +149,8 @@
                                                         }
                                                     }
                                                 }
-                                                    },
-                                                     "expression": {
+                                            },
+                                            "expression": {
                                                 "and": [
                                                     {
                                                         "equals": [
@@ -270,10 +162,226 @@
                                             },
                                             "type": "If",
                                             "description": "Check the store value, this determines whether to apply Microsoft out of the box site designs or custom ones."
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "equals": [
+                                                    "@triggerBody()?['SpaceTypeInternal']",
+                                                    "Office 365 Group"
+                                                ]
+                                            },
+                                            {
+                                                "equals": [
+                                                    "@empty(triggerBody()?['SiteTemplate'])",
+                                                    "@false"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If",
+                                    "description": "Check if site template is populated and the space type is a Group. SharePoint space types have the template applied during creation."
+                                }
+                            },
+                            "runAfter": {
+                                "Process_Team": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
+                        "Apply_sensitivity_label": {
+                            "actions": {
+                                "Check_space_type_and_if_the_sensitivity_label_is_populated": {
+                                    "actions": {
+                                        "Add_service_account_to_group_-_apply_label": {
+                                            "runAfter": {},
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "audience": "https://graph.microsoft.com",
+                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                    "tenant": "@variables('TenantID')",
+                                                    "type": "ActiveDirectoryOAuth"
+                                                },
+                                                "body": {
+                                                    "@@odata.id": "https://graph.microsoft.com/v1.0/users/@{body('Get_service_account_user_profile')?['id']}"
+                                                },
+                                                "method": "POST",
+                                                "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners/$ref"
+                                            }
                                         },
-                                        "Wait_for_owner_to_be_added_-_apply_site_template": {
+                                        "Apply_sensitivity_label_to_the_group": {
                                             "runAfter": {
-                                                "Check_site_template_store_value": [
+                                                "Parse_get_access_token_JSON": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Http",
+                                            "inputs": {
+                                                "body": {
+                                                    "assignedLabels": [
+                                                        {
+                                                            "labelId": "@{triggerBody()?['SensitivityLabelId']}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {
+                                                    "authorization": "bearer @{body('Parse_get_access_token_JSON')?['access_token']}",
+                                                    "content-type": "application/json"
+                                                },
+                                                "method": "PATCH",
+                                                "uri": "@{variables('BetaGraphURL')}/groups/@{variables('GroupID')}"
+                                            }
+                                        },
+                                        "Get_access_token_for_service_account": {
+                                            "runAfter": {
+                                                "URL_encode_service_account_password": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Http",
+                                            "inputs": {
+                                                "body": "grant_type=password&resource=https://graph.microsoft.com&client_id=@{body('Get_Client_ID')?['value']}&username=@{body('Get_service_account_username')?['value']}&password=@{outputs('URL_encode_service_account_password')}&client_secret=@{outputs('URL_encode_client_secret')}",
+                                                "headers": {
+                                                    "content-type": "application/x-www-form-urlencoded"
+                                                },
+                                                "method": "POST",
+                                                "uri": "https://login.microsoftonline.com/@{variables('TenantID')}/oauth2/token"
+                                            }
+                                        },
+                                        "Get_service_account_password": {
+                                            "runAfter": {
+                                                "Get_service_account_username": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connection": {
+                                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                                    }
+                                                },
+                                                "method": "get",
+                                                "path": "/secrets/@{encodeURIComponent('sapassword')}/value",
+                                                "runtimeConfiguration": {
+                                                    "secureData": {
+                                                        "properties": [
+                                                            "inputs",
+                                                            "outputs"
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Get_service_account_username": {
+                                            "runAfter": {
+                                                "Wait_for_owner_to_be_added_-_apply_label": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connection": {
+                                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                                    }
+                                                },
+                                                "method": "get",
+                                                "path": "/secrets/@{encodeURIComponent('sausername')}/value"
+                                            },
+                                            "runtimeConfiguration": {
+                                                "secureData": {
+                                                    "properties": [
+                                                        "inputs",
+                                                        "outputs"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "Parse_get_access_token_JSON": {
+                                            "runAfter": {
+                                                "Get_access_token_for_service_account": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('Get_access_token_for_service_account')",
+                                                "schema": {
+                                                    "properties": {
+                                                        "access_token": {
+                                                            "type": "string"
+                                                        },
+                                                        "expires_in": {
+                                                            "type": "string"
+                                                        },
+                                                        "expires_on": {
+                                                            "type": "string"
+                                                        },
+                                                        "ext_expires_in": {
+                                                            "type": "string"
+                                                        },
+                                                        "not_before": {
+                                                            "type": "string"
+                                                        },
+                                                        "resource": {
+                                                            "type": "string"
+                                                        },
+                                                        "token_type": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "Remove_service_account_from_group_-_apply_label": {
+                                            "runAfter": {
+                                                "Apply_sensitivity_label_to_the_group": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Http",
+                                            "inputs": {
+                                                "authentication": {
+                                                    "audience": "https://graph.microsoft.com",
+                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                    "tenant": "@variables('TenantID')",
+                                                    "type": "ActiveDirectoryOAuth"
+                                                },
+                                                "method": "DELETE",
+                                                "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners/@{body('Get_service_account_user_profile')?['id']}/$ref"
+                                            }
+                                        },
+                                        "URL_encode_client_secret": {
+                                            "runAfter": {
+                                                "Get_service_account_password": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Compose",
+                                            "inputs": "@encodeUriComponent(body('Get_Client_Secret')?['value'])"
+                                        },
+                                        "URL_encode_service_account_password": {
+                                            "runAfter": {
+                                                "URL_encode_client_secret": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Compose",
+                                            "inputs": "@encodeUriComponent(body('Get_service_account_password')?['value'])"
+                                        },
+                                        "Wait_for_owner_to_be_added_-_apply_label": {
+                                            "runAfter": {
+                                                "Add_service_account_to_group_-_apply_label": [
                                                     "Succeeded"
                                                 ]
                                             },
@@ -287,313 +395,53 @@
                                         }
                                     },
                                     "runAfter": {},
-                                                    "expression": {
-                                                        "and": [
-                                                            {
-                                                                "equals": [
-                                                    "@empty(triggerBody()?['SiteTemplate'])",
-                                                                    false
-                                                                ]
-                                                            },
-                                                            {
-                                                                     "not": {
-                                                    "equals": [
-                                                        "@triggerBody()?['SiteTemplate']",
-                                                        "6142d2a0-63a5-4ba0-aede-d9fefca2c767"
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "not": {
-                                                    "equals": [
-                                                        "@triggerBody()?['SiteTemplate']",
-                                                        "f6cc5403-0d63-442e-96c0-285923709ffc"
-                                                    ]
-                                                }
-                                            },
+                                    "expression": {
+                                        "and": [
                                             {
                                                 "or": [
                                                     {
-                                                                "equals": [
-                                                            "@triggerBody()?['SpaceTypeInternal']",
-                                                                    "Office 365 Group"
-                                                                ]
-                                                                  },
-                                                    {
                                                         "equals": [
                                                             "@triggerBody()?['SpaceTypeInternal']",
-                                                            "Communication Site"
+                                                            "Office 365 Group"
                                                         ]
                                                     },
                                                     {
                                                         "equals": [
                                                             "@triggerBody()?['SpaceTypeInternal']",
-                                                            "Hub Site"
-                                                        ]
-                                                    },
-                                                    {
-                                                        "equals": [
-                                                            "@triggerBody()?['SpaceTypeInternal']",
-                                                            "Team Site"
+                                                            "Microsoft Teams Team"
                                                         ]
                                                     }
                                                 ]
-                                                            }
+                                            },
+                                            {
+                                                "and": [
+                                                    {
+                                                        "equals": [
+                                                            "@variables('EnableSensitivityLabels')",
+                                                            "@true"
                                                         ]
                                                     },
-                                                    "type": "If",
-                                    "description": "Check if site template is populated and the space type is a Group, Team Site, Hub Site or Communication Site. We don't apply site templates to sites that are backing Teams or Viva engage communities at the moment."
-                                                }
-                                            },
-                                            "runAfter": {
-                                                "Process_Team": [
-                                                    "Succeeded"
+                                                    {
+                                                        "equals": [
+                                                            "@empty(triggerBody()?['SensitivityLabelId'])",
+                                                            "@false"
+                                                        ]
+                                                    }
                                                 ]
-                                            },
-                                            "type": "Scope"
-                                        },
-                                                    "Apply_sensitivity_label": {
-                "actions": {
-                                "Check_space_type_and_if_the_sensitivity_label_is_populated": {
-                        "actions": {
-                            "Add_service_account_to_group_-_apply_label": {
-                                  "runAfter": {},
-                                "type": "Http",
-                                "inputs": {
-                                    "authentication": {
-                                        "audience": "https://graph.microsoft.com",
-                                        "clientId": "@body('Get_Client_ID')?['value']",
-                                        "secret": "@body('Get_Client_Secret')?['value']",
-                                        "tenant": "@variables('TenantID')",
-                                        "type": "ActiveDirectoryOAuth"
-                                    },
-                                    "body": {
-                                        "@@odata.id": "https://graph.microsoft.com/v1.0/users/@{body('Get_service_account_user_profile')?['id']}"
-                                    },
-                                    "method": "POST",
-                                    "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners/$ref"
-                                }
-                            },
-                            "Apply_sensitivity_label_to_the_group": {
-                                     "runAfter": {
-                                                "Parse_get_access_token_JSON": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "Http",
-                                "inputs": {
-                                    "body": {
-                                        "assignedLabels": [
-                                            {
-                                                "labelId": "@{triggerBody()?['SensitivityLabelId']}"
                                             }
                                         ]
                                     },
-                                    "headers": {
-                                        "authorization": "bearer @{body('Parse_get_access_token_JSON')?['access_token']}",
-                                        "content-type": "application/json"
-                                    },
-                                    "method": "PATCH",
-                                    "uri": "@{variables('BetaGraphURL')}/groups/@{variables('GroupID')}"
-                                }
-                                },
-                            "Get_access_token_for_service_account": {
-                                  "runAfter": {
-                                                "URL_encode_service_account_password": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "Http",
-                                "inputs": {
-                                    "body": "grant_type=password&resource=https://graph.microsoft.com&client_id=@{body('Get_Client_ID')?['value']}&username=@{body('Get_service_account_username')?['value']}&password=@{outputs('URL_encode_service_account_password')}&client_secret=@{outputs('URL_encode_client_secret')}",
-                                    "headers": {
-                                        "content-type": "application/x-www-form-urlencoded"
-                                    },
-                                    "method": "POST",
-                                    "uri": "https://login.microsoftonline.com/@{variables('TenantID')}/oauth2/token"
+                                    "type": "If"
                                 }
                             },
-                            "Get_service_account_password": {
-                                  "runAfter": {
-                                                "Get_service_account_username": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "ApiConnection",
-                                "inputs": {
-                                    "host": {
-                                        "connection": {
-                                            "name": "@parameters('$connections')['keyvault']['connectionId']"
-                                        }
-                                    },
-                                    "method": "get",
-                                    "path": "/secrets/@{encodeURIComponent('sapassword')}/value",
-                                         "runtimeConfiguration": {
-                                "secureData": {
-                                    "properties": [
-                                        "inputs",
-                                        "outputs"
-                                    ]
-                                }
-                            }
-                                }
-                                },
-                                   "Get_service_account_username": {
-                                "runAfter": {
-                                                "Wait_for_owner_to_be_added_-_apply_label": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                "type": "ApiConnection",
-                                "inputs": {
-                                    "host": {
-                                        "connection": {
-                                            "name": "@parameters('$connections')['keyvault']['connectionId']"
-                                        }
-                                    },
-                                    "method": "get",
-                                    "path": "/secrets/@{encodeURIComponent('sausername')}/value"
-                                },
-                                "runtimeConfiguration": {
-                                    "secureData": {
-                                        "properties": [
-                                            "inputs",
-                                            "outputs"
-                                        ]
-                                    }
-                                }
-                                },
-                            "Parse_get_access_token_JSON": {
-                                  "runAfter": {
-                                                "Get_access_token_for_service_account": [
-                                                    "Succeeded"
-                                                ]
-                                            },
-                                            "type": "ParseJson",
-                                "inputs": {
-                                    "content": "@body('Get_access_token_for_service_account')",
-                                    "schema": {
-                                        "properties": {
-                                            "access_token": {
-                                                "type": "string"
-                                            },
-                                            "expires_in": {
-                                                "type": "string"
-                                            },
-                                            "expires_on": {
-                                                "type": "string"
-                                            },
-                                            "ext_expires_in": {
-                                                "type": "string"
-                                            },
-                                            "not_before": {
-                                                "type": "string"
-                                            },
-                                            "resource": {
-                                                "type": "string"
-                                            },
-                                            "token_type": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                                },
-                                "Remove_service_account_from_group_-_apply_label": {
-                                "runAfter": {
-                                                "Apply_sensitivity_label_to_the_group": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                  "type": "Http",
-                                "inputs": {
-                                    "authentication": {
-                                        "audience": "https://graph.microsoft.com",
-                                        "clientId": "@body('Get_Client_ID')?['value']",
-                                        "secret": "@body('Get_Client_Secret')?['value']",
-                                        "tenant": "@variables('TenantID')",
-                                        "type": "ActiveDirectoryOAuth"
-                                    },
-                                    "method": "DELETE",
-                                    "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners/@{body('Get_service_account_user_profile')?['id']}/$ref"
-                                }
+                            "runAfter": {
+                                "Invite_guests": [
+                                    "Succeeded"
+                                ]
                             },
-                            "URL_encode_client_secret": {
-                                "runAfter": {
-                                    "Get_service_account_password": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                            "type": "Compose",
-                                            "inputs": "@encodeUriComponent(body('Get_Client_Secret')?['value'])"
-                            },
-                            "URL_encode_service_account_password": {
-                                "runAfter": {
-                                    "URL_encode_client_secret": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                            "type": "Compose",
-                                            "inputs": "@encodeUriComponent(body('Get_service_account_password')?['value'])"
-                            },
-                            "Wait_for_owner_to_be_added_-_apply_label": {
-                                "runAfter": {
-                                    "Add_service_account_to_group_-_apply_label": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                  "type": "Wait",
-                                            "inputs": {
-                                                "interval": {
-                                                    "count": 2,
-                                                    "unit": "Minute"
-                                                }
-                                            }
-                            }
+                            "type": "Scope"
                         },
-                                                            "runAfter": {},
-                        "expression": {
-                            "and": [
-                                {
-                                    "or": [
-                                        {
-                                            "equals": [
-                                                            "@triggerBody()?['SpaceTypeInternal']",
-                                                "Office 365 Group"
-                                            ]
-                                        },
-                                        {
-                                            "equals": [
-                                                            "@triggerBody()?['SpaceTypeInternal']",
-                                                "Microsoft Teams Team"
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "and": [
-                                        {
-                                            "equals": [
-                                                "@variables('EnableSensitivityLabels')",
-                                                "@true"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        "type": "If"
-                    }
-                },
-                "runAfter": {
-                    "Invite_guests": [
-                        "Succeeded"
-                    ]
-                },
-                "type": "Scope"
-            },
-                                   "Check_if_space_exists": {
+                        "Check_if_space_exists": {
                             "actions": {
                                 "Check_response": {
                                     "actions": {
@@ -646,7 +494,7 @@
                                                     }
                                                 },
                                                 "method": "patch",
-                                                        "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(triggerBody()?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
+                                                "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(triggerBody()?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
                                             }
                                         }
                                     },
@@ -680,12 +528,6 @@
                                             "properties": {
                                                 "exists": {
                                                     "type": "boolean"
-                                                },
-                                                "source": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
                                                 }
                                             },
                                             "type": "object"
@@ -703,7 +545,8 @@
                                         "host": {
                                             "triggerName": "manual",
                                             "workflow": {
-                                                               "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Logic/workflows/CheckSiteExists')]"                                            }
+                                                "id": "[concat('/subscriptions/',parameters('subscriptionId'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Logic/workflows/CheckSiteExists')]"
+                                            }
                                         }
                                     }
                                 }
@@ -717,14 +560,14 @@
                             "description": "Checks if the requested Site/Group/Team already exists by executing the CheckSiteExists logic app."
                         },
                         "Check_space_type": {
-                                            "actions": {
-                                                "Check_template": {
-                                                    "actions": {
-                                                     "Check_for_members": {
+                            "actions": {
+                                "Check_template": {
+                                    "actions": {
+                                        "Check_for_members": {
                                             "actions": {
                                                 "Set_MembersRequestBody_variable": {
-                                              "runAfter": {},
-                                                "type": "SetVariable",
+                                                    "runAfter": {},
+                                                    "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "MembersRequestBody",
                                                         "value": "{\n  \"description\": \"@{triggerBody()?['Description']}\",\n  \"displayName\": \"@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])}\",\n  \"groupTypes\": [\n    \"Unified\"\n  ],\n  \"mailEnabled\": true,\n  \"mailNickname\": \"@{triggerBody()?['MailboxAlias']}\",\n  \"members@odata.bind\": @{variables('MembersGraph')},\n  \"owners@odata.bind\": @{variables('OwnersGraph')},\n  \"securityEnabled\": false,\n\"visibility\":\"@{triggerBody()?['Visibility']?['Value']}\",\n\"classification\": @{if(empty(triggerBody()?['Classification']),'null',concat('\"',triggerBody()?['Classification'],'\"'))},\n\"resourceBehaviorOptions\":[@{if(equals(triggerBody()?['SpaceType']?['Value'],'Microsoft Teams Team'),concat(variables('QuoteMark'),'WelcomeEmailDisabled',variables('QuoteMark')),'')}]\n}"
@@ -732,9 +575,9 @@
                                                 }
                                             },
                                             "runAfter": {},
-                                                    "else": {
-                                                        "actions": {
-                                                             "Set_MembersRequestBody_variable_-_no_members": {
+                                            "else": {
+                                                "actions": {
+                                                    "Set_MembersRequestBody_variable_-_no_members": {
                                                         "runAfter": {},
                                                         "type": "SetVariable",
                                                         "inputs": {
@@ -744,7 +587,7 @@
                                                     }
                                                 }
                                             },
-                                             "expression": {
+                                            "expression": {
                                                 "and": [
                                                     {
                                                         "equals": [
@@ -890,7 +733,8 @@
                                                                 "authentication": {
                                                                     "audience": "https://graph.microsoft.com",
                                                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                                                    "password": "@null",
+                                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                                     "tenant": "@variables('TenantID')",
                                                                     "type": "ActiveDirectoryOAuth"
                                                                 },
@@ -939,7 +783,8 @@
                                                                     "authentication": {
                                                                         "audience": "https://graph.microsoft.com",
                                                                         "clientId": "@body('Get_Client_ID')?['value']",
-                                                                        "secret": "@body('Get_Client_Secret')?['value']",
+                                                                        "password": "@null",
+                                                                        "pfx": "@body('Get_Certificate')?['value']",
                                                                         "tenant": "@variables('TenantID')",
                                                                         "type": "ActiveDirectoryOAuth"
                                                                     },
@@ -1107,7 +952,8 @@
                                                 "authentication": {
                                                     "audience": "https://graph.microsoft.com",
                                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                     "tenant": "@variables('TenantID')",
                                                     "type": "ActiveDirectoryOAuth"
                                                 },
@@ -1119,7 +965,7 @@
                                                 "uri": "@{variables('GraphURL')}/groups/"
                                             }
                                         },
-                                                   "Set_GroupID_variable": {
+                                        "Set_GroupID_variable": {
                                             "runAfter": {
                                                 "Parse_Group_JSON": [
                                                     "Succeeded"
@@ -1149,61 +995,62 @@
                                     "runAfter": {},
                                     "else": {
                                         "actions": {
-                                                            "Clone_team": {
-                                                                "runAfter": {},
-                                                                "type": "Http",
-                                                                "inputs": {
-                                                                    "authentication": {
-                                                                        "audience": "https://graph.microsoft.com",
-                                                                        "clientId": "@body('Get_Client_ID')?['value']",
-                                                                        "secret": "@body('Get_Client_Secret')?['value']",
-                                                                        "tenant": "@variables('TenantID')",
-                                                                        "type": "ActiveDirectoryOAuth"
-                                                                    },
-                                                                    "body": {
-                                                                              "classification": "@if(empty(triggerBody()?['Classification']),null,triggerBody()?['Classification'])",
+                                            "Clone_team": {
+                                                "runAfter": {},
+                                                "type": "Http",
+                                                "inputs": {
+                                                    "authentication": {
+                                                        "audience": "https://graph.microsoft.com",
+                                                        "clientId": "@body('Get_Client_ID')?['value']",
+                                                        "password": "@null",
+                                                        "pfx": "@body('Get_Certificate')?['value']",
+                                                        "tenant": "@variables('TenantID')",
+                                                        "type": "ActiveDirectoryOAuth"
+                                                    },
+                                                    "body": {
+                                                        "classification": "@if(empty(triggerBody()?['Classification']),null,triggerBody()?['Classification'])",
                                                         "description": "@{triggerBody()?['Description']}",
                                                         "displayName": "@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])}",
                                                         "mailNickname": "@{triggerBody()?['MailboxAlias']}",
                                                         "partsToClone": "apps,tabs,settings,channels",
                                                         "visibility": "@{triggerBody()?['Visibility']?['Value']}"
-                                                                    },
-                                                                    "headers": {
-                                                                        "content-type": "application/json"
-                                                                    },
-                                                                    "method": "POST",
-                                                                    "uri": "@{variables('GraphURL')}/teams/@{triggerBody()?['TeamsTemplate']}/clone"
-                                                                }
-                                                            },
-                                                              "Set_TeamsTemplateOperation_variable_-_clone_team": {
-                                                                "runAfter": {
-                                                                    "Clone_team": [
-                                                                        "Succeeded"
-                                                                    ]
-                                                                },
-                                                                "type": "SetVariable",
-                                                                "inputs": {
-                                                                    "name": "TeamsTemplateOperation",
-                                                                    "value": "clone"
-                                                                }
-                                                            },
-                                        "Wait_for_team_to_clone": {
-                                            "runAfter": {
-                                                "Set_TeamsTemplateOperation_variable_-_clone_team": [
-                                                    "Succeeded"
-                                                ]
+                                                    },
+                                                    "headers": {
+                                                        "content-type": "application/json"
+                                                    },
+                                                    "method": "POST",
+                                                    "uri": "@{variables('GraphURL')}/teams/@{triggerBody()?['TeamsTemplate']}/clone"
+                                                }
                                             },
-                                            "type": "Wait",
-                                            "inputs": {
-                                                "interval": {
-                                                    "count": 2,
-                                                    "unit": "Minute"
+                                            "Set_TeamsTemplateOperation_variable_-_clone_team": {
+                                                "runAfter": {
+                                                    "Clone_team": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "SetVariable",
+                                                "inputs": {
+                                                    "name": "TeamsTemplateOperation",
+                                                    "value": "clone"
+                                                }
+                                            },
+                                            "Wait_for_team_to_clone": {
+                                                "runAfter": {
+                                                    "Set_TeamsTemplateOperation_variable_-_clone_team": [
+                                                        "Succeeded"
+                                                    ]
+                                                },
+                                                "type": "Wait",
+                                                "inputs": {
+                                                    "interval": {
+                                                        "count": 2,
+                                                        "unit": "Minute"
+                                                    }
                                                 }
                                             }
                                         }
-                                                            }
-                                                        },
-                                                "expression": {         
+                                    },
+                                    "expression": {
                                         "or": [
                                             {
                                                 "equals": [
@@ -1222,7 +1069,7 @@
                                                     "@triggerBody()?['SpaceTypeInternal']",
                                                     "Office 365 Group"
                                                 ]
-                                                    },
+                                            },
                                             {
                                                 "equals": [
                                                     "@triggerBody()?['AdminCenterTemplate']",
@@ -1232,7 +1079,7 @@
                                         ]
                                     },
                                     "type": "If",
-                                           "description": "Check if we should create an Office 365 Group or a Teams Team from a standard template (no template) or a template defined in the admin center."
+                                    "description": "Check if we should create an Office 365 Group or a Teams Team from a standard template (no template) or a template defined in the admin center."
                                 }
                             },
                             "runAfter": {
@@ -1244,179 +1091,51 @@
                                 "actions": {
                                     "Check_if_space_type_is_SharePoint_site": {
                                         "actions": {
-                                            "@": {
-                                                "runAfter": {
-                                                },
+                                            "Build_sitedesign_JSON_properties": {
+                                                "runAfter": {},
                                                 "type": "Compose",
-                                                "inputs": "@"
+                                                "inputs": "@if(equals(triggerBody()?['SiteTemplate'],'6142d2a0-63a5-4ba0-aede-d9fefca2c767'),',\"SiteDesignId\":\"6142d2a0-63a5-4ba0-aede-d9fefca2c767\",\"WebTemplateExtensionId\":\"00000000-0000-0000-0000-000000000000\"',if(equals(triggerBody()?['SiteTemplate'],'f6cc5403-0d63-442e-96c0-285923709ffc'),',\"SiteDesignId\":\"f6cc5403-0d63-442e-96c0-285923709ffc\",\"WebTemplateExtensionId\":\"00000000-0000-0000-0000-000000000000\"',if(equals(empty(triggerBody()?['SiteTemplate']),true),'',concat(',\"SiteDesignId\":\"00000000-0000-0000-0000-000000000000\",\"WebTemplateExtensionId\":\"',triggerBody()?['SiteTemplate'],'\"'))))"
                                             },
-                                            "Check_Site_Template_is_populated_-_site_creation": {
-                                                "actions": {
-                                                    "Create_Site_-_Apply_site_template": {
-                                                        "runAfter": {
-                                                        },
-                                                        "type": "Http",
-                                                        "inputs": {
-                                                            "body": {
-                                                                "request": {
-                                                                    "Description": "@{triggerBody()?['Description']}",
-                                                                    "Lcid": 1033,
-                                                                    "Owner": "@{first(variables('OwnerUPNs'))}",
-                                                                    "ShareByEmailEnabled": false,
-                                                                    "SiteDesignId": "@{triggerBody()?['SiteTemplate']}",
-                                                                    "Title": "@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])}",
-                                                                    "Url": "@{triggerBody()?['SiteURL']}",
-                                                                    "WebTemplate": "@{variables('WebTemplate')}"
-                                                                }
-                                                            },
-                                                            "headers": {
-                                                                "Accept": "application/json;odata=verbose",
-                                                                "Authorization": "@{body('Parse_Bearer_Token_Response')?['token_type']} @{body('Parse_Bearer_Token_Response')?['access_token']}"
-                                                            },
-                                                            "method": "POST",
-                                                            "uri": "[concat(parameters('requestsSiteUrl'),'/_api/SPSiteManager/create')]"
-                                                        }
-                                                    }
-                                                },
+                                            "Create_Site": {
                                                 "runAfter": {
-                                                    "Parse_Bearer_Token_Response": [
-                                                        "Succeeded"
-                                                    ]
-                                                },
-                                                "else": {
-                                                    "actions": {
-                                                        "Create_Site_-_No_site_template": {
-                                                            "runAfter": {
-                                                            },
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "body": {
-                                                                    "request": {
-                                                                        "Description": "@{triggerBody()?['Description']}",
-                                                                        "Lcid": 1033,
-                                                                        "Owner": "@{first(variables('OwnerUPNs'))}",
-                                                                        "ShareByEmailEnabled": false,
-                                                                        "Title": "@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])}",
-                                                                        "Url": "@{triggerBody()?['SiteURL']}",
-                                                                        "WebTemplate": "@{variables('WebTemplate')}"
-                                                                    }
-                                                                },
-                                                                "headers": {
-                                                                    "Accept": "application/json;odata=verbose",
-                                                                    "Authorization": "@{body('Parse_Bearer_Token_Response')?['token_type']} @{body('Parse_Bearer_Token_Response')?['access_token']}"
-                                                                },
-                                                                "method": "POST",
-                                                                "uri": "[concat(parameters('requestsSiteUrl'),'/_api/SPSiteManager/create')]"
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "expression": {
-                                                    "and": [
-                                                        {
-                                                               "or": [
-                                                                {
-                                                            "equals": [
-                                                                        "@triggerBody()?['SiteTemplate']",
-                                                                        "6142d2a0-63a5-4ba0-aede-d9fefca2c767"
-                                                            ]
-                                                        },
-                                                        {
-                                                                    "equals": [
-                                                                        "@triggerBody()?['SiteTemplate']",
-                                                                        "f6cc5403-0d63-442e-96c0-285923709ffc"
-                                                                    ]
-                                                                },
-                                                                {
-                                                                   "not": {
-                                                                        "equals": [
-                                                                            "@empty(triggerBody()?['SiteTemplate'])",
-                                                                            "@true"
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            ]
-                                                },
-                                                 {
-                                                            "or": [
-                                                        {
-                                                            "equals": [
-                                                                        "@triggerBody()?['SpaceTypeInternal']",
-                                                                        "Communication Site"
-                                                            ]
-                                                        },
-                                                        {
-                                                                "equals": [
-                                                                        "@triggerBody()?['SpaceTypeInternal']",
-                                                                        "Hub Site"
-                                                                ]
-                                                            }
-                                                            ]
-                                                        },
-                                                        {                                                    
-                                                                 "equals": [
-                                                                "",
-                                                                ""
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                "type": "If",
-                                                "description": "Only out of the box Site Templates i.e. Topic, Showcase and Blank will apply when sites are created through the REST API."
-                                            },
-                                            "Get_Bearer_Token": {
-                                                "runAfter": {
-                                                    "@": [
+                                                    "Set_SiteCreationBody_variable": [
                                                         "Succeeded"
                                                     ]
                                                 },
                                                 "type": "Http",
                                                 "inputs": {
-                                                    "body": "grant_type=client_credentials&client_id=@{body('Get_Client_ID')?['value']}@{outputs('@')}@{variables('TenantID')}&client_secret=@{body('Get_Client_Secret')?['value']}&resource=00000003-0000-0ff1-ce00-000000000000/@{variables('TenantName')}.sharepoint.com@{outputs('@')}@{variables('TenantID')}",
+                                                    "authentication": {
+                                                        "audience": "[parameters('spoRootSiteUrl')]",
+                                                        "clientId": "@body('Get_Client_ID')?['value']",
+                                                        "password": "@null",
+                                                        "pfx": "@body('Get_Certificate')?['value']",
+                                                        "tenant": "@variables('TenantID')",
+                                                        "type": "ActiveDirectoryOAuth"
+                                                    },
+                                                    "body": "@variables('SiteCreationBody')",
                                                     "headers": {
-                                                        "content-type": "application/x-www-form-urlencoded"
+                                                        "Accept": "application/json;odata=verbose",
+                                                        "Content-Type": "application/json"
                                                     },
                                                     "method": "POST",
-                                                    "uri": "https://accounts.accesscontrol.windows.net//tokens/OAuth/2"
+                                                    "uri": "[concat(parameters('requestsSiteUrl'),'/_api/SPSiteManager/create')]"
                                                 }
                                             },
-                                            "Parse_Bearer_Token_Response": {
+                                            "Set_SiteCreationBody_variable": {
                                                 "runAfter": {
-                                                    "Get_Bearer_Token": [
+                                                    "Build_sitedesign_JSON_properties": [
                                                         "Succeeded"
                                                     ]
                                                 },
-                                                "type": "ParseJson",
+                                                "type": "SetVariable",
                                                 "inputs": {
-                                                    "content": "@body('Get_Bearer_Token')",
-                                                    "schema": {
-                                                        "properties": {
-                                                            "access_token": {
-                                                                "type": "string"
-                                                            },
-                                                            "expires_in": {
-                                                                "type": "string"
-                                                            },
-                                                            "expires_on": {
-                                                                "type": "string"
-                                                            },
-                                                            "not_before": {
-                                                                "type": "string"
-                                                            },
-                                                            "resource": {
-                                                                "type": "string"
-                                                            },
-                                                            "token_type": {
-                                                                "type": "string"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
+                                                    "name": "SiteCreationBody",
+                                                    "value": "{\n  \"request\": {\n    \"Description\": \"@{triggerBody()?['Description']}\",\n    \"Lcid\": 1033,\n    \"Owner\": \"@{first(variables('OwnerUPNs'))}\",\n    \"ShareByEmailEnabled\": false,\n@{if(equals(empty(triggerBody()?['SensitivityLabelId']),true),'',concat('\"SensitivityLabel\":\"',triggerBody()?['SensitivityLabelId'],'\",'))}\n    \"Title\": \"@{If(equals(variables('UseNamingConventions'), true), If(and(equals(empty(triggerBody()?['Prefix']), true), equals(empty(triggerBody()?['Suffix']), true)), triggerBody()?['Title'], concat(triggerBody()?['Prefix'], triggerBody()?['SiteAlias'], triggerBody()?['Suffix'])), triggerBody()?['Title'])}\",\n    \"Url\": \"@{triggerBody()?['SiteURL']}\",\n    \"WebTemplate\": \"@{variables('WebTemplate')}\"\n@{outputs('Build_sitedesign_JSON_properties')}\n  }\n}\n"
                                                 }
                                             },
                                             "Wait_for_site_to_provision": {
                                                 "runAfter": {
-                                                    "Check_Site_Template_is_populated_-_site_creation": [
+                                                    "Create_Site": [
                                                         "Succeeded"
                                                     ]
                                                 },
@@ -1429,8 +1148,7 @@
                                                 }
                                             }
                                         },
-                                        "runAfter": {
-                                        },
+                                        "runAfter": {},
                                         "else": {
                                             "actions": {
                                                 "Check_if_space_type_is_a_Viva_engage_Community": {
@@ -1485,8 +1203,7 @@
                                                                     "foreach": "@variables('MemberUPNs')",
                                                                     "actions": {
                                                                         "Add_viva_engage_group_member": {
-                                                                            "runAfter": {
-                                                                            },
+                                                                            "runAfter": {},
                                                                             "type": "Http",
                                                                             "inputs": {
                                                                                 "body": {
@@ -1518,8 +1235,7 @@
                                                                                     "foreach": "@body('Parse_viva_engage_unified_group_JSON')?['value']",
                                                                                     "actions": {
                                                                                         "Add_owner_to_group": {
-                                                                                            "runAfter": {
-                                                                                            },
+                                                                                            "runAfter": {},
                                                                                             "type": "Http",
                                                                                             "inputs": {
                                                                                                 "authentication": {
@@ -1541,13 +1257,11 @@
                                                                                             "description": "Use the graph to add the owners to the unified group. This will sync with Viva engage and the owners will become Viva engage community admins."
                                                                                         }
                                                                                     },
-                                                                                    "runAfter": {
-                                                                                    },
+                                                                                    "runAfter": {},
                                                                                     "type": "Foreach"
                                                                                 }
                                                                             },
-                                                                            "runAfter": {
-                                                                            },
+                                                                            "runAfter": {},
                                                                             "expression": {
                                                                                 "and": [
                                                                                     {
@@ -2342,7 +2056,7 @@
                             },
                             "type": "If"
                         },
-                         "Configure_space": {
+                        "Configure_space": {
                             "runAfter": {
                                 "Store_expiration_date": [
                                     "Succeeded"
@@ -2370,7 +2084,7 @@
                                             "joinHub": "@{triggerBody()?['JoinHub']}",
                                             "lcid": "@{triggerBody()?['LCID']}",
                                             "pnpTemplateURL": "@triggerBody()?['PnPTemplateURL']",
-                                            "siteTemplateTitle": "@triggerBody()?['SiteTemplateTitle']",                                            
+                                            "siteTemplateTitle": "@triggerBody()?['SiteTemplateTitle']",
                                             "spaceType": "@triggerBody()?['SpaceType']?['Value']",
                                             "storageQuota": "@variables('StorageQuota')",
                                             "storageQuotaWarning": "@variables('StorageQuotaWarning')",
@@ -2424,9 +2138,26 @@
                             "type": "Compose",
                             "inputs": "@join(variables('Visitors'),',')"
                         },
+                        "Get_Certificate": {
+                            "runAfter": {
+                                "Get_Client_Secret": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['keyvault']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "[concat('/secrets/@{encodeURIComponent(',variables('singlequote'),parameters('certName'),variables('singlequote'),')}/value')]"
+                            }
+                        },
                         "Get_Client_ID": {
                             "runAfter": {
-                                "Initialize_TeamsWelcomeMessage_variable": [
+                                "Initialize_SiteCreationBody_variable": [
                                     "Succeeded"
                                 ]
                             },
@@ -2441,7 +2172,7 @@
                                 "path": "/secrets/@{encodeURIComponent('appid')}/value"
                             },
                             "description": "Get Azure ad app client id from key vault.",
-                             "runtimeConfiguration": {
+                            "runtimeConfiguration": {
                                 "secureData": {
                                     "properties": [
                                         "inputs",
@@ -2467,7 +2198,7 @@
                                 "path": "/secrets/@{encodeURIComponent('appsecret')}/value"
                             },
                             "description": "Get Azure ad app client id from key vault.",
-                             "runtimeConfiguration": {
+                            "runtimeConfiguration": {
                                 "secureData": {
                                     "properties": [
                                         "inputs",
@@ -2499,7 +2230,7 @@
                                                         }
                                                     }
                                                 },
-                                                     "Case_DefaultExternalSharingSetting": {
+                                                "Case_DefaultExternalSharingSetting": {
                                                     "case": "DefaultExternalSharingSetting",
                                                     "actions": {
                                                         "Set_DefaultExternalSharingSetting_variable": {
@@ -2512,7 +2243,7 @@
                                                         }
                                                     }
                                                 },
-                                                   "Case_DefaultStorageQuota": {
+                                                "Case_DefaultStorageQuota": {
                                                     "case": "DefaultStorageQuota",
                                                     "actions": {
                                                         "Set_StorageQuota_variable": {
@@ -2551,7 +2282,7 @@
                                                         }
                                                     }
                                                 },
-                                                                                                "Case_EmailAccentColor": {
+                                                "Case_EmailAccentColor": {
                                                     "case": "EmailAccentColor",
                                                     "actions": {
                                                         "Set_EmailAccentColor_variable": {
@@ -2565,7 +2296,7 @@
                                                         }
                                                     }
                                                 },
-                                                   "Case_EnableAllowAccessRequests": {
+                                                "Case_EnableAllowAccessRequests": {
                                                     "case": "EnableAllowAccessRequests",
                                                     "actions": {
                                                         "Set_EnableAllowAccessRequests_variable": {
@@ -2578,7 +2309,7 @@
                                                         }
                                                     }
                                                 },
-                                                 "Case_EnableHubSitePermissionsSync": {
+                                                "Case_EnableHubSitePermissionsSync": {
                                                     "case": "EnableHubSitePermissionsSync",
                                                     "actions": {
                                                         "Set_SyncHubPermissions_variable": {
@@ -2591,7 +2322,7 @@
                                                         }
                                                     }
                                                 },
-                                                  "Case_FeaturesToActivate": {
+                                                "Case_FeaturesToActivate": {
                                                     "case": "FeaturesToActivate",
                                                     "actions": {
                                                         "Set_FeaturesToActivate_variable": {
@@ -2617,8 +2348,8 @@
                                                             }
                                                         }
                                                     }
-                                            },
-                                                                                            "Case_Sensitivity_Labels": {
+                                                },
+                                                "Case_Sensitivity_Labels": {
                                                     "case": "EnableSensitivityLabels",
                                                     "actions": {
                                                         "Set_EnableSensitivityLabels_variable": {
@@ -2631,7 +2362,7 @@
                                                         }
                                                     }
                                                 },
-                                                  "Case_TeamsWelcomeMessage": {
+                                                "Case_TeamsWelcomeMessage": {
                                                     "case": "TeamsWelcomeMessage",
                                                     "actions": {
                                                         "Set_TeamsWelcomeMessage_variable": {
@@ -2644,7 +2375,7 @@
                                                         }
                                                     }
                                                 },
-                                                 "Case_UseNamingConventions": {
+                                                "Case_UseNamingConventions": {
                                                     "case": "UseNamingConventions",
                                                     "actions": {
                                                         "Set_UseNamingConventions_variable": {
@@ -2696,7 +2427,7 @@
                         },
                         "Get_service_account_user_profile": {
                             "runAfter": {
-                                "Get_Client_Secret": [
+                                "Get_Certificate": [
                                     "Succeeded"
                                 ]
                             },
@@ -2760,7 +2491,7 @@
                                 ]
                             }
                         },
-                              "Initialize_DefaultExternalSharingSetting_variable": {
+                        "Initialize_DefaultExternalSharingSetting_variable": {
                             "runAfter": {
                                 "Initialize_EnableAllowAccessRequests_variable": [
                                     "Succeeded"
@@ -2776,7 +2507,7 @@
                                 ]
                             }
                         },
-                         "Initialize_DisableDocumentSync_variable": {
+                        "Initialize_DisableDocumentSync_variable": {
                             "runAfter": {
                                 "Initialize_SyncHubPermissions_variable": [
                                     "Succeeded"
@@ -2809,9 +2540,9 @@
                                 ]
                             }
                         },
-                          "Initialize_EnableAllowAccessRequests_variable": {
+                        "Initialize_EnableAllowAccessRequests_variable": {
                             "runAfter": {
-                                                        "Initialize_EnableSensitivityLabels_variable": [
+                                "Initialize_EnableSensitivityLabels_variable": [
                                     "Succeeded"
                                 ]
                             },
@@ -2826,7 +2557,7 @@
                                 ]
                             }
                         },
-                              "Initialize_EnableSensitivityLabels_variable": {
+                        "Initialize_EnableSensitivityLabels_variable": {
                             "runAfter": {
                                 "Initialize_SiteTemplateRequestBody_variable": [
                                     "Succeeded"
@@ -2843,7 +2574,7 @@
                                 ]
                             }
                         },
-                            "Initialize_FeaturesToActivate_variable": {
+                        "Initialize_FeaturesToActivate_variable": {
                             "runAfter": {
                                 "Initialize_DisableDocumentSync_variable": [
                                     "Succeeded"
@@ -2876,7 +2607,7 @@
                                 ]
                             }
                         },
-                             "Initialize_GroupCreatedDateTime_variable": {
+                        "Initialize_GroupCreatedDateTime_variable": {
                             "runAfter": {
                                 "Initialize_GroupID_variable": [
                                     "Succeeded"
@@ -2892,7 +2623,7 @@
                                 ]
                             }
                         },
-                          "Initialize_GroupID_variable": {
+                        "Initialize_GroupID_variable": {
                             "runAfter": {
                                 "Initialize_TeamID_variable": [
                                     "Succeeded"
@@ -3086,7 +2817,7 @@
                                 ]
                             }
                         },
-                          "Initialize_QuoteMark_variable": {
+                        "Initialize_QuoteMark_variable": {
                             "runAfter": {
                                 "Initialize_UseNamingConventions_variable": [
                                     "Succeeded"
@@ -3116,7 +2847,23 @@
                                         "name": "ServiceAccountUPN",
                                         "type": "string",
                                         "value": "[parameters('serviceAccountUPN')]"
-                                             }
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_SiteCreationBody_variable": {
+                            "runAfter": {
+                                "Initialize_TeamsWelcomeMessage_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "SiteCreationBody",
+                                        "type": "string"
+                                    }
                                 ]
                             }
                         },
@@ -3132,7 +2879,7 @@
                                     {
                                         "name": "SiteExists",
                                         "type": "Boolean",
-                                         "value": "@false"
+                                        "value": "@false"
                                     }
                                 ]
                             }
@@ -3202,7 +2949,7 @@
                                 ]
                             }
                         },
-                          "Initialize_TeamID_variable": {
+                        "Initialize_TeamID_variable": {
                             "runAfter": {
                                 "Initialize_TeamURL_variable": [
                                     "Succeeded"
@@ -3250,7 +2997,7 @@
                                 ]
                             }
                         },
-                         "Initialize_TeamsWelcomeMessage_variable": {
+                        "Initialize_TeamsWelcomeMessage_variable": {
                             "runAfter": {
                                 "Initialize_FeaturesToActivate_variable": [
                                     "Succeeded"
@@ -3312,7 +3059,7 @@
                                         "name": "TenantName",
                                         "type": "String",
                                         "value": "[parameters('tenantName')]"
-                                          }
+                                    }
                                 ]
                             }
                         },
@@ -3525,7 +3272,7 @@
                                             "actions": {
                                                 "Check_Guests_JSON_is_not_null": {
                                                     "actions": {
-                                                        "For_each": {
+                                                        "Loop_through_guests_in_Guests_JSON": {
                                                             "foreach": "@body('Parse_Guests_JSON')",
                                                             "actions": {
                                                                 "Add_guest_members_to_group": {
@@ -3536,12 +3283,13 @@
                                                                         "authentication": {
                                                                             "audience": "https://graph.microsoft.com",
                                                                             "clientId": "@body('Get_Client_ID')?['value']",
-                                                                            "secret": "@body('Get_Client_Secret')?['value']",
+                                                                            "password": "@null",
+                                                                            "pfx": "@body('Get_Certificate')?['value']",
                                                                             "tenant": "@variables('TenantID')",
                                                                             "type": "ActiveDirectoryOAuth"
                                                                         },
                                                                         "body": {
-                                                                            "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{items('For_each')['GuestId']}"
+                                                                            "@@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/@{items('Loop_through_guests_in_Guests_JSON')['GuestId']}"
                                                                         },
                                                                         "headers": {
                                                                             "content-type": "application/json"
@@ -3759,7 +3507,7 @@
                                 },
                                 "Check_if_space_is_a_Team_-_add_owners_as_members": {
                                     "actions": {
-                                                "Append_Owners_to_MembersGraph_variable": {
+                                        "Append_Owners_to_MembersGraph_variable": {
                                             "runAfter": {
                                                 "Append_Owners_to_Members_variable": [
                                                     "Succeeded"
@@ -3778,8 +3526,8 @@
                                             "inputs": {
                                                 "name": "Members",
                                                 "value": "https://graph.microsoft.com/v1.0/users/@{body('Get_owner_user_profile')?['id']}"
-                                            }                                        
-                                                                                        }
+                                            }
+                                        }
                                     },
                                     "runAfter": {
                                         "Append_to_OwnerIDs_variable": [
@@ -3815,7 +3563,7 @@
                                 }
                             },
                             "runAfter": {
-                                      "Check_if_space_exists": [
+                                "Check_if_space_exists": [
                                     "Succeeded"
                                 ]
                             },
@@ -3935,7 +3683,8 @@
                                                         "authentication": {
                                                             "audience": "https://graph.microsoft.com",
                                                             "clientId": "@body('Get_Client_ID')?['value']",
-                                                            "secret": "@body('Get_Client_Secret')?['value']",
+                                                            "password": "@null",
+                                                            "pfx": "@body('Get_Certificate')?['value']",
                                                             "tenant": "@variables('TenantID')",
                                                             "type": "ActiveDirectoryOAuth"
                                                         },
@@ -3981,14 +3730,15 @@
                                                         "authentication": {
                                                             "audience": "https://graph.microsoft.com",
                                                             "clientId": "@body('Get_Client_ID')?['value']",
-                                                            "secret": "@body('Get_Client_Secret')?['value']",
+                                                            "password": "@null",
+                                                            "pfx": "@body('Get_Certificate')?['value']",
                                                             "tenant": "@variables('TenantID')",
                                                             "type": "ActiveDirectoryOAuth"
                                                         },
                                                         "method": "DELETE",
                                                         "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners/@{body('Get_service_account_user_profile')?['id']}/$ref"
                                                     }
-                                                     },
+                                                },
                                                 "Wait_for_owner_to_be_added_-_post_welcome_message": {
                                                     "runAfter": {
                                                         "Add_service_account_to_group_-_post_welcome_message": [
@@ -4031,7 +3781,7 @@
                                             "actions": {
                                                 "Check_TeamsTemplateOperation_value": {
                                                     "actions": {
-                                                                                                                "Get_create_team_operation": {
+                                                        "Get_create_team_operation": {
                                                             "runAfter": {
                                                                 "Parse_create_team_JSON": [
                                                                     "Succeeded"
@@ -4042,7 +3792,8 @@
                                                                 "authentication": {
                                                                     "audience": "https://graph.microsoft.com",
                                                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                                                    "password": "@null",
+                                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                                     "tenant": "@variables('TenantID')",
                                                                     "type": "ActiveDirectoryOAuth"
                                                                 },
@@ -4064,7 +3815,8 @@
                                                                 "authentication": {
                                                                     "audience": "https://graph.microsoft.com",
                                                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                                                    "password": "@null",
+                                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                                     "tenant": "@variables('TenantID')",
                                                                     "type": "ActiveDirectoryOAuth"
                                                                 },
@@ -4295,7 +4047,7 @@
                                                                 "name": "GroupID",
                                                                 "value": "@body('Parse_created_team_JSON')?['id']"
                                                             }
-                                                               },
+                                                        },
                                                         "Set_TeamID_variable": {
                                                             "runAfter": {
                                                                 "Parse_created_team_JSON": [
@@ -4307,8 +4059,8 @@
                                                                 "name": "TeamID",
                                                                 "value": "@body('Parse_created_team_JSON')?['id']"
                                                             }
-                                                                }
-                                                            },
+                                                        }
+                                                    },
                                                     "runAfter": {},
                                                     "expression": {
                                                         "or": [
@@ -4341,7 +4093,8 @@
                                                                         "authentication": {
                                                                             "audience": "https://graph.microsoft.com",
                                                                             "clientId": "@body('Get_Client_ID')?['value']",
-                                                                            "secret": "@body('Get_Client_Secret')?['value']",
+                                                                            "password": "@null",
+                                                                            "pfx": "@body('Get_Certificate')?['value']",
                                                                             "tenant": "@variables('TenantID')",
                                                                             "type": "ActiveDirectoryOAuth"
                                                                         },
@@ -4365,7 +4118,8 @@
                                                                                         "authentication": {
                                                                                             "audience": "https://graph.microsoft.com",
                                                                                             "clientId": "@body('Get_Client_ID')?['value']",
-                                                                                            "secret": "@body('Get_Client_Secret')?['value']",
+                                                                                            "password": "@null",
+                                                                                            "pfx": "@body('Get_Certificate')?['value']",
                                                                                             "tenant": "@variables('TenantID')",
                                                                                             "type": "ActiveDirectoryOAuth"
                                                                                         },
@@ -4437,7 +4191,8 @@
                                                                                         "authentication": {
                                                                                             "audience": "https://graph.microsoft.com",
                                                                                             "clientId": "@body('Get_Client_ID')?['value']",
-                                                                                            "secret": "@body('Get_Client_Secret')?['value']",
+                                                                                            "password": "@null",
+                                                                                            "pfx": "@body('Get_Certificate')?['value']",
                                                                                             "tenant": "@variables('TenantID')",
                                                                                             "type": "ActiveDirectoryOAuth"
                                                                                         },
@@ -4812,7 +4567,8 @@
                                                                                                 "authentication": {
                                                                                                     "audience": "https://graph.microsoft.com",
                                                                                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                                                                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                                                                                    "password": "@null",
+                                                                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                                                                     "tenant": "@variables('TenantID')",
                                                                                                     "type": "ActiveDirectoryOAuth"
                                                                                                 },
@@ -4860,11 +4616,11 @@
                                                         }
                                                     },
                                                     "runAfter": {
-                                                          "Check_TeamsTemplateOperation_value": [
+                                                        "Check_TeamsTemplateOperation_value": [
                                                             "Succeeded"
-                                                            ]
+                                                        ]
                                                     },
-                                                        "expression": {
+                                                    "expression": {
                                                         "and": [
                                                             {
                                                                 "equals": [
@@ -4976,7 +4732,7 @@
                                 "path": "/Mail"
                             }
                         },
-                                                "Set_external_sharing": {
+                        "Set_external_sharing": {
                             "actions": {
                                 "Check_if_external_sharing_is_not_required": {
                                     "actions": {
@@ -4987,7 +4743,8 @@
                                                 "authentication": {
                                                     "audience": "https://graph.microsoft.com",
                                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                     "tenant": "@variables('TenantID')",
                                                     "type": "ActiveDirectoryOAuth"
                                                 },
@@ -5111,8 +4868,9 @@
                                             "inputs": {
                                                 "authentication": {
                                                     "audience": "https://graph.microsoft.com",
-                                                    "clientId": "@body('Get_Client_ID')?['Value']",
-                                                    "secret": "@body('Get_Client_Secret')?['Value']",
+                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                     "tenant": "@variables('TenantID')",
                                                     "type": "ActiveDirectoryOAuth"
                                                 },
@@ -5131,7 +4889,8 @@
                                                 "authentication": {
                                                     "audience": "https://graph.microsoft.com",
                                                     "clientId": "@body('Get_Client_ID')?['value']",
-                                                    "secret": "@body('Get_Client_Secret')?['value']",
+                                                    "password": "@null",
+                                                    "pfx": "@body('Get_Certificate')?['value']",
                                                     "tenant": "@variables('TenantID')",
                                                     "type": "ActiveDirectoryOAuth"
                                                 },
@@ -5321,7 +5080,7 @@
                             "type": "ApiConnection",
                             "inputs": {
                                 "body": {
-                                     "GroupId": "@variables('GroupID')",
+                                    "GroupId": "@variables('GroupID')",
                                     "Status": {
                                         "Value": "Space Created"
                                     },
@@ -5357,8 +5116,8 @@
                                 "method": "patch",
                                 "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(triggerBody()?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
                             }
-                         }
-                },
+                        }
+                    },
                     "outputs": {}
                 },
                 "parameters": {
@@ -5397,7 +5156,7 @@
                         }
                     }
                 }
-        }
+            }
         }
     ]
 }

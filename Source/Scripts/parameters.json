@@ -35,6 +35,18 @@
         "Value": "<<value>>",
         "Description": "Name for the Azure ad app that will be created."
     },
+    "createSelfSignedCert": {
+        "Value": true,
+        "Description": "Specifies whether a self signed certificate should be created and uploaded to the AD app and Key Vault. If set to false, the certificate must be uploaded manually to the app registration and Key Vault."
+    },
+    "certName": {
+        "Value": "<<value>>",
+        "Description": "Name for the self signed certificate that will be created (if createSelfSignedCert is set to true)."
+    },
+    "certValidityDays": {
+        "Value": 365,
+        "Description": "Number of days the self signed certificate will be valid for (if createSelfSignedCert is set to true)."
+    },
     "siteLogoPath": {
         "Value": "<<value>>",
         "Description": "Path to a company logo which will be set as the site logo for Communication sites and no Group Team Sites when provisioned. Optional - can be left blank."

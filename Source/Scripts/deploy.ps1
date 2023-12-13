@@ -114,6 +114,7 @@ $global:appId = $null
 $global:appSecret = $null
 $global:appServicePrincipalId = $null
 $global:siteClassifications = $null
+$global:tenantUrl = $null
 
 # Validates if a parameter in the json file is valid
 function IsValidParam {
@@ -198,6 +199,16 @@ function ValidateParameters {
     
     if (-not (IsValidParam($parameters.keyVaultName))) {
         Write-Host "Invalid keyVaultName" -ForegroundColor Red
+        $isValid = $false;
+    }
+
+    if (-not (IsValidParam($parameters.certName))) {
+        Write-Host "Invalid certName" -ForegroundColor Red
+        $isValid = $false;
+    }
+
+    if (-not (IsValidParam($parameters.certValidityDays))) {
+        Write-Host "Invalid certValidityDays" -ForegroundColor Red
         $isValid = $false;
     }
 
@@ -385,7 +396,7 @@ function ConfigureSharePointSite {
         $siteRequestSettings = Import-Excel "$packageRootPath$settingsPath" -WorksheetName $provRequestSettingsWorksheetName
         foreach ($setting in $siteRequestSettings) {
             if ($setting.Title -eq "TenantURL") {
-                $setting.Value = $tenantUrl
+                $setting.Value = $global:tenantUrl
             }
             if ($setting.Title -eq "SPOManagedPath") {
                 $setting.Value = $parameters.managedPath.Value
@@ -734,15 +745,13 @@ function CreateAutomationRoleAssignments {
 
     $jobOperatorRoleAssignment = Get-AzRoleAssignment -ObjectId $global:appServicePrincipalId -ResourceName $automationAccountName -ResourceType Microsoft.Automation/automationAccounts -ResourceGroupName $parameters.resourceGroupName.Value -RoleDefinitionName "Automation Job Operator"
 
-    if($null -eq $jobOperatorRoleAssignment)
-    {
+    if ($null -eq $jobOperatorRoleAssignment) {
         New-AzRoleAssignment -ObjectId $global:appServicePrincipalId -RoleDefinitionName "Automation Job Operator" -ResourceName $automationAccountName -ResourceType Microsoft.Automation/automationAccounts -ResourceGroupName $parameters.resourceGroupName.Value
     }
 
     $runbookOperatorRoleAssignment = Get-AzRoleAssignment -ObjectId $global:appServicePrincipalId -ResourceName $automationAccountName -ResourceType Microsoft.Automation/automationAccounts -ResourceGroupName $parameters.resourceGroupName.Value -RoleDefinitionName "Automation Runbook Operator"
 
-    if($null -eq $runbookOperatorRoleAssignment)
-    {
+    if ($null -eq $runbookOperatorRoleAssignment) {
         New-AzRoleAssignment -ObjectId $global:appServicePrincipalId -RoleDefinitionName "Automation Runbook Operator" -ResourceName $automationAccountName -ResourceType Microsoft.Automation/automationAccounts -ResourceGroupName $parameters.resourceGroupName.Value
 
     }
@@ -761,16 +770,16 @@ function AssignManagedIdentityPermissions {
         $spoResource = Get-MgServicePrincipal -Filter "DisplayName eq 'Office 365 SharePoint Online'"
 
         # Get the app role we need to assign
-        $spoFullControlAppRole = $spoResource.AppRoles | Where-Object {$_.value -eq 'Sites.FullControl.All'}
+        $spoFullControlAppRole = $spoResource.AppRoles | Where-Object { $_.value -eq 'Sites.FullControl.All' }
 
         # Get existing role assignments
         $roles = Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id
 
-         # Build the params
+        # Build the params
         $spoParams = @{
             "PrincipalId" = $paAutoServicePrincipal.Id 
-            "ResourceId" = $spoResource.Id
-            "AppRoleId" = $spoFullControlAppRole.Id
+            "ResourceId"  = $spoResource.Id
+            "AppRoleId"   = $spoFullControlAppRole.Id
         }
 
         # Check that the role assigments do not already exist
@@ -804,19 +813,19 @@ function DeployARMTemplates {
 
         Write-Host "ProcessGuests" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/processguests.json' --parameters  "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "location=$($global:location)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/processguests.json' --parameters  "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "location=$($global:location)" "certName=$($parameters.certName.Value)"
 
         Write-Host "CheckSiteExists" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/checksiteexists.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "spoTenantName=$($parameters.spoTenantName.Value).sharepoint.com" "location=$($global:location)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/checksiteexists.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "spoTenantName=$($parameters.spoTenantName.Value)" "location=$($global:location)" "certName=$($parameters.certName.Value)"
         
         Write-Host "ProcessProvisionRequest" -ForegroundColor Yellow
         
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/processprovisionrequest.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "automationAccountName=$automationAccountName" "requestsSiteUrl=$requestsSiteUrl" "requestsListId=$global:requestsListId" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId" "tenantName=$($parameters.spoTenantName.Value)" "serviceAccountUPN=$($parameters.serviceAccountUPN.value)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/processprovisionrequest.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "automationAccountName=$automationAccountName" "requestsSiteUrl=$requestsSiteUrl" "requestsListId=$global:requestsListId" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId" "tenantName=$($parameters.spoTenantName.Value)" "serviceAccountUPN=$($parameters.serviceAccountUPN.value)" "certName=$($parameters.certName.Value)" "spoRootSiteUrl=$global:tenantUrl"
     
         Write-Host "SyncGroupSettings" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/syncgroupsettings.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/syncgroupsettings.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "requestsSettingsListId=$global:requestsSettingsListId" "certName=$($parameters.certName.Value)"
 
         Write-Host "GetSiteTemplates" -ForegroundColor Yellow
 
@@ -824,15 +833,15 @@ function DeployARMTemplates {
         
         Write-Host "GetHubSites" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/gethubsites.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "tenantName=$($parameters.spoTenantName.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "hubSitesListId=$global:hubSitesListId"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/gethubsites.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "tenantName=$($parameters.spoTenantName.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "hubSitesListId=$global:hubSitesListId" "certName=$($parameters.certName.Value)" "spoRootSiteUrl=$global:tenantUrl"
         
         Write-Host "SyncLabels" -ForegroundColor Yellow
         
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/synclabels.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "location=$($global:location)" "requestsSiteUrl=$requestsSiteUrl" "ipLabelsListId=$global:ipLabelsListId"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/synclabels.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "tenantId=$($parameters.tenantId.Value)" "location=$($global:location)" "requestsSiteUrl=$requestsSiteUrl" "ipLabelsListId=$global:ipLabelsListId" "certName=$($parameters.certName.Value)" "certName=$($parameters.certName.Value)"
 
         Write-Host "GetTeamsTemplates" -ForegroundColor Yellow
 
-        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/getteamstemplates.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "teamsTemplatesListId=$global:teamsTemplatesListId" "tenantId=$($parameters.tenantId.Value)"
+        az deployment group create --resource-group $parameters.resourceGroupName.Value --subscription $parameters.subscriptionId.Value --template-file '../ARMTemplates/LogicApps/getteamstemplates.json' --parameters "resourceGroupName=$($parameters.resourceGroupName.Value)" "subscriptionId=$($parameters.subscriptionId.Value)" "requestsSiteUrl=$requestsSiteUrl" "location=$($global:location)" "teamsTemplatesListId=$global:teamsTemplatesListId" "tenantId=$($parameters.tenantId.Value)" "certName=$($parameters.certName.Value)"
         
         Write-Host "Finished deploying logic apps" -ForegroundColor Green
     }
@@ -921,6 +930,34 @@ function ValidateKeyVault {
 
 }
 
+function GenerateSelfSignedCertificate {
+    try {
+
+        If ($parameters.createSelfSignedCert.Value) {
+
+            Write-Host "Generating self-signed certificate..." -ForegroundColor Yellow
+
+            $currDate = Get-Date
+
+            $certEndDate = $currDate.AddDays($parameters.certValidityDays.Value) | Get-Date -Format 'yyyy/MM/dd'
+
+            az ad app credential reset --id $global:appId --create-cert --keyvault $parameters.keyVaultName.Value --cert $parameters.certName.Value --end-date $certEndDate --append
+    
+            Write-Host "Finished creating self-signed certificate." -ForegroundColor Green
+        }
+        else {
+            Write-Host "You chose not to generate a self signed certificate. Please upload your certificate to the app registration and key vault. Ensure the certificate name matches that in the parameters.json file." -ForegroundColor Yellow
+
+            Write-Host "Press enter to continue..." -ForegroundColor Yellow   
+    
+            Read-Host
+        }
+    }
+    catch {
+        throw('Failed to generate self-signed certificate {0}', $_.Exception.Message)
+    }
+}
+
 $ErrorActionPreference = "stop"
 
 Write-Host "###  DEPLOYMENT SCRIPT STARTED `n(c) Microsoft Corporation ###" -ForegroundColor Magenta
@@ -945,7 +982,7 @@ Write-Host "Parameters are valid" -ForegroundColor Green
 
 Write-Ascii -InputObject "Provision Assist" -ForegroundColor Green
 
-$tenantUrl = "https://$($parameters.spoTenantName.Value).sharepoint.com"
+$global:tenantUrl = "https://$($parameters.spoTenantName.Value).sharepoint.com"
 $requestsSiteAlias = $parameters.requestsSiteName.Value -replace (' ', '')
 $requestsSiteUrl = "https://$($parameters.spoTenantName.Value).sharepoint.com/$($parameters.managedPath.Value)/$requestsSiteAlias"
 
@@ -977,6 +1014,7 @@ Write-Host "Launching PnP sign-in..." -ForegroundColor Yellow
 Connect-PnPOnline -Url "https://$($parameters.spoTenantName.Value)-admin.sharepoint.com" -Interactive
 Write-Host "Connected to SPO" -ForegroundColor Green
 
+$currUserId = az ad signed-in-user show --query id | ConvertFrom-Json
 CreateAzureADAppSecret
 GetSiteClassifications
 CreateRequestsSharePointSite
@@ -1005,10 +1043,12 @@ If ($parameters.enableSensitivity.Value) {
 }
 
 Write-Host "Deploying key vault and automation account..." -ForegroundColor Yellow
-az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "appClientId=$($global:appId)" "appSecret=$($global:appSecret)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)"
+az deployment group create --resource-group $parameters.resourceGroupName.Value --template-file "../ARMTemplates/azureresources.bicep" --parameters "tenantId=$($parameters.tenantId.Value)" "appClientId=$($global:appId)" "appSecret=$($global:appSecret)" "logoUrl=$($parameters.logoUrl.Value)" "keyVaultName=$($parameters.keyVaultName.Value)" "appServicePrincipalId=$($global:appServicePrincipalId)" "saUsername=$($saUsername)" "saPassword=$($saPassword)" "currentUserobjectId=$($currUserId)"
 CreateAutomationRoleAssignments
 AssignManagedIdentityPermissions
 Write-Host "Finished deploying key vault and automation account..." -ForegroundColor Green
+
+GenerateSelfSignedCertificate
 
 DeployARMTemplates
 
