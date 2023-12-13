@@ -14,6 +14,7 @@ To begin, you will need:
 - Firewall/Proxy configured to allow connectivity using the Azure CLI - please test the 'az login' cmdlet works before proceeding.
  - Global Administrator (to execute the `createazureadapp.ps1` script and authorize PnP PowerShell).
  - A user account with **Owner** rights to the Azure Subscription that is also a SharePoint, Power Platform and Teams Administrator. 
+ - A certificate (self-signed is ok) to use for Microsoft Graph and SharePoint REST API authentication (**Optional** as the deployment script will create a self-signed cert for you if preffered). 
 
 #### PowerShell Modules
 
@@ -68,6 +69,12 @@ You may refer to the following to understand each parameter:
 - `resourceGroupName` - Name for a new resource group to deploy the solution to - the script will create this resource group.
 
  - `appName` - Name for the Azure AD app that will be created e.g. `ProvisionAssist`.
+
+ - `createSelfSignedCert` - Specifies whether to create a self-signed certificate as part of the deployment. If set to true, a self-signed cert will be created through the Azure CLI with the name specified in the 'certName' parameter.
+
+ - `certName` - Name for the self-signed certificate e.g. 'provisionassist'. If you are creating your own certificate, this parameter is still mandatory and should match the name of your certificate.
+
+ - `certValidityDays` - Number of days that the certificate is valid for (if 'createSelfSignedCert' is set to true). The default is 365 days.
 
 - `siteLogoPath` (**Optional)** - Path to a company logo (ideally stored in SharePoint) that all users can access to set as the logo for created sites. Please ensure this path is to an image, if you don't have an image leave this blank.
 
@@ -127,40 +134,7 @@ In Microsoft Azure portal go to the resource group that was created by the scrip
 3. Click "Authorize". Use the Service Account to authenticate.
 4. Repeate the above actions for "provisionassist-o365users", "provisionassist-spo" and "provisionassist-teams" API connections.
 
- ## Step 4: Register Azure AD app as a SharePoint add-in
-
- The Azure AD Application must be registered as a SharePoint add-in. This is required for the solution to perform various operations against the SharePoint tenant such as checking if a given SharePoint site already exists in the tenant recycle bin, as well as retrieving a list of Hub Sites/Site Templates and more.
-
- **IMPORTANT**
-
- This solution relies on ACS to work which has been retired but is still available. For tenants created **after August 2020**, the option to use an ACS app-only token is disabled and this **MUST be enabled** to work. More details can be found here - Granting access using SharePoint App-Only 
-
-Before proceeding with the below, enable ACS on the tenant by carrying out the following -
-
-Using the SharePoint Online Management Shell, connect to your SharePoint tenant
-
-Run the following cmdlet -
-
-```Set-SPOTenant -DisableCustomAppAuthentication $false```
-
-Wait approximately 1 hour to allow this setting to be applied.
-
-**Registering SharePoint add-in**
-
-1. Navigate to the following page in the SharePoint Admin Center - https://contoso-admin.sharepoint.com/_layouts/15/appinv.aspx  and enter the following information (replace contoso with the name of your tenant):
-
-App Id: Application ID of the Azure AD app (Locate the Azure AD app created by the createazureadapp script in Azure Active Directory [https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade ] and copy the Application ID).
-
-2. Click 'Lookup'.
-3. In the 'App Domain' text box, enter a suitable domain. You can specify any domain you want but do not include protocols (https) or slashes(/). For example you can use your companies SharePoint URL e.g. contoso.sharepoint.com .
-4. In the App's Permissions Request XML text box, enter the following XML:
-
-```<AppPermissionRequests AllowAppOnlyPolicy="true"> <AppPermissionRequest Scope="http://sharepoint/content/tenant" Right="FullControl" /> </AppPermissionRequests>```
-
-5. Click 'Create'.
-6. Click 'Trust It'.
-
- ## Step 5: Configure approval process
+ ## Step 4: Configure approval process
 
 Approval of requests in the solution can take place in two ways:
 
@@ -211,7 +185,7 @@ The text shown in <span style="color:red">red</span> is the Group Id. The text s
 
 The approvals will now use adaptive cards in Teams. Please revisit this section of the deployment guide if you want to switch to Power Automate Approvals in the future.
 
-## Step 6: Deploy Power Apps solution
+## Step 5: Deploy Power Apps solution
 
 1. Sign in with the service account that you created for the Provision Assist solution. **This is an important step, you must not use the account that you used to deploy the resources.**
 2. Navigate to the Power Apps portal.
@@ -242,7 +216,7 @@ The approvals will now use adaptive cards in Teams. Please revisit this section 
 
 The solution has now been imported, please proceed to the next step to configure the Power App.
 
-## Step 7: Configure Provision Assist Power App
+## Step 6: Configure Provision Assist Power App
 
 **At the time of writing there is known bug with Environment Variables in the Power Platform which causes them to remain connected to the source tenant. The Power App needs to be edited and re-pointed at the variables.**
 
@@ -278,7 +252,7 @@ Therefore this step of the deployment guide is only required while the bug remai
 13. Save and publish the Power App using the icons in the top right. 
 14. Close the app. 
 
-## Step 8: Share Power App, Flows and SharePoint site
+## Step 7: Share Power App, Flows and SharePoint site
 
 Before Provision Assist can be rolled out, the Power App and SharePoint site need to be shared with all users to will submit requests.
 
@@ -331,7 +305,7 @@ The steps below will share the SharePoint site with end users, giving them acces
 
 **Note:** Every user accessing the app for the first time will be prompted to consent to accessing the data sources. The user should click on 'Allow' to proceed. This can be bypassed by using the Power Apps admin PowerShell module. See the [Solution Overview](/Solution-Overview) for more details. It is recommended to disable the consent popup using PowerShell before production deployment.
 
-## Step 9: Add the app to Teams
+## Step 8: Add the app to Teams
 
 1. Navigate to the Power Apps portal as the account you wish to install the app for and click 'Apps' in the left pane, you should see the Provision Assist Power App. **You may need to select the correct Environment in which you deployed the solution from the Environment menu at the top**.
 2. Select the app and click 'Add to Teams' from the top menu bar.
@@ -344,7 +318,7 @@ Add the app to Teams globally using policies in the Teams Admin Center OR sidelo
 
 If you wish to roll the app out via policies, please refer to our general documentation on docs.microsoft.com for how to upload to the Teams Admin Center and deploy globally.
 
-## Step 10: Running/Configuring supporting Logic Apps
+## Step 9: Running/Configuring supporting Logic Apps
 
 There are a few supporting Logic Apps which should be executed manually after the initial deployment.
 
@@ -367,7 +341,7 @@ Follow these steps to run them 'on demand':
 5. Once the logic app has executed, you should see a status of 'Succeeded' in the run history.
 6. Repeat the steps to execute each logic app.
 
-## Step 11: Set up Admins group
+## Step 10: Set up Admins group
 
 The Provision Assist Power App leverages a setting in the 'Provisioning Request Settings' list to determine whether or not to display the 'settings' screen to a user in the app. Settings for the solution can be configured via this screen as an alternative to using the settings list in the SharePoint site. *At the time of writing this screen is experimental and should be considered a work in progress.* Settings should be visible to Administrators of Provision Assist only. Before following the steps, please create one of the following (or use an existing) which will contain the admins for Provision Assist:
 
@@ -390,7 +364,7 @@ The admins group is now set up and configured.
 
 ## Deployment of the solution is now complete and the app should be accessible in Teams.
 
-## Step 12 (Optional): Enable provisioning of Viva Engage Communities
+## Step 11 (Optional): Enable provisioning of Viva Engage Communities
 
 Provision Asssist includes the ability to provision Viva Engage Communities, this is disabled upon deployment because it requires an App to be registered through the Yammer Developer Center and a developer token to be generated.
 
