@@ -25,7 +25,7 @@ The following PowerShell modules are used by the deployment script and must be i
 - AzureADPreview
 - ImportExcel
 - WriteAscii
-- Microsoft.Graph
+- Microsoft.Graph (Due to a dependency issue, please install version 2.9.1 ONLY)
 
 Once installed, please perform the following steps to 'authorize' the PnP Management Shell (PnP PowerShell). PnP now uses an Azure AD app registration to carry out operations, this requires the consent of a **Global Administrator** and must be performed BEFORE the main deployment script can be executed.
 
