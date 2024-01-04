@@ -341,7 +341,17 @@ Follow these steps to run them 'on demand':
 5. Once the logic app has executed, you should see a status of 'Succeeded' in the run history.
 6. Repeat the steps to execute each logic app.
 
-## Step 10: Set up Admins group
+## Step 10 (Optional): Enabling Site Templates & Hub Sites
+
+Before Hub Sites and Site Templates are visible to end users in the Power App, they must be 'Enabled'.
+
+There is a Yes/No column named 'Enabled' in the 'Hub Sites' and 'Site Templates' lists. If you wish to make a specific template visible to end users please edit the list items and set the value of the column to true.
+
+The reason for this column is to allow admins the flexibility to show/hide Site Templates and Hub Sites.
+
+![Enabled column in Site Templates list](/Images/SiteTemplatesListEnabled.png)
+
+## Step 11: Set up Admins group
 
 The Provision Assist Power App leverages a setting in the 'Provisioning Request Settings' list to determine whether or not to display the 'settings' screen to a user in the app. Settings for the solution can be configured via this screen as an alternative to using the settings list in the SharePoint site. *At the time of writing this screen is experimental and should be considered a work in progress.* Settings should be visible to Administrators of Provision Assist only. Before following the steps, please create one of the following (or use an existing) which will contain the admins for Provision Assist:
 
@@ -364,7 +374,7 @@ The admins group is now set up and configured.
 
 ## Deployment of the solution is now complete and the app should be accessible in Teams.
 
-## Step 11 (Optional): Enable provisioning of Viva Engage Communities
+## Step 12 (Optional): Enable provisioning of Viva Engage Communities
 
 Provision Asssist includes the ability to provision Viva Engage Communities, this is disabled upon deployment because it requires an App to be registered through the Yammer Developer Center and a developer token to be generated.
 
