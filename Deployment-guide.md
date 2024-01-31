@@ -263,10 +263,10 @@ Follow the steps below to do this.
 1. Navigate to the Power Apps portal as the service account.
 2. Click 'Flows' in the left hand pane and locate the **Check Space Availability** flow.
 3. Click on the flow.
-4. Click 'Edit' next to 'Run only users' 
+4. Click 'Edit' next to 'Run only users'.
 5. In the pane that appears, select the 'SharePoint' tab.
 6. Select the Provision Assist site and 'Provisioning Requests' list in the drop downs beneath.
-7. Leave the default values for the 'Connectioons Used' section and click 'Save'.
+7. Set the values in the 'Connections Used' drop downs to use the connection from the owner of the flow.
 
 ![Run only users screenshot](/Images/RunOnlyUsers.png)
 
