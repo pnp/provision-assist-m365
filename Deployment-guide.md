@@ -423,3 +423,11 @@ To enable this functionality, please perform the following steps:
 11. Edit the list item entitled **Viva Engage Community** and set the **Allowed** column to **Yes**.
 12. Launch the Provision Assist Power App and complete a test request. Observe that the **Recommendation** step now displays an option to select a Viva Engage Community.
 13. Viva Engage Community provisioning is now enabled.
+
+## Step 14 (Optional): Enable auto approval (disabling approval process)
+
+If you do not wish to use the provided Power Automate approval process, you can enable 'Auto approval' through the 'Provisioning Request Settings' list.
+
+To turn this on, simply navigate to the settings list, edit the list item named 'EnableAutoApproval' and set the Value column to 'true'.
+
+When users submit requests through the Power App, the status will be set to 'Approved' meaning the approval flow will not run and therefore the provisioning process will start straight away.
