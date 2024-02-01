@@ -461,6 +461,7 @@ function ConfigureSharePointSite {
             $newitem["WebTemplateId"] = $provType.WebTemplateID
             $newitem["LearnVideoURL"] = $provType.LearnVideo
             $newItem["InternalTitle"] = $provType.InternalTitle
+            $newitem["DefaultVisibility"] = $provType.DefaultVisibility
             $newitem.Update()
             $context.ExecuteQuery()
         }
