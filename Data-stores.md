@@ -70,6 +70,8 @@ See the [Provisioning types](./Provisioning-types.md) documentation to find out 
 |Suffix Atribute|Choice|Attribute to use for the suffix.|
 |Visible To|Person or Group|Security group containing users who this collaboration space type should be visible to. This MUST be a group and not individual users. If this column is left blank then the collaboration space type will be visible to all users who have access to the app. An example where this could be used is to restrict the creation of Communication Sites to those in Corporate Comms.
 |Managed Path|Single line of text|Managed path to use when creating collaboration spaces using this type. You can use this to create SharePoint sites under the 'sites' managed path even if your tenant default is 'teams'.
+|Default Visibility|Choice|Default visibility - 'Private' or 'Public' for this space type.
+|Default Confidential Data|Yes/No|Default value for the Confidential Data radio button for this space type.
 
 **Recommendation Scoring**
 
