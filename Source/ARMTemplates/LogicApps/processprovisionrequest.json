@@ -570,7 +570,7 @@
                                                     "type": "SetVariable",
                                                     "inputs": {
                                                         "name": "MembersRequestBody",
-                                                        "value": "{\n  \"description\": \"@{triggerBody()?['Description']}\",\n  \"displayName\": \"@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])}\",\n  \"groupTypes\": [\n    \"Unified\"\n  ],\n  \"mailEnabled\": true,\n  \"mailNickname\": \"@{triggerBody()?['MailboxAlias']}\",\n  \"members@odata.bind\": @{variables('MembersGraph')},\n  \"owners@odata.bind\": @{variables('OwnersGraph')},\n  \"securityEnabled\": false,\n\"visibility\":\"@{triggerBody()?['Visibility']?['Value']}\",\n\"classification\": @{if(empty(triggerBody()?['Classification']),'null',concat('\"',triggerBody()?['Classification'],'\"'))},\n\"resourceBehaviorOptions\":[@{if(equals(triggerBody()?['SpaceType']?['Value'],'Microsoft Teams Team'),concat(variables('QuoteMark'),'WelcomeEmailDisabled',variables('QuoteMark')),'')}]\n}"
+                                                        "value": "{\n  \"description\": \"@{triggerBody()?['Description']}\",\n  \"displayName\": \"@{If(equals(variables('UseNamingConventions'),true),If(and(equals(empty(triggerBody()?['Prefix']),true),equals(empty(triggerBody()?['Suffix']),true)),triggerBody()?['Title'],concat(triggerBody()?['Prefix'],triggerBody()?['SiteAlias'],triggerBody()?['Suffix'])),triggerBody()?['Title'])}\",\n  \"groupTypes\": [\n    \"Unified\"\n  ],\n  \"mailEnabled\": true,\n  \"mailNickname\": \"@{triggerBody()?['MailboxAlias']}\",\n  \"members@odata.bind\": @{if(greater(variables('MembersOwnersCount'),20),take(variables('MembersGraph'),10),variables('MembersGraph'))},\n  \"owners@odata.bind\": @{if(greater(variables('MembersOwnersCount'),20),take(variables('OwnersGraph'),10),variables('OwnersGraph'))},\n  \"securityEnabled\": false,\n\"visibility\":\"@{triggerBody()?['Visibility']?['Value']}\",\n\"classification\": @{if(empty(triggerBody()?['Classification']),'null',concat('\"',triggerBody()?['Classification'],'\"'))},\n\"resourceBehaviorOptions\":[@{if(equals(triggerBody()?['SpaceType']?['Value'],'Microsoft Teams Team'),concat(variables('QuoteMark'),'WelcomeEmailDisabled',variables('QuoteMark')),'')}]\n}"
                                                     }
                                                 }
                                             },
@@ -1229,12 +1229,12 @@
                                                                 "Loop_through_owners_-_Viva_engage_group": {
                                                                     "foreach": "@variables('Owners')",
                                                                     "actions": {
-                                                                        "Check_if_owner_does_not_already_exist_in_the_group": {
+                                                                        "Check_if_owner_does_not_already_exist_in_the_viva_engage_group": {
                                                                             "actions": {
                                                                                 "Loop_through_Viva_engage_unified_groups": {
                                                                                     "foreach": "@body('Parse_viva_engage_unified_group_JSON')?['value']",
                                                                                     "actions": {
-                                                                                        "Add_owner_to_group": {
+                                                                                        "Add_viva_engage_group_owner": {
                                                                                             "runAfter": {},
                                                                                             "type": "Http",
                                                                                             "inputs": {
@@ -2119,10 +2119,7 @@
                         },
                         "Create_Owners_string": {
                             "runAfter": {
-                                "Loop_through_Members": [
-                                    "Succeeded"
-                                ],
-                                "Loop_through_Owners": [
+                                "Set_MembersOwnersCount_variable": [
                                     "Succeeded"
                                 ]
                             },
@@ -2157,7 +2154,7 @@
                         },
                         "Get_Client_ID": {
                             "runAfter": {
-                                "Initialize_SiteCreationBody_variable": [
+                                "Initialize_MembersOwnersCount": [
                                     "Succeeded"
                                 ]
                             },
@@ -2716,6 +2713,22 @@
                                     {
                                         "name": "MembersGraph",
                                         "type": "Array"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_MembersOwnersCount": {
+                            "runAfter": {
+                                "Initialize_SiteCreationBody_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "MembersOwnersCount",
+                                        "type": "integer"
                                     }
                                 ]
                             }
@@ -3670,6 +3683,1008 @@
                                 "path": "/flowbot/actions/adaptivecard/recipienttypes/user"
                             }
                         },
+                        "Process_Owners_and_Members": {
+                            "actions": {
+                                "Check_if_space_meets_criteria_to_process_owners_and_members": {
+                                    "actions": {
+                                        "Check_TeamsTemplateOperation_value": {
+                                            "actions": {
+                                                "Get_create_team_operation": {
+                                                    "runAfter": {
+                                                        "Parse_create_team_JSON": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Http",
+                                                    "inputs": {
+                                                        "authentication": {
+                                                            "audience": "https://graph.microsoft.com",
+                                                            "clientId": "@body('Get_Client_ID')?['value']",
+                                                            "password": "@null",
+                                                            "pfx": "@body('Get_Certificate')?['value']",
+                                                            "tenant": "@variables('TenantID')",
+                                                            "type": "ActiveDirectoryOAuth"
+                                                        },
+                                                        "headers": {
+                                                            "content-type": "application/json"
+                                                        },
+                                                        "method": "GET",
+                                                        "uri": "@{variables('GraphURL')}@{body('Parse_create_team_JSON')?['Location']}"
+                                                    }
+                                                },
+                                                "Get_created_team": {
+                                                    "runAfter": {
+                                                        "Parse_team_operation_JSON": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Http",
+                                                    "inputs": {
+                                                        "authentication": {
+                                                            "audience": "https://graph.microsoft.com",
+                                                            "clientId": "@body('Get_Client_ID')?['value']",
+                                                            "password": "@null",
+                                                            "pfx": "@body('Get_Certificate')?['value']",
+                                                            "tenant": "@variables('TenantID')",
+                                                            "type": "ActiveDirectoryOAuth"
+                                                        },
+                                                        "headers": {
+                                                            "content-type": "application/json"
+                                                        },
+                                                        "method": "GET",
+                                                        "uri": "@{variables('GraphURL')}/teams/@{body('Parse_team_operation_JSON')?['targetResourceId']}"
+                                                    }
+                                                },
+                                                "Parse_create_team_JSON": {
+                                                    "runAfter": {},
+                                                    "type": "ParseJson",
+                                                    "inputs": {
+                                                        "content": "@if(equals(variables('TeamsTemplateOperation'),'template'),outputs('Create_team_from_group')['headers'],outputs('Clone_team')['headers'])",
+                                                        "schema": {
+                                                            "properties": {
+                                                                "Cache-Control": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Content-Length": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Content-Type": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Date": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Location": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Strict-Transport-Security": {
+                                                                    "type": "string"
+                                                                },
+                                                                "client-request-id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "request-id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "x-ms-ags-diagnostic": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "description": "Ought to check template operation is also equal to clone and handle if empty."
+                                                },
+                                                "Parse_created_team_JSON": {
+                                                    "runAfter": {
+                                                        "Get_created_team": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ParseJson",
+                                                    "inputs": {
+                                                        "content": "@body('Get_created_team')",
+                                                        "schema": {
+                                                            "properties": {
+                                                                "@@odata.context": {
+                                                                    "type": "string"
+                                                                },
+                                                                "classification": {},
+                                                                "description": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "discoverySettings": {
+                                                                    "properties": {
+                                                                        "showInTeamsSearchAndSuggestions": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "displayName": {
+                                                                    "type": "string"
+                                                                },
+                                                                "funSettings": {
+                                                                    "properties": {
+                                                                        "allowCustomMemes": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowGiphy": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowStickersAndMemes": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "giphyContentRating": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "guestSettings": {
+                                                                    "properties": {
+                                                                        "allowCreateUpdateChannels": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowDeleteChannels": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "internalId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "isArchived": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "memberSettings": {
+                                                                    "properties": {
+                                                                        "allowAddRemoveApps": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowCreatePrivateChannels": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowCreateUpdateChannels": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowCreateUpdateRemoveConnectors": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowCreateUpdateRemoveTabs": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowDeleteChannels": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "messagingSettings": {
+                                                                    "properties": {
+                                                                        "allowChannelMentions": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowOwnerDeleteMessages": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowTeamMentions": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowUserDeleteMessages": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "allowUserEditMessages": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "specialization": {},
+                                                                "visibility": {},
+                                                                "webUrl": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "Parse_team_operation_JSON": {
+                                                    "runAfter": {
+                                                        "Get_create_team_operation": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ParseJson",
+                                                    "inputs": {
+                                                        "content": "@body('Get_create_team_operation')",
+                                                        "schema": {
+                                                            "properties": {
+                                                                "@@odata.context": {
+                                                                    "type": "string"
+                                                                },
+                                                                "Value": {
+                                                                    "type": "string"
+                                                                },
+                                                                "attemptsCount": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "createdDateTime": {
+                                                                    "type": "string"
+                                                                },
+                                                                "error": {},
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "lastActionDateTime": {
+                                                                    "type": "string"
+                                                                },
+                                                                "operationType": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "targetResourceId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "targetResourceLocation": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "Set_GroupID_variable_-_team": {
+                                                    "runAfter": {
+                                                        "Set_TeamID_variable": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "GroupID",
+                                                        "value": "@body('Parse_created_team_JSON')?['id']"
+                                                    }
+                                                },
+                                                "Set_TeamID_variable": {
+                                                    "runAfter": {
+                                                        "Parse_created_team_JSON": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "SetVariable",
+                                                    "inputs": {
+                                                        "name": "TeamID",
+                                                        "value": "@body('Parse_created_team_JSON')?['id']"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {},
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "and": [
+                                                            {
+                                                                "equals": [
+                                                                    "@triggerBody()?['SpaceTypeInternal']",
+                                                                    "Microsoft Teams Team"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "or": [
+                                                            {
+                                                                "equals": [
+                                                                    "@variables('TeamsTemplateOperation')",
+                                                                    "template"
+                                                                ]
+                                                            },
+                                                            {
+                                                                "equals": [
+                                                                    "@variables('TeamsTemplateOperation')",
+                                                                    "clone"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If",
+                                            "description": "Checking create team operation and parsing JSON only required for teams created from templates or cloned teams. Otherwise the JSON output from teamifying the group will be used."
+                                        },
+                                        "Check_we_are_cloning_a_team_or_processing_owners_and_members": {
+                                            "actions": {
+                                                "Add_Members_and_Owners": {
+                                                    "actions": {
+                                                        "Get_group_members": {
+                                                            "runAfter": {
+                                                                "Get_group_owners": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "Http",
+                                                            "inputs": {
+                                                                "authentication": {
+                                                                    "audience": "https://graph.microsoft.com",
+                                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                                    "password": "@null",
+                                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                                    "tenant": "@variables('TenantID')",
+                                                                    "type": "ActiveDirectoryOAuth"
+                                                                },
+                                                                "headers": {
+                                                                    "content-type": "application/json"
+                                                                },
+                                                                "method": "GET",
+                                                                "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/members"
+                                                            }
+                                                        },
+                                                        "Get_group_owners": {
+                                                            "runAfter": {},
+                                                            "type": "Http",
+                                                            "inputs": {
+                                                                "authentication": {
+                                                                    "audience": "https://graph.microsoft.com",
+                                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                                    "password": "@null",
+                                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                                    "tenant": "@variables('TenantID')",
+                                                                    "type": "ActiveDirectoryOAuth"
+                                                                },
+                                                                "headers": {
+                                                                    "content-type": "application/json"
+                                                                },
+                                                                "method": "GET",
+                                                                "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners"
+                                                            }
+                                                        },
+                                                        "Loop_through_MemberIDs_array": {
+                                                            "foreach": "@variables('MemberIDs')",
+                                                            "actions": {
+                                                                "Check_if_member_does_not_already_exist_in_the_group": {
+                                                                    "actions": {
+                                                                        "Add_member_to_group": {
+                                                                            "runAfter": {},
+                                                                            "type": "Http",
+                                                                            "inputs": {
+                                                                                "authentication": {
+                                                                                    "audience": "https://graph.microsoft.com",
+                                                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                                                    "password": "@null",
+                                                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                                                    "tenant": "@variables('TenantID')",
+                                                                                    "type": "ActiveDirectoryOAuth"
+                                                                                },
+                                                                                "body": {
+                                                                                    "@@odata.id": "https://graph.microsoft.com/v1.0/users/@{items('Loop_through_MemberIDs_array')}"
+                                                                                },
+                                                                                "headers": {
+                                                                                    "content-type": "application/json"
+                                                                                },
+                                                                                "method": "POST",
+                                                                                "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/members/$ref"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "runAfter": {},
+                                                                    "expression": {
+                                                                        "and": [
+                                                                            {
+                                                                                "not": {
+                                                                                    "contains": [
+                                                                                        "@string(body('Get_group_owners'))",
+                                                                                        "@items('Loop_through_MemberIDs_array')"
+                                                                                    ]
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "not": {
+                                                                                    "contains": [
+                                                                                        "@string(body('Get_group_members'))",
+                                                                                        "@items('Loop_through_MemberIDs_array')"
+                                                                                    ]
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "type": "If",
+                                                                    "description": "Check if member is not added to the group at this stage or this will fail."
+                                                                }
+                                                            },
+                                                            "runAfter": {
+                                                                "Parse_group_members_JSON": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "Foreach",
+                                                            "runtimeConfiguration": {
+                                                                "concurrency": {
+                                                                    "repetitions": 1
+                                                                }
+                                                            }
+                                                        },
+                                                        "Loop_through_OwnerIDs_array": {
+                                                            "foreach": "@variables('OwnerIDs')",
+                                                            "actions": {
+                                                                "Check_if_owner_does_not_already_exist_in_the_group": {
+                                                                    "actions": {
+                                                                        "Add_owner_to_group": {
+                                                                            "runAfter": {},
+                                                                            "type": "Http",
+                                                                            "inputs": {
+                                                                                "authentication": {
+                                                                                    "audience": "https://graph.microsoft.com",
+                                                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                                                    "password": "@null",
+                                                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                                                    "tenant": "@variables('TenantID')",
+                                                                                    "type": "ActiveDirectoryOAuth"
+                                                                                },
+                                                                                "body": {
+                                                                                    "@@odata.id": "https://graph.microsoft.com/v1.0/users/@{items('Loop_through_OwnerIDs_array')}"
+                                                                                },
+                                                                                "headers": {
+                                                                                    "content-type": "application/json"
+                                                                                },
+                                                                                "method": "POST",
+                                                                                "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners/$ref"
+                                                                            }
+                                                                        },
+                                                                        "Delay_while_owner_is_added": {
+                                                                            "runAfter": {
+                                                                                "Add_owner_to_group": [
+                                                                                    "Succeeded"
+                                                                                ]
+                                                                            },
+                                                                            "type": "Wait",
+                                                                            "inputs": {
+                                                                                "interval": {
+                                                                                    "count": 1,
+                                                                                    "unit": "Minute"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "runAfter": {},
+                                                                    "expression": {
+                                                                        "and": [
+                                                                            {
+                                                                                "not": {
+                                                                                    "contains": [
+                                                                                        "@string(body('Get_group_owners'))",
+                                                                                        "@items('Loop_through_OwnerIDs_array')"
+                                                                                    ]
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "type": "If"
+                                                                }
+                                                            },
+                                                            "runAfter": {
+                                                                "Loop_through_MemberIDs_array": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "Foreach"
+                                                        },
+                                                        "Parse_group_members_JSON": {
+                                                            "runAfter": {
+                                                                "Parse_group_owners_JSON": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "ParseJson",
+                                                            "inputs": {
+                                                                "content": "@body('Get_group_members')",
+                                                                "schema": {
+                                                                    "properties": {
+                                                                        "@@microsoft.graph.tips": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "@@odata.context": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "value": {
+                                                                            "items": {
+                                                                                "properties": {
+                                                                                    "@@odata.type": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "businessPhones": {
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "displayName": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "givenName": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "id": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "jobTitle": {},
+                                                                                    "mail": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "mobilePhone": {},
+                                                                                    "officeLocation": {},
+                                                                                    "preferredLanguage": {},
+                                                                                    "surname": {},
+                                                                                    "userPrincipalName": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "@@odata.type",
+                                                                                    "id",
+                                                                                    "businessPhones",
+                                                                                    "displayName",
+                                                                                    "givenName",
+                                                                                    "jobTitle",
+                                                                                    "mail",
+                                                                                    "mobilePhone",
+                                                                                    "officeLocation",
+                                                                                    "preferredLanguage",
+                                                                                    "surname",
+                                                                                    "userPrincipalName"
+                                                                                ],
+                                                                                "type": "object"
+                                                                            },
+                                                                            "type": "array"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "Parse_group_owners_JSON": {
+                                                            "runAfter": {
+                                                                "Get_group_members": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "ParseJson",
+                                                            "inputs": {
+                                                                "content": "@body('Get_group_owners')",
+                                                                "schema": {
+                                                                    "properties": {
+                                                                        "@@odata.context": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "value": {
+                                                                            "items": {
+                                                                                "properties": {
+                                                                                    "@@odata.type": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "accountEnabled": {
+                                                                                        "type": "boolean"
+                                                                                    },
+                                                                                    "ageGroup": {
+                                                                                    },
+                                                                                    "assignedLicenses": {
+                                                                                        "items": {
+                                                                                            "properties": {
+                                                                                                "disabledPlans": {
+                                                                                                    "type": "array"
+                                                                                                },
+                                                                                                "skuId": {
+                                                                                                    "type": "string"
+                                                                                                }
+                                                                                            },
+                                                                                            "required": [
+                                                                                                "disabledPlans",
+                                                                                                "skuId"
+                                                                                            ],
+                                                                                            "type": "object"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "assignedPlans": {
+                                                                                        "items": {
+                                                                                            "properties": {
+                                                                                                "assignedDateTime": {
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "capabilityStatus": {
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "service": {
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "servicePlanId": {
+                                                                                                    "type": "string"
+                                                                                                }
+                                                                                            },
+                                                                                            "required": [
+                                                                                                "assignedDateTime",
+                                                                                                "capabilityStatus",
+                                                                                                "service",
+                                                                                                "servicePlanId"
+                                                                                            ],
+                                                                                            "type": "object"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "businessPhones": {
+                                                                                        "items": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "city": {
+                                                                                    },
+                                                                                    "companyName": {
+                                                                                    },
+                                                                                    "consentProvidedForMinor": {
+                                                                                    },
+                                                                                    "country": {
+                                                                                        "type": [
+                                                                                            "string",
+                                                                                            "null"
+                                                                                        ]
+                                                                                    },
+                                                                                    "createdDateTime": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "creationType": {
+                                                                                    },
+                                                                                    "deletedDateTime": {
+                                                                                    },
+                                                                                    "department": {
+                                                                                    },
+                                                                                    "deviceKeys": {
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "displayName": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "employeeId": {
+                                                                                    },
+                                                                                    "externalUserState": {
+                                                                                    },
+                                                                                    "externalUserStateChangeDateTime": {
+                                                                                    },
+                                                                                    "faxNumber": {
+                                                                                    },
+                                                                                    "givenName": {
+                                                                                        "type": [
+                                                                                            "string",
+                                                                                            "null"
+                                                                                        ]
+                                                                                    },
+                                                                                    "id": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "identities": {
+                                                                                        "items": {
+                                                                                            "properties": {
+                                                                                                "issuer": {
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "issuerAssignedId": {
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "signInType": {
+                                                                                                    "type": "string"
+                                                                                                }
+                                                                                            },
+                                                                                            "required": [
+                                                                                                "signInType",
+                                                                                                "issuer",
+                                                                                                "issuerAssignedId"
+                                                                                            ],
+                                                                                            "type": "object"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "imAddresses": {
+                                                                                        "items": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "isResourceAccount": {
+                                                                                    },
+                                                                                    "jobTitle": {
+                                                                                    },
+                                                                                    "legalAgeGroupClassification": {
+                                                                                    },
+                                                                                    "mail": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "mailNickname": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "mobilePhone": {
+                                                                                        "type": [
+                                                                                            "string",
+                                                                                            "null"
+                                                                                        ]
+                                                                                    },
+                                                                                    "officeLocation": {
+                                                                                    },
+                                                                                    "onPremisesDistinguishedName": {
+                                                                                    },
+                                                                                    "onPremisesDomainName": {
+                                                                                    },
+                                                                                    "onPremisesExtensionAttributes": {
+                                                                                        "properties": {
+                                                                                            "extensionAttribute1": {
+                                                                                            },
+                                                                                            "extensionAttribute10": {
+                                                                                            },
+                                                                                            "extensionAttribute11": {
+                                                                                            },
+                                                                                            "extensionAttribute12": {
+                                                                                            },
+                                                                                            "extensionAttribute13": {
+                                                                                            },
+                                                                                            "extensionAttribute14": {
+                                                                                            },
+                                                                                            "extensionAttribute15": {
+                                                                                            },
+                                                                                            "extensionAttribute2": {
+                                                                                            },
+                                                                                            "extensionAttribute3": {
+                                                                                            },
+                                                                                            "extensionAttribute4": {
+                                                                                            },
+                                                                                            "extensionAttribute5": {
+                                                                                            },
+                                                                                            "extensionAttribute6": {
+                                                                                            },
+                                                                                            "extensionAttribute7": {
+                                                                                            },
+                                                                                            "extensionAttribute8": {
+                                                                                            },
+                                                                                            "extensionAttribute9": {
+                                                                                            }
+                                                                                        },
+                                                                                        "type": "object"
+                                                                                    },
+                                                                                    "onPremisesImmutableId": {
+                                                                                    },
+                                                                                    "onPremisesLastSyncDateTime": {
+                                                                                    },
+                                                                                    "onPremisesProvisioningErrors": {
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "onPremisesSamAccountName": {
+                                                                                    },
+                                                                                    "onPremisesSecurityIdentifier": {
+                                                                                    },
+                                                                                    "onPremisesSyncEnabled": {
+                                                                                    },
+                                                                                    "onPremisesUserPrincipalName": {
+                                                                                    },
+                                                                                    "otherMails": {
+                                                                                        "items": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "passwordPolicies": {
+                                                                                    },
+                                                                                    "passwordProfile": {
+                                                                                    },
+                                                                                    "postalCode": {
+                                                                                    },
+                                                                                    "preferredDataLocation": {
+                                                                                    },
+                                                                                    "preferredLanguage": {
+                                                                                        "type": [
+                                                                                            "string",
+                                                                                            "null"
+                                                                                        ]
+                                                                                    },
+                                                                                    "provisionedPlans": {
+                                                                                        "items": {
+                                                                                            "properties": {
+                                                                                                "capabilityStatus": {
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "provisioningStatus": {
+                                                                                                    "type": "string"
+                                                                                                },
+                                                                                                "service": {
+                                                                                                    "type": "string"
+                                                                                                }
+                                                                                            },
+                                                                                            "required": [
+                                                                                                "capabilityStatus",
+                                                                                                "provisioningStatus",
+                                                                                                "service"
+                                                                                            ],
+                                                                                            "type": "object"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "proxyAddresses": {
+                                                                                        "items": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "type": "array"
+                                                                                    },
+                                                                                    "refreshTokensValidFromDateTime": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "showInAddressList": {
+                                                                                    },
+                                                                                    "signInSessionsValidFromDateTime": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "state": {
+                                                                                    },
+                                                                                    "streetAddress": {
+                                                                                    },
+                                                                                    "surname": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "usageLocation": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "userPrincipalName": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "userType": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "@@odata.type",
+                                                                                    "id"
+                                                                                ],
+                                                                                "type": "object"
+                                                                            },
+                                                                            "type": "array"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "Remove_template_team_owners": {
+                                                            "actions": {
+                                                                "Check_if_we_are_cloning_a_team": {
+                                                                    "actions": {
+                                                                        "Loop_through_template_team_owners": {
+                                                                            "foreach": "@body('Parse_group_owners_JSON')?['value']",
+                                                                            "actions": {
+                                                                                "Check_if_template_team_owner_was_not_found_in_specified_owners": {
+                                                                                    "actions": {
+                                                                                        "Remove_template_team_owner_from_team": {
+                                                                                            "runAfter": {},
+                                                                                            "type": "Http",
+                                                                                            "inputs": {
+                                                                                                "authentication": {
+                                                                                                    "audience": "https://graph.microsoft.com",
+                                                                                                    "clientId": "@body('Get_Client_ID')?['value']",
+                                                                                                    "password": "@null",
+                                                                                                    "pfx": "@body('Get_Certificate')?['value']",
+                                                                                                    "tenant": "@variables('TenantID')",
+                                                                                                    "type": "ActiveDirectoryOAuth"
+                                                                                                },
+                                                                                                "headers": {
+                                                                                                    "content-type": "application/json"
+                                                                                                },
+                                                                                                "method": "DELETE",
+                                                                                                "uri": "@{variables('GraphURL')}/groups/@{body('Parse_created_team_JSON')?['id']}/owners/@{items('Loop_through_template_team_owners')?['id']}/$ref"
+                                                                                            }
+                                                                                        }
+                                                                                    },
+                                                                                    "runAfter": {},
+                                                                                    "expression": {
+                                                                                        "and": [
+                                                                                            {
+                                                                                                "not": {
+                                                                                                    "contains": [
+                                                                                                        "@string(variables('OwnersGraph'))",
+                                                                                                        "@items('Loop_through_template_team_owners')?['id']"
+                                                                                                    ]
+                                                                                                }
+                                                                                            }
+                                                                                        ]
+                                                                                    },
+                                                                                    "type": "If"
+                                                                                }
+                                                                            },
+                                                                            "runAfter": {},
+                                                                            "type": "Foreach"
+                                                                        }
+                                                                    },
+                                                                    "runAfter": {},
+                                                                    "expression": {
+                                                                        "and": [
+                                                                            {
+                                                                                "equals": [
+                                                                                    "@variables('TeamsTemplateOperation')",
+                                                                                    "clone"
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "type": "If"
+                                                                }
+                                                            },
+                                                            "runAfter": {
+                                                                "Loop_through_OwnerIDs_array": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type": "Scope",
+                                                            "description": "When cloning teams, the owners of the source team will be cloned. We need to remove these owners."
+                                                        }
+                                                    },
+                                                    "runAfter": {},
+                                                    "type": "Scope"
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Check_TeamsTemplateOperation_value": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression": {
+                                                "or": [
+                                                    {
+                                                        "equals": [
+                                                            "@variables('TeamsTemplateOperation')",
+                                                            "clone"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "greater": [
+                                                            "@variables('MembersOwnersCount')",
+                                                            20
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If",
+                                            "description": "Adding Members and Owners is only required if we have cloned an existing team."
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                        "or": [
+                                            {
+                                                "equals": [
+                                                    "@triggerBody()?['SpaceTypeInternal']",
+                                                    "Microsoft Teams Team"
+                                                ]
+                                            },
+                                            {
+                                                "greater": [
+                                                    "@variables('MembersOwnersCount')",
+                                                    20
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If",
+                                    "description": "Execute these actions only if the space type contains more than 20 combined members/owners or is a Microsoft Teams Team."
+                                }
+                            },
+                            "runAfter": {
+                                "Check_space_type": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Scope"
+                        },
                         "Process_Team": {
                             "actions": {
                                 "Post_Welcome_Message": {
@@ -3775,884 +4790,6 @@
                                     },
                                     "type": "Scope"
                                 },
-                                "Process_Owners_and_Members": {
-                                    "actions": {
-                                        "Check_if_space_is_a_Team_-_process_owners_and_members": {
-                                            "actions": {
-                                                "Check_TeamsTemplateOperation_value": {
-                                                    "actions": {
-                                                        "Get_create_team_operation": {
-                                                            "runAfter": {
-                                                                "Parse_create_team_JSON": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "authentication": {
-                                                                    "audience": "https://graph.microsoft.com",
-                                                                    "clientId": "@body('Get_Client_ID')?['value']",
-                                                                    "password": "@null",
-                                                                    "pfx": "@body('Get_Certificate')?['value']",
-                                                                    "tenant": "@variables('TenantID')",
-                                                                    "type": "ActiveDirectoryOAuth"
-                                                                },
-                                                                "headers": {
-                                                                    "content-type": "application/json"
-                                                                },
-                                                                "method": "GET",
-                                                                "uri": "@{variables('GraphURL')}@{body('Parse_create_team_JSON')?['Location']}"
-                                                            }
-                                                        },
-                                                        "Get_created_team": {
-                                                            "runAfter": {
-                                                                "Parse_team_operation_JSON": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "Http",
-                                                            "inputs": {
-                                                                "authentication": {
-                                                                    "audience": "https://graph.microsoft.com",
-                                                                    "clientId": "@body('Get_Client_ID')?['value']",
-                                                                    "password": "@null",
-                                                                    "pfx": "@body('Get_Certificate')?['value']",
-                                                                    "tenant": "@variables('TenantID')",
-                                                                    "type": "ActiveDirectoryOAuth"
-                                                                },
-                                                                "headers": {
-                                                                    "content-type": "application/json"
-                                                                },
-                                                                "method": "GET",
-                                                                "uri": "@{variables('GraphURL')}/teams/@{body('Parse_team_operation_JSON')?['targetResourceId']}"
-                                                            }
-                                                        },
-                                                        "Parse_create_team_JSON": {
-                                                            "runAfter": {},
-                                                            "type": "ParseJson",
-                                                            "inputs": {
-                                                                "content": "@if(equals(variables('TeamsTemplateOperation'),'template'),outputs('Create_team_from_group')['headers'],outputs('Clone_team')['headers'])",
-                                                                "schema": {
-                                                                    "properties": {
-                                                                        "Cache-Control": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "Content-Length": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "Content-Type": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "Date": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "Location": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "Strict-Transport-Security": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "client-request-id": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "request-id": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "x-ms-ags-diagnostic": {
-                                                                            "type": "string"
-                                                                        }
-                                                                    },
-                                                                    "type": "object"
-                                                                }
-                                                            },
-                                                            "description": "Ought to check template operation is also equal to clone and handle if empty."
-                                                        },
-                                                        "Parse_created_team_JSON": {
-                                                            "runAfter": {
-                                                                "Get_created_team": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "ParseJson",
-                                                            "inputs": {
-                                                                "content": "@body('Get_created_team')",
-                                                                "schema": {
-                                                                    "properties": {
-                                                                        "@@odata.context": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "classification": {},
-                                                                        "description": {
-                                                                            "type": [
-                                                                                "string",
-                                                                                "null"
-                                                                            ]
-                                                                        },
-                                                                        "discoverySettings": {
-                                                                            "properties": {
-                                                                                "showInTeamsSearchAndSuggestions": {
-                                                                                    "type": "boolean"
-                                                                                }
-                                                                            },
-                                                                            "type": "object"
-                                                                        },
-                                                                        "displayName": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "funSettings": {
-                                                                            "properties": {
-                                                                                "allowCustomMemes": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowGiphy": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowStickersAndMemes": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "giphyContentRating": {
-                                                                                    "type": "string"
-                                                                                }
-                                                                            },
-                                                                            "type": "object"
-                                                                        },
-                                                                        "guestSettings": {
-                                                                            "properties": {
-                                                                                "allowCreateUpdateChannels": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowDeleteChannels": {
-                                                                                    "type": "boolean"
-                                                                                }
-                                                                            },
-                                                                            "type": "object"
-                                                                        },
-                                                                        "id": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "internalId": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "isArchived": {
-                                                                            "type": "boolean"
-                                                                        },
-                                                                        "memberSettings": {
-                                                                            "properties": {
-                                                                                "allowAddRemoveApps": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowCreatePrivateChannels": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowCreateUpdateChannels": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowCreateUpdateRemoveConnectors": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowCreateUpdateRemoveTabs": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowDeleteChannels": {
-                                                                                    "type": "boolean"
-                                                                                }
-                                                                            },
-                                                                            "type": "object"
-                                                                        },
-                                                                        "messagingSettings": {
-                                                                            "properties": {
-                                                                                "allowChannelMentions": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowOwnerDeleteMessages": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowTeamMentions": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowUserDeleteMessages": {
-                                                                                    "type": "boolean"
-                                                                                },
-                                                                                "allowUserEditMessages": {
-                                                                                    "type": "boolean"
-                                                                                }
-                                                                            },
-                                                                            "type": "object"
-                                                                        },
-                                                                        "specialization": {},
-                                                                        "visibility": {},
-                                                                        "webUrl": {
-                                                                            "type": "string"
-                                                                        }
-                                                                    },
-                                                                    "type": "object"
-                                                                }
-                                                            }
-                                                        },
-                                                        "Parse_team_operation_JSON": {
-                                                            "runAfter": {
-                                                                "Get_create_team_operation": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "ParseJson",
-                                                            "inputs": {
-                                                                "content": "@body('Get_create_team_operation')",
-                                                                "schema": {
-                                                                    "properties": {
-                                                                        "@@odata.context": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "Value": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "attemptsCount": {
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "createdDateTime": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "error": {},
-                                                                        "id": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "lastActionDateTime": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "operationType": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "status": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "targetResourceId": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "targetResourceLocation": {
-                                                                            "type": "string"
-                                                                        }
-                                                                    },
-                                                                    "type": "object"
-                                                                }
-                                                            }
-                                                        },
-                                                        "Set_GroupID_variable_-_team": {
-                                                            "runAfter": {
-                                                                "Set_TeamID_variable": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "SetVariable",
-                                                            "inputs": {
-                                                                "name": "GroupID",
-                                                                "value": "@body('Parse_created_team_JSON')?['id']"
-                                                            }
-                                                        },
-                                                        "Set_TeamID_variable": {
-                                                            "runAfter": {
-                                                                "Parse_created_team_JSON": [
-                                                                    "Succeeded"
-                                                                ]
-                                                            },
-                                                            "type": "SetVariable",
-                                                            "inputs": {
-                                                                "name": "TeamID",
-                                                                "value": "@body('Parse_created_team_JSON')?['id']"
-                                                            }
-                                                        }
-                                                    },
-                                                    "runAfter": {},
-                                                    "expression": {
-                                                        "or": [
-                                                            {
-                                                                "equals": [
-                                                                    "@variables('TeamsTemplateOperation')",
-                                                                    "template"
-                                                                ]
-                                                            },
-                                                            {
-                                                                "equals": [
-                                                                    "@variables('TeamsTemplateOperation')",
-                                                                    "clone"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    },
-                                                    "type": "If",
-                                                    "description": "Checking create team operation and parsing JSON only required for teams created from templates or cloned teams. Otherwise the JSON output from teamifying the group will be used."
-                                                },
-                                                "Check_we_are_cloning_a_team": {
-                                                    "actions": {
-                                                        "Add_Members_and_Owners": {
-                                                            "actions": {
-                                                                "Get_team_owners": {
-                                                                    "runAfter": {
-                                                                    },
-                                                                    "type": "Http",
-                                                                    "inputs": {
-                                                                        "authentication": {
-                                                                            "audience": "https://graph.microsoft.com",
-                                                                            "clientId": "@body('Get_Client_ID')?['value']",
-                                                                            "password": "@null",
-                                                                            "pfx": "@body('Get_Certificate')?['value']",
-                                                                            "tenant": "@variables('TenantID')",
-                                                                            "type": "ActiveDirectoryOAuth"
-                                                                        },
-                                                                        "headers": {
-                                                                            "content-type": "application/json"
-                                                                        },
-                                                                        "method": "GET",
-                                                                        "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners"
-                                                                    }
-                                                                },
-                                                                "Loop_through_MemberIDs_array": {
-                                                                    "foreach": "@variables('MemberIDs')",
-                                                                    "actions": {
-                                                                        "Check_if_member_does_not_already_exist_as_an_owner": {
-                                                                            "actions": {
-                                                                                "Add_member_to_team": {
-                                                                                    "runAfter": {
-                                                                                    },
-                                                                                    "type": "Http",
-                                                                                    "inputs": {
-                                                                                        "authentication": {
-                                                                                            "audience": "https://graph.microsoft.com",
-                                                                                            "clientId": "@body('Get_Client_ID')?['value']",
-                                                                                            "password": "@null",
-                                                                                            "pfx": "@body('Get_Certificate')?['value']",
-                                                                                            "tenant": "@variables('TenantID')",
-                                                                                            "type": "ActiveDirectoryOAuth"
-                                                                                        },
-                                                                                        "body": {
-                                                                                            "@@odata.id": "https://graph.microsoft.com/v1.0/users/@{items('Loop_through_MemberIDs_array')}"
-                                                                                        },
-                                                                                        "headers": {
-                                                                                            "content-type": "application/json"
-                                                                                        },
-                                                                                        "method": "POST",
-                                                                                        "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/members/$ref"
-                                                                                    }
-                                                                                },
-                                                                                "Delay_while_member_is_added": {
-                                                                                    "runAfter": {
-                                                                                        "Add_member_to_team": [
-                                                                                            "Succeeded"
-                                                                                        ]
-                                                                                    },
-                                                                                    "type": "Wait",
-                                                                                    "inputs": {
-                                                                                        "interval": {
-                                                                                            "count": 1,
-                                                                                            "unit": "Minute"
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            "runAfter": {
-                                                                            },
-                                                                            "expression": {
-                                                                                "and": [
-                                                                                    {
-                                                                                        "not": {
-                                                                                            "contains": [
-                                                                                                "@string(body('Get_team_owners'))",
-                                                                                                "@items('Loop_through_MemberIDs_array')"
-                                                                                            ]
-                                                                                        }
-                                                                                    }
-                                                                                ]
-                                                                            },
-                                                                            "type": "If",
-                                                                            "description": "Check if member is not added to the team at this stage or this will fail."
-                                                                        }
-                                                                    },
-                                                                    "runAfter": {
-                                                                        "Parse_team_owners_JSON": [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "type": "Foreach",
-                                                                    "runtimeConfiguration": {
-                                                                        "concurrency": {
-                                                                            "repetitions": 1
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "Loop_through_OwnerIDs_array": {
-                                                                    "foreach": "@variables('OwnerIDs')",
-                                                                    "actions": {
-                                                                        "Check_if_owner_does_not_already_exist_in_the_team": {
-                                                                            "actions": {
-                                                                                "Add_owner_to_team": {
-                                                                                    "runAfter": {
-                                                                                    },
-                                                                                    "type": "Http",
-                                                                                    "inputs": {
-                                                                                        "authentication": {
-                                                                                            "audience": "https://graph.microsoft.com",
-                                                                                            "clientId": "@body('Get_Client_ID')?['value']",
-                                                                                            "password": "@null",
-                                                                                            "pfx": "@body('Get_Certificate')?['value']",
-                                                                                            "tenant": "@variables('TenantID')",
-                                                                                            "type": "ActiveDirectoryOAuth"
-                                                                                        },
-                                                                                        "body": {
-                                                                                            "@@odata.id": "https://graph.microsoft.com/v1.0/users/@{items('Loop_through_OwnerIDs_array')}"
-                                                                                        },
-                                                                                        "headers": {
-                                                                                            "content-type": "application/json"
-                                                                                        },
-                                                                                        "method": "POST",
-                                                                                        "uri": "@{variables('GraphURL')}/groups/@{variables('GroupID')}/owners/$ref"
-                                                                                    }
-                                                                                },
-                                                                                "Delay_while_owner_is_added": {
-                                                                                    "runAfter": {
-                                                                                        "Add_owner_to_team": [
-                                                                                            "Succeeded"
-                                                                                        ]
-                                                                                    },
-                                                                                    "type": "Wait",
-                                                                                    "inputs": {
-                                                                                        "interval": {
-                                                                                            "count": 1,
-                                                                                            "unit": "Minute"
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            },
-                                                                            "runAfter": {
-                                                                            },
-                                                                            "expression": {
-                                                                                "and": [
-                                                                                    {
-                                                                                        "not": {
-                                                                                            "contains": [
-                                                                                                "@string(body('Get_team_owners'))",
-                                                                                                "@items('Loop_through_OwnerIDs_array')"
-                                                                                            ]
-                                                                                        }
-                                                                                    }
-                                                                                ]
-                                                                            },
-                                                                            "type": "If"
-                                                                        }
-                                                                    },
-                                                                    "runAfter": {
-                                                                        "Loop_through_MemberIDs_array": [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "type": "Foreach"
-                                                                },
-                                                                "Parse_team_owners_JSON": {
-                                                                    "runAfter": {
-                                                                        "Get_team_owners": [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "type": "ParseJson",
-                                                                    "inputs": {
-                                                                        "content": "@body('Get_team_owners')",
-                                                                        "schema": {
-                                                                            "properties": {
-                                                                                "@@odata.context": {
-                                                                                    "type": "string"
-                                                                                },
-                                                                                "value": {
-                                                                                    "items": {
-                                                                                        "properties": {
-                                                                                            "@@odata.type": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "accountEnabled": {
-                                                                                                "type": "boolean"
-                                                                                            },
-                                                                                            "ageGroup": {
-                                                                                            },
-                                                                                            "assignedLicenses": {
-                                                                                                "items": {
-                                                                                                    "properties": {
-                                                                                                        "disabledPlans": {
-                                                                                                            "type": "array"
-                                                                                                        },
-                                                                                                        "skuId": {
-                                                                                                            "type": "string"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "required": [
-                                                                                                        "disabledPlans",
-                                                                                                        "skuId"
-                                                                                                    ],
-                                                                                                    "type": "object"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "assignedPlans": {
-                                                                                                "items": {
-                                                                                                    "properties": {
-                                                                                                        "assignedDateTime": {
-                                                                                                            "type": "string"
-                                                                                                        },
-                                                                                                        "capabilityStatus": {
-                                                                                                            "type": "string"
-                                                                                                        },
-                                                                                                        "service": {
-                                                                                                            "type": "string"
-                                                                                                        },
-                                                                                                        "servicePlanId": {
-                                                                                                            "type": "string"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "required": [
-                                                                                                        "assignedDateTime",
-                                                                                                        "capabilityStatus",
-                                                                                                        "service",
-                                                                                                        "servicePlanId"
-                                                                                                    ],
-                                                                                                    "type": "object"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "businessPhones": {
-                                                                                                "items": {
-                                                                                                    "type": "string"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "city": {
-                                                                                            },
-                                                                                            "companyName": {
-                                                                                            },
-                                                                                            "consentProvidedForMinor": {
-                                                                                            },
-                                                                                            "country": {
-                                                                                                "type": [
-                                                                                                    "string",
-                                                                                                    "null"
-                                                                                                ]
-                                                                                            },
-                                                                                            "createdDateTime": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "creationType": {
-                                                                                            },
-                                                                                            "deletedDateTime": {
-                                                                                            },
-                                                                                            "department": {
-                                                                                            },
-                                                                                            "deviceKeys": {
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "displayName": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "employeeId": {
-                                                                                            },
-                                                                                            "externalUserState": {
-                                                                                            },
-                                                                                            "externalUserStateChangeDateTime": {
-                                                                                            },
-                                                                                            "faxNumber": {
-                                                                                            },
-                                                                                            "givenName": {
-                                                                                                "type": [
-                                                                                                    "string",
-                                                                                                    "null"
-                                                                                                ]
-                                                                                            },
-                                                                                            "id": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "identities": {
-                                                                                                "items": {
-                                                                                                    "properties": {
-                                                                                                        "issuer": {
-                                                                                                            "type": "string"
-                                                                                                        },
-                                                                                                        "issuerAssignedId": {
-                                                                                                            "type": "string"
-                                                                                                        },
-                                                                                                        "signInType": {
-                                                                                                            "type": "string"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "required": [
-                                                                                                        "signInType",
-                                                                                                        "issuer",
-                                                                                                        "issuerAssignedId"
-                                                                                                    ],
-                                                                                                    "type": "object"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "imAddresses": {
-                                                                                                "items": {
-                                                                                                    "type": "string"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "isResourceAccount": {
-                                                                                            },
-                                                                                            "jobTitle": {
-                                                                                            },
-                                                                                            "legalAgeGroupClassification": {
-                                                                                            },
-                                                                                            "mail": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "mailNickname": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "mobilePhone": {
-                                                                                                "type": [
-                                                                                                    "string",
-                                                                                                    "null"
-                                                                                                ]
-                                                                                            },
-                                                                                            "officeLocation": {
-                                                                                            },
-                                                                                            "onPremisesDistinguishedName": {
-                                                                                            },
-                                                                                            "onPremisesDomainName": {
-                                                                                            },
-                                                                                            "onPremisesExtensionAttributes": {
-                                                                                                "properties": {
-                                                                                                    "extensionAttribute1": {
-                                                                                                    },
-                                                                                                    "extensionAttribute10": {
-                                                                                                    },
-                                                                                                    "extensionAttribute11": {
-                                                                                                    },
-                                                                                                    "extensionAttribute12": {
-                                                                                                    },
-                                                                                                    "extensionAttribute13": {
-                                                                                                    },
-                                                                                                    "extensionAttribute14": {
-                                                                                                    },
-                                                                                                    "extensionAttribute15": {
-                                                                                                    },
-                                                                                                    "extensionAttribute2": {
-                                                                                                    },
-                                                                                                    "extensionAttribute3": {
-                                                                                                    },
-                                                                                                    "extensionAttribute4": {
-                                                                                                    },
-                                                                                                    "extensionAttribute5": {
-                                                                                                    },
-                                                                                                    "extensionAttribute6": {
-                                                                                                    },
-                                                                                                    "extensionAttribute7": {
-                                                                                                    },
-                                                                                                    "extensionAttribute8": {
-                                                                                                    },
-                                                                                                    "extensionAttribute9": {
-                                                                                                    }
-                                                                                                },
-                                                                                                "type": "object"
-                                                                                            },
-                                                                                            "onPremisesImmutableId": {
-                                                                                            },
-                                                                                            "onPremisesLastSyncDateTime": {
-                                                                                            },
-                                                                                            "onPremisesProvisioningErrors": {
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "onPremisesSamAccountName": {
-                                                                                            },
-                                                                                            "onPremisesSecurityIdentifier": {
-                                                                                            },
-                                                                                            "onPremisesSyncEnabled": {
-                                                                                            },
-                                                                                            "onPremisesUserPrincipalName": {
-                                                                                            },
-                                                                                            "otherMails": {
-                                                                                                "items": {
-                                                                                                    "type": "string"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "passwordPolicies": {
-                                                                                            },
-                                                                                            "passwordProfile": {
-                                                                                            },
-                                                                                            "postalCode": {
-                                                                                            },
-                                                                                            "preferredDataLocation": {
-                                                                                            },
-                                                                                            "preferredLanguage": {
-                                                                                                "type": [
-                                                                                                    "string",
-                                                                                                    "null"
-                                                                                                ]
-                                                                                            },
-                                                                                            "provisionedPlans": {
-                                                                                                "items": {
-                                                                                                    "properties": {
-                                                                                                        "capabilityStatus": {
-                                                                                                            "type": "string"
-                                                                                                        },
-                                                                                                        "provisioningStatus": {
-                                                                                                            "type": "string"
-                                                                                                        },
-                                                                                                        "service": {
-                                                                                                            "type": "string"
-                                                                                                        }
-                                                                                                    },
-                                                                                                    "required": [
-                                                                                                        "capabilityStatus",
-                                                                                                        "provisioningStatus",
-                                                                                                        "service"
-                                                                                                    ],
-                                                                                                    "type": "object"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "proxyAddresses": {
-                                                                                                "items": {
-                                                                                                    "type": "string"
-                                                                                                },
-                                                                                                "type": "array"
-                                                                                            },
-                                                                                            "refreshTokensValidFromDateTime": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "showInAddressList": {
-                                                                                            },
-                                                                                            "signInSessionsValidFromDateTime": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "state": {
-                                                                                            },
-                                                                                            "streetAddress": {
-                                                                                            },
-                                                                                            "surname": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "usageLocation": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "userPrincipalName": {
-                                                                                                "type": "string"
-                                                                                            },
-                                                                                            "userType": {
-                                                                                                "type": "string"
-                                                                                            }
-                                                                                        },
-                                                                                        "required": [
-                                                                                            "@@odata.type",
-                                                                                            "id"
-                                                                                        ],
-                                                                                        "type": "object"
-                                                                                    },
-                                                                                    "type": "array"
-                                                                                }
-                                                                            },
-                                                                            "type": "object"
-                                                                        }
-                                                                    }
-                                                                },
-                                                                "Remove_template_team_owners": {
-                                                                    "actions": {
-                                                                        "Loop_through_template_team_owners": {
-                                                                            "foreach": "@body('Parse_team_owners_JSON')?['value']",
-                                                                            "actions": {
-                                                                                "Check_if_template_team_owner_was_not_found_in_specified_owners": {
-                                                                                    "actions": {
-                                                                                        "Remove_template_team_owner_from_team": {
-                                                                                            "runAfter": {
-                                                                                            },
-                                                                                            "type": "Http",
-                                                                                            "inputs": {
-                                                                                                "authentication": {
-                                                                                                    "audience": "https://graph.microsoft.com",
-                                                                                                    "clientId": "@body('Get_Client_ID')?['value']",
-                                                                                                    "password": "@null",
-                                                                                                    "pfx": "@body('Get_Certificate')?['value']",
-                                                                                                    "tenant": "@variables('TenantID')",
-                                                                                                    "type": "ActiveDirectoryOAuth"
-                                                                                                },
-                                                                                                "headers": {
-                                                                                                    "content-type": "application/json"
-                                                                                                },
-                                                                                                "method": "DELETE",
-                                                                                                "uri": "@{variables('GraphURL')}/groups/@{body('Parse_created_team_JSON')?['id']}/owners/@{items('Loop_through_template_team_owners')?['id']}/$ref"
-                                                                                            }
-                                                                                        }
-                                                                                    },
-                                                                                    "runAfter": {
-                                                                                    },
-                                                                                    "expression": {
-                                                                                        "and": [
-                                                                                            {
-                                                                                                "not": {
-                                                                                                    "contains": [
-                                                                                                        "@string(variables('OwnersGraph'))",
-                                                                                                        "@items('Loop_through_template_team_owners')?['id']"
-                                                                                                    ]
-                                                                                                }
-                                                                                            }
-                                                                                        ]
-                                                                                    },
-                                                                                    "type": "If"
-                                                                                }
-                                                                            },
-                                                                            "runAfter": {
-                                                                            },
-                                                                            "type": "Foreach"
-                                                                        }
-                                                                    },
-                                                                    "runAfter": {
-                                                                        "Loop_through_OwnerIDs_array": [
-                                                                            "Succeeded"
-                                                                        ]
-                                                                    },
-                                                                    "type": "Scope",
-                                                                    "description": "When cloning teams, the owners of the source team will be cloned. We need to remove these owners."
-                                                                }
-                                                            },
-                                                            "runAfter": {},
-                                                            "type": "Scope"
-                                                        }
-                                                    },
-                                                    "runAfter": {
-                                                        "Check_TeamsTemplateOperation_value": [
-                                                            "Succeeded"
-                                                        ]
-                                                    },
-                                                    "expression": {
-                                                        "and": [
-                                                            {
-                                                                "equals": [
-                                                                    "@variables('TeamsTemplateOperation')",
-                                                                    "clone"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    },
-                                                    "type": "If",
-                                                    "description": "Adding Members and Owners is only required if we have cloned an existing team."
-                                                }
-                                            },
-                                            "runAfter": {
-                                            },
-                                            "expression": {
-                                                "or": [
-                                                    {
-                                                        "equals": [
-                                                            "@triggerBody()?['SpaceTypeInternal']",
-                                                            "Microsoft Teams Team"
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            "type": "If",
-                                            "description": "Execute these actions only if the space type is a Microsoft Teams Team."
-                                        }
-                                    },
-                                    "runAfter": {},
-                                    "type": "Scope"
-                                },
                                 "Set_Team_Variables": {
                                     "actions": {
                                         "Check_if_space_is_a_team_-_set_team_variables": {
@@ -4694,16 +4831,12 @@
                                             "type": "If"
                                         }
                                     },
-                                    "runAfter": {
-                                        "Process_Owners_and_Members": [
-                                            "Succeeded"
-                                        ]
-                                    },
+                                    "runAfter": {},
                                     "type": "Scope"
                                 }
                             },
                             "runAfter": {
-                                "Check_space_type": [
+                                "Process_Owners_and_Members": [
                                     "Succeeded"
                                 ]
                             },
@@ -4730,6 +4863,21 @@
                                 },
                                 "method": "post",
                                 "path": "/Mail"
+                            }
+                        },
+                        "Set_MembersOwnersCount_variable": {
+                            "runAfter": {
+                                "Loop_through_Members": [
+                                    "Succeeded"
+                                ],
+                                "Loop_through_Owners": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                                "name": "MembersOwnersCount",
+                                "value": "@add(length(variables('MemberUPNs')),length(variables('OwnerUPNs')))"
                             }
                         },
                         "Set_external_sharing": {
