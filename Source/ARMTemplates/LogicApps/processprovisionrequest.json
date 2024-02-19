@@ -3551,7 +3551,7 @@
                                         "and": [
                                             {
                                                 "equals": [
-                                                    "@triggerBody()?['SpaceType']?['Value']",
+                                                    "@triggerBody()?['SpaceTypeInternal']?['Value']",
                                                     "Microsoft Teams Team"
                                                 ]
                                             }
