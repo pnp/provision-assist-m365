@@ -2090,7 +2090,8 @@
                                             "storageQuotaWarning": "@variables('StorageQuotaWarning')",
                                             "syncHubPermissions": "@variables('SyncHubPermissions')",
                                             "themeName": "@triggerBody()?['ThemeName']",
-                                            "visibility": "@triggerBody()?['Visibility']?['Value']"
+                                            "visibility": "@triggerBody()?['Visibility']?['Value']",
+                                            "siteDesignId": "@triggerBody()?['SiteTemplate']"
                                         }
                                     }
                                 },
@@ -3551,7 +3552,7 @@
                                         "and": [
                                             {
                                                 "equals": [
-                                                    "@triggerBody()?['SpaceTypeInternal']?['Value']",
+                                                    "@triggerBody()?['SpaceTypeInternal']",
                                                     "Microsoft Teams Team"
                                                 ]
                                             }
