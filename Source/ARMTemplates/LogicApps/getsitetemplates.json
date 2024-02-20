@@ -286,7 +286,8 @@
                                                                     "SiteTemplateId": "@items('Loop_through_site_templates_array')['SiteTemplateId']",
                                                                     "Store": "@{items('Loop_through_site_templates_array')?['Store']}",
                                                                     "Title": "@items('Loop_through_site_templates_array')['Title']",
-                                                                    "WebTemplate": "@items('Loop_through_site_templates_array')['WebTemplate']"
+                                                                    "WebTemplate": "@items('Loop_through_site_templates_array')['WebTemplate']",
+                                                                    "Description": "@items('Loop_through_site_templates_array')['Description']"
                                                                 },
                                                                 "host": {
                                                                     "connection": {
@@ -340,7 +341,8 @@
                                                                         "SiteTemplateId": "@items('Loop_through_site_templates_array')['SiteTemplateId']",
                                                                         "Store": "@{items('Loop_through_site_templates_array')?['Store']}",
                                                                         "Title": "@items('Loop_through_site_templates_array')['Title']",
-                                                                        "WebTemplate": "@items('Loop_through_site_templates_array')['WebTemplate']"
+                                                                        "WebTemplate": "@items('Loop_through_site_templates_array')['WebTemplate']",
+                                                                        "Description": "@items('Loop_through_site_templates_array')['Description']"
                                                                     },
                                                                     "host": {
                                                                         "connection": {

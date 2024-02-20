@@ -27,7 +27,8 @@ Param
 	[String] $pnpTemplateUrl,
 	[String] $themeName,
 	[String] $siteTemplateTitle,
-	[String] $siteCollectionAdmins
+	[String] $siteCollectionAdmins,
+    [String] $siteDesignId
 )
 
 $logoUrl = Get-AutomationVariable -Name "logoUrl"
@@ -304,6 +305,19 @@ function ApplyTheme {
 	}
 }
 
+function ApplySiteDesign {
+    # Reapply site design if we have applied a PnP template
+    if ($applyPnPTemplate -eq $true -and $siteDesignId -ne $null)
+    {
+        Write-Output "Applying site design"
+
+        Connect-PnPOnline -Url "https://$tenantName-admin.sharepoint.com" -ManagedIdentity
+        Invoke-PnPSiteDesign -Identity $siteDesignId -WebUrl $siteUrl
+
+        Write-Output "Finished applying site design"
+    }
+}
+
 try {
 
     #Connect to spo
@@ -335,6 +349,7 @@ try {
             SetSiteClassification
             JoinOrRegisterHubSite
             SetStorageQuota
+            ApplySiteDesign
 
             Write-Output "Site configuration successful"
 
