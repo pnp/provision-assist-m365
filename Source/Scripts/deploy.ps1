@@ -281,7 +281,7 @@ function CreateRequestsSharePointSite {
 
         if (!$site) {
 
-            New-PnPSite -Type TeamSite -Title $parameters.requestsSiteName.Value -Alias $requestsSiteAlias -Description $parameters.requestsSiteDesc.Value -Owners $parameters.serviceAccountUPN.Value
+            New-PnPSite -Type TeamSite -Title $parameters.requestsSiteName.Value -Alias $requestsSiteAlias -Description $parameters.requestsSiteDesc.Value -Lcid 1033 -Owners $parameters.serviceAccountUPN.Value
         
             Write-Host "Waiting for site to finish creating..." -ForegroundColor Yellow
             
