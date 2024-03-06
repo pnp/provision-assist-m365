@@ -92,7 +92,7 @@ function AddSiteCollectionAdmins {
 }
 
 function SetExternalSharing {
-    If ($externalSharing -eq "True") {
+    If ($externalSharing) {
 
         Write-Output "External sharing is required - configuring sharing settings"
 

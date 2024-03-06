@@ -2078,7 +2078,7 @@
                                             "defaultExternalSharingSetting": "@variables('DefaultExternalSharingSetting')",
                                             "disableDocSync": "@variables('DisableDocumentSync')",
                                             "enableAllowAccessRequests": "@variables('EnableAllowAccessRequests')",
-                                            "externalSharing": "@{triggerBody()?['ExternalSharing']}",
+                                            "externalSharing": "@triggerBody()?['ExternalSharingRequired']",
                                             "featuresToActivate": "@variables('FeaturesToActivate')",
                                             "hubSiteId": "@triggerBody()?['HubSite']",
                                             "joinHub": "@{triggerBody()?['JoinHub']}",
