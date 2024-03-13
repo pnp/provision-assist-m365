@@ -22,6 +22,8 @@ Provision Assist provides the following capabilities:
   
 ## Architecture
 
+TEST
+
 The solution uses the Microsoft Graph and the SharePoint REST APIs for provisioning. Azure Runbooks are used with PnP PowerShell for tasks that cannot be completed using the Graph API. 
 
 Application permissions are used through an Azure AD app registration, the secret for the Azure AD app is stored in a key vault.
