@@ -3155,7 +3155,7 @@
                                     {
                                         "name": "WebTemplate",
                                         "type": "String",
-                                        "value": "@{if(equals(triggerBody()?['SpaceType']?['Value'],'Team Site'),'STS#3','SITEPAGEPUBLISHING#0')}"
+                                        "value": "@{if(equals(triggerBody()?['SpaceTypeInternal'],'Team Site'),'STS#3','SITEPAGEPUBLISHING#0')}"
                                     }
                                 ]
                             }
