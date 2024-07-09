@@ -500,6 +500,7 @@
                 <FieldRef Name="Status" />
                 <FieldRef Name="Comments" />
                 <FieldRef Name="ApprovedDate" />
+                <FieldRef Name="SiteTemplateStore" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <Aggregations Value="Off" />
