@@ -1,8 +1,8 @@
 # Provision Assist Version 2
 
-<img src="./images/V2HomeDesktop.png" height="500" alt="Provision Assist V2 Home Screen Desktop Screenshot"><br/>
+<img src="https://github.com/pnp/provision-assist-m365/blob/59eaf10ffc84af53560b6671c421997e7be2af59/Images/V2HomeDesktop.png" height="500" alt="Provision Assist V2 Home Screen Desktop Screenshot"><br/>
 
-<img src="./images/V2RecommendationMobile.jpeg" height="500" alt="Provision Assist V2 Home Screen Mobile Screenshot"><br/>
+<img src="https://github.com/pnp/provision-assist-m365/blob/59eaf10ffc84af53560b6671c421997e7be2af59/Images/V2RecommendationMobile.jpeg" height="500" alt="Provision Assist V2 Home Screen Mobile Screenshot"><br/>
 
 We are excited to announce the release of Provision Assist V2 🥳
 
@@ -58,6 +58,6 @@ And finally If you like V2, please buy us some pizza 🍕🍕 to say thanks, a l
 
 ## Extra Screenshots
 
-<img src="./images/V2RecommendationMobile.jpeg" height="500" alt="Provision Assist V2 Recommendation Screen Mobile Screenshot"><br/>
+<img src="https://github.com/pnp/provision-assist-m365/blob/59eaf10ffc84af53560b6671c421997e7be2af59/Images/V2HomeMobile.jpeg" height="500" alt="Provision Assist V2 Home Screen Mobile Screenshot"><br/>
 
-<img src="./images/V2RequestDesktop.png" height="500" alt="Provision Assist V2 New Request Desktop Screenshot"><br/>
+<img src="https://github.com/pnp/provision-assist-m365/blob/59eaf10ffc84af53560b6671c421997e7be2af59/Images/V2RequestDesktop.png" height="500" alt="Provision Assist V2 New Request Desktop Screenshot"><br/>
