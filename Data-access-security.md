@@ -25,6 +25,7 @@ The API permissions required for the Azure AD app are as follows:
 | Group.ReadWrite.All | Delegated | Read and write all groups |Used to apply sensitivity labels to created groups/teams.|
 | Group.ReadWrite.All | Application | Read and write all groups |Used to create and update the properties of groups/teams.|
 | InformationProtectionPolicy.Read.All | Application | Read all published labels and label policies for an organization. |Used to syncronize sensivity labels in the tenant to a SharePoint list.|
+| Sites.FullControl.All | Application | Have full control of all site collections. |Update the properties of provisioned SharePoint sites.|
 | TeamsTemplates.Read.All | Application | Read all available Teams Templates |Used to read the teams templates in the tenant and syncronize them to a SharePoint list.|
 | User.Invite.All | Application | Invite guest users to the organization |Used to invite guest users in Azure AD if they are requested.|
 | User.ReadWrite.All | Application | Read and write to all users' full profiles |Used to update guest users in Azure AD if they are requested.|
