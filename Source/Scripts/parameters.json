@@ -1,58 +1,70 @@
 {
     "tenantId": {
-        "Value": "<<value>>",
+        "Value": "8d89b635-2126-434d-a6b4-e4e40b741b75",
         "Description": "Id of the tenant to deploy to. Can be found in the Azure Active Directory blade."
     },
     "spoTenantName": {
-        "Value": "<<value>>",
+        "Value": "m365cpi17761500",
         "Description": "Name of the SharePoint tenant to deploy to (excluding onmicrosoft.com) e.g. contoso"
     },
+    "fullTenantName": {
+        "Value": "m365cpi17761500.onmicrosoft.com",
+        "Description": "Full name of the tenant to deploy to e.g. contoso.onmicrosoft.com"
+    },
     "requestsSiteName": {
-        "Value": "<<value>>",
+        "Value": "Provision Assist App",
         "Description": "Name of the SharePoint site to store the requests, can include spaces (URL/Alias auomatically generated). If the site exists, it will prompt to overwrite and will apply the provisioning template."
     },
     "requestsSiteDesc": {
-        "Value": "<<value>>",
+        "Value": "Provision Assist solution",
         "Description": "Description for the site that will be created above."
     },
     "managedPath": {
-        "Value": "<<value>>",
+        "Value": "sites",
         "Description": "Managed path configured in the tenant e.g. 'sites' or 'teams' (no forward slash)."
     },
     "subscriptionId": {
-        "Value": "<<value>>",
+        "Value": "67a83931-f400-41ec-9696-b899076f6306",
         "Description": "Azure subscription id to deploy the solution to. All resources in an Azure subscription are billed together."
     },
     "region": {
-        "Value": "<<value>>",
+        "Value": "uksouth",
         "Description": "The Azure region to deploy to. The internal name should be used. Not every resource is available in every region."
     },
     "resourceGroupName": {
-        "Value": "<<value>>",
+        "Value": "contoco-prov-rg",
         "Description": "A name for a new resource group to deploy the solution to - if the resource group does not exist it will be created."
     },
     "appName": {
-        "Value": "<<value>>",
-        "Description": "Name for the Azure ad app that will be created."
+        "Value": "Provision Assist",
+        "Description": "Name for the Entra ad app registration that will be created."
     },
     "createSelfSignedCert": {
         "Value": true,
         "Description": "Specifies whether a self signed certificate should be created and uploaded to the AD app and Key Vault. If set to false, the certificate must be uploaded manually to the app registration and Key Vault."
     },
     "certName": {
-        "Value": "<<value>>",
+        "Value": "provisionassist-cert",
         "Description": "Name for the self signed certificate that will be created (if createSelfSignedCert is set to true)."
     },
     "certValidityDays": {
         "Value": 365,
         "Description": "Number of days the self signed certificate will be valid for (if createSelfSignedCert is set to true)."
     },
+    "pnpAppId": {
+        "Value": "4ae0d7c3-64db-4e80-90c2-046a4c4fe213",
+        "Description": "Id of the PnP Entra app registration."
+    },
+    "pnpCertPath": {
+        "Value": "C:\\Users\\aleclar\\PnP.pfx",
+        "Description": "Path to your PnP certificate that will be used to connect with PnP PowerShell. Please ensure to double escape the backslashes above."
+    },
     "siteLogoPath": {
-        "Value": "<<value>>",
+        "Value": "",
         "Description": "Path to a company logo which will be set as the site logo for Communication sites and no Group Team Sites when provisioned. Optional - can be left blank."
     },
     "serviceAccountUPN": {
-        "Value": "<<value>>",
+        "Value": "provisionassist@M365CPI17761500.onmicrosoft.com",
         "Description": " UPN of Service Account to be used for the solution - used to connect to SharePoint and send Emails in the Logic App."
     },
     "isEdu": {
@@ -60,11 +72,11 @@
         "Description": "Specifies whether the current tenant is an Education tenant. If set to true, the Education Teams Templates will be deployed. These will be skipped if set to false or left blank."
     },
     "keyVaultName": {
-      "Value": "<<value>>",
+      "Value": "contco-pa-kv",
         "Description": "Name for the Key Vault that will be provisioned to store the Azure ad app ID and secret. The Key Vault name must be unique and not exist in another subscription."
     },
     "enableSensitivity": {
-        "Value": false,
+        "Value": true,
         "Description": "Enable the sensitivity label functionality."
     },
     "skipApplySPOTemplate": {

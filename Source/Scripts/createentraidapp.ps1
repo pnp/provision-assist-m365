@@ -1,15 +1,15 @@
 <#
 .SYNOPSIS
-    Creates the Azure AD App Registration for the Provision Assist solution and grants required API Permissions.
+    Creates the Entra ID App Registration for the Provision Assist solution and grants required API Permissions.
 
 .DESCRIPTION
-    Creates the Azure AD App Registration for the Provision Assist solution and grants API permissions.
+    Creates the Entra ID App Registration for the Provision Assist solution and grants API permissions.
 
-    This script uses the Azure CLI to create/update the AD App.
+    This script uses the Azure CLI to create/update the Entra ID App.
 
     This script should be executed using an account that has Global Administrator rights, this is neccessary to grant the requried API permissions.
 
-    This script accepts a single parameter, which is the name of the AD App you wish to use for Provision Assist.
+    This script accepts a single parameter, which is the name of the Entra ID App you wish to use for Provision Assist.
 
 .EXAMPLE
     createadapp.ps1
@@ -49,8 +49,8 @@ If (-not (Test-Path -Path "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2") -a
     break
 }
 
-# Gets the azure ad app
-function GetAzureADApp {
+# Gets the entra id app
+function GetEntraIDApp {
     param ($appName)
 
     $app = az ad app list --filter "displayName eq '$appName'" | ConvertFrom-Json
@@ -61,15 +61,15 @@ function GetAzureADApp {
 
 function CreateAzureADApp {
     try {
-        Write-Host "### AZURE AD APP CREATION ###" -ForegroundColor Yellow
+        Write-Host "### ENTRA ID APP CREATION ###" -ForegroundColor Yellow
 
         # Check if the app already exists - script has been previously executed
-        $app = GetAzureADApp $appName
+        $app = GetEntraIDApp $appName
 
         if (-not ([string]::IsNullOrEmpty($app))) {
 
-            # Update azure ad app registration using CLI
-            Write-Host "Azure AD App $($appName) already exists - updating existing app..." -ForegroundColor Yellow
+            # Update entra id app registration using CLI
+            Write-Host "Entra ID App $($appName) already exists - updating existing app..." -ForegroundColor Yellow
 
             az ad app update --id $app.appId --required-resource-accesses './appmanifest.json'
 
@@ -79,14 +79,14 @@ function CreateAzureADApp {
 
             Start-Sleep -s 60
 
-            Write-Host "Updated Azure AD App" -ForegroundColor Green
+            Write-Host "Updated Entra ID App" -ForegroundColor Green
 
         } 
         else {
             # Create the app
-            Write-Host "Creating Azure AD App - $($appName)..." -ForegroundColor Yellow
+            Write-Host "Creating Entra ID App - $($appName)..." -ForegroundColor Yellow
 
-            # Create azure ad app registration using CLI
+            # Create entra id app registration using CLI
             $app = az ad app create --display-name $appName --required-resource-accesses './appmanifest.json'
 
             $appId = $app | ConvertFrom-Json | Select-Object appid
@@ -97,7 +97,7 @@ function CreateAzureADApp {
 
             Start-Sleep -s 60
 
-            Write-Host "Created Azure AD App" -ForegroundColor Green
+            Write-Host "Created Entra ID App" -ForegroundColor Green
 
 
         }
@@ -113,24 +113,24 @@ function CreateAzureADApp {
         
         Write-Host "Granted admin consent" -ForegroundColor Green
 
-        Write-Host "### AZURE AD APP CREATION FINISHED ###" -ForegroundColor Green
+        Write-Host "### ENTRA ID APP CREATION FINISHED ###" -ForegroundColor Green
     }
     catch {
-        throw('Failed to create the Azure AD App {0}', $_.Exception.Message)
+        throw('Failed to create the Entra ID App {0}', $_.Exception.Message)
     }
 }
 
 
 $ErrorActionPreference = "stop"
 
-Write-Host "###  CREATE AD APP SCRIPT STARTED `n(c) Microsoft Corporation ###" -ForegroundColor Magenta
+Write-Host "###  CREATE ENTRA ID APP SCRIPT STARTED `n(c) Microsoft Corporation ###" -ForegroundColor Magenta
 
 Write-Ascii -InputObject "Provision Assist" -ForegroundColor Green
 
 # Initialise connections - Azure Az/CLI
 Write-Host "Launching Azure sign-in..." -ForegroundColor Yellow
 
-$cliLogin = az login
+az login
 Write-Host "Connected to Azure" -ForegroundColor Green
 CreateAzureADApp
 

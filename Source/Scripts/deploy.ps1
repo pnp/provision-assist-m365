@@ -3,17 +3,17 @@
     Deploys the following assets of the Provision Assist solution - 
 
         -SharePoint Site & Assets 
-        -Azure AD App - Creates sectet
+        -Entra ID App - Creates sectet
         -Azure Automation Account & Runbooks
         -Logic App
 
 .DESCRIPTION
     Deploys the Provision Assist solution (excluding the PowerApp and Flows).
-    This script uses the Azure CLI, Azure Az PowerShell, SharePoint PnP PowerShell and the Microsoft Graph PowerShell Modules to perform the deployment.
+    This script uses the Azure CLI, Azure Az PowerShell and PnP PowerShell Modules to perform the deployment.
 
-    As part of the deployment, the script will generate a secet for the Azure AD App created by the 'createadapp.ps1' script. 
+    As part of the deployment, the script will generate a secet for the Entra ID App created by the 'createadapp.ps1' script. 
 
-    The account running this script must be able to create secrets for Azure AD Applications. The 'Cloud Application Administrator' role will suffice.
+    The account running this script must be able to create secrets for Entra ID Applications. The 'Cloud Application Administrator' role will suffice.
 
     The script requires input during execution, requires sign-in to a number of services and therefore should be monitored.
 
@@ -62,7 +62,7 @@ $templatePath = "Templates\provisionassist-sitetemplate.xml"
 $settingsPath = "Settings\SharePoint List items.xlsx"
 
 # Required PS modules
-$preReqModules = "PnP.PowerShell", "Az", "AzureADPreview", "ImportExcel", "WriteAscii", "Microsoft.Graph"
+$preReqModules = "PnP.PowerShell", "Az", "ImportExcel", "WriteAscii"
 
 #  Worksheets
 $provRequestSettingsWorksheetName = "Provisioning Request Settings"
@@ -113,7 +113,6 @@ $global:teamsTemplatesListId = $null
 $global:appId = $null
 $global:appSecret = $null
 $global:appServicePrincipalId = $null
-$global:siteClassifications = $null
 $global:tenantUrl = $null
 
 # Validates if a parameter in the json file is valid
@@ -208,6 +207,26 @@ function ValidateParameters {
     }
 
     if (-not (IsValidParam($parameters.certValidityDays))) {
+        Write-Host "Invalid certValidityDays" -ForegroundColor Red
+        $isValid = $false;
+    }
+
+    if (-not (IsValidParam($parameters.pnpAppId))) {
+        Write-Host "Invalid certValidityDays" -ForegroundColor Red
+        $isValid = $false;
+    }
+
+    if (-not (IsValidParam($parameters.pnpAppId))) {
+        Write-Host "Invalid certValidityDays" -ForegroundColor Red
+        $isValid = $false;
+    }
+
+    if (-not (IsValidParam($parameters.pnpCertPath))) {
+        Write-Host "Invalid certValidityDays" -ForegroundColor Red
+        $isValid = $false;
+    }
+
+    if (-not (IsValidParam($parameters.fullTenantName))) {
         Write-Host "Invalid certValidityDays" -ForegroundColor Red
         $isValid = $false;
     }
@@ -400,9 +419,6 @@ function ConfigureSharePointSite {
             }
             if ($setting.Title -eq "SPOManagedPath") {
                 $setting.Value = $parameters.managedPath.Value
-            }
-            if ($setting.Title -eq "SiteClassifications") {
-                $setting.Value = $global:siteClassifications
             }
             if ($setting.Title -eq "EnableSensitivityLabels") {
                 If ($parameters.enableSensitivity.Value) {
@@ -639,36 +655,13 @@ function ConfigureSharePointSite {
     }
 }
 
-# Get configured site classifications
-function GetSiteClassifications {
-    try {
-        $groupDirectorySetting = AzureADPreview\Get-AzureADDirectorySetting | Where-Object DisplayName -eq "Group.Unified"
-        $classifications = $groupDirectorySetting.Values | Where-Object Name -eq "ClassificationList" | Select-Object Value
-
-        $global:siteClassifications = $classifications.Value
-    }
-    catch {
-        throw('Failed to retrieve site classifications {0}', $_.Exception.Message)
-    }
-}
-
-function UploadFiles ($context, $targetFolder, $sourcePath, $sourceFolder, $libraryName) {
+function UploadFiles ($targetFolder, $sourcePath, $sourceFolder, $libraryName) {
     # Upload files into the folder
-    $folder = $Web.GetFolderByServerRelativeUrl($targetFolder)
-    $context.Load($folder)
-    $context.ExecuteQuery() 
-
     Get-ChildItem (Join-Path $sourcePath $sourceFolder) | 
     Foreach-Object {
-        $FileStream = New-Object IO.FileStream($_.FullName, [System.IO.FileMode]::Open)
-        $FileCreationInfo = New-Object Microsoft.SharePoint.Client.FileCreationInformation
-        $FileCreationInfo.Overwrite = $true
-        $FileCreationInfo.ContentStream = $FileStream
-        $FileCreationInfo.URL = $_
-        $Upload = $folder.Files.Add($FileCreationInfo)
-        $context.Load($Upload)
-        $context.ExecuteQuery()
-        Write-Host "Uploaded $($_.FullName) to $libraryName" -ForegroundColor Green
+        $file = $_.FullName
+        Add-PnPFile -Path $file -Folder $targetFolder
+        Write-Host "Uploaded $($_.Name) to $libraryName" -ForegroundColor Green
     }
 }
 
@@ -677,12 +670,9 @@ function UploadFiles ($context, $targetFolder, $sourcePath, $sourceFolder, $libr
 function UploadAssets {
     try {
         Write-Host "Uploading assets" -ForegroundColor Yellow
-        $context = Get-PnPContext
-        $web = $context.Web
-        $context.ExecuteQuery()
 
-        UploadFiles $context $imageFolderUpload $packageRootPath $imagesDir "Site Assets"
-        UploadFiles $context $iconFolderUpload $packageRootPath $iconsDir "Site Assets"
+        UploadFiles  $imageFolderUpload $packageRootPath $imagesDir "Site Assets"
+        UploadFiles  $iconFolderUpload $packageRootPath $iconsDir "Site Assets"
 
         Write-Host "Uploaded files to Site Assets`n**PROVISION ASSIST SPO SITE CONFIGURATION COMPLETE**" -ForegroundColor Green
     }
@@ -691,8 +681,8 @@ function UploadAssets {
     }
 }
 
-# Gets the azure ad app
-function GetAzureADApp {
+# Gets the Entra ID app
+function GetEntraIDApp {
     param ($appName)
 
     $app = az ad app list --filter "displayName eq '$appName'" | ConvertFrom-Json
@@ -701,9 +691,9 @@ function GetAzureADApp {
 
 }
 
-function CreateAzureADAppSecret {
+function CreateEntraIDAppSecret {
     try {
-        Write-Host "### AZURE AD APP SECRET CREATION ###" -ForegroundColor Yellow
+        Write-Host "### ENTRA ID APP SECRET CREATION ###" -ForegroundColor Yellow
 
         # Check if the app already exists - script has been previously executed
         $app = GetAzureADApp $parameters.appName.Value
@@ -713,9 +703,9 @@ function CreateAzureADAppSecret {
             $global:appId = $app.appId
 
             # Create a secret - this will autogenerate a password
-            Write-Host "Azure AD App $($parameters.appName.Value) found..." -ForegroundColor Yellow
+            Write-Host "Entra ID App $($parameters.appName.Value) found..." -ForegroundColor Yellow
 
-            Write-Host "Creating secret for Azure AD App - $($parameters.appName.Value)..." -ForegroundColor Yellow
+            Write-Host "Creating secret for Entra ID App - $($parameters.appName.Value)..." -ForegroundColor Yellow
 
             $secret = az ad app credential reset --id $global:appId
     
@@ -730,19 +720,19 @@ function CreateAzureADAppSecret {
         } 
         else {
 
-            throw("Azure AD App $($parameters.appName.Value)' does not exist. Please run the createadapp script first.")
+            throw("Entra ID App $($parameters.appName.Value)' does not exist. Please run the createentraidapp.ps1 script first.")
 
         }
 
-        Write-Host "### AZURE AD APP SECRET CREATION FINISHED ###" -ForegroundColor Green
+        Write-Host "### ENTRA ID APP SECRET CREATION FINISHED ###" -ForegroundColor Green
     }
     catch {
-        throw('Failed to create the secret for the Azure AD App {0}', $_.Exception.Message)
+        throw('Failed to create the secret for the Entra ID App {0}', $_.Exception.Message)
     }
 }
 
 function CreateAutomationRoleAssignments {
-    # Create automation role assignments for AD app service principal if they do not already exist
+    # Create automation role assignments for Entra ID app service principal if they do not already exist
 
     $jobOperatorRoleAssignment = Get-AzRoleAssignment -ObjectId $global:appServicePrincipalId -ResourceName $automationAccountName -ResourceType Microsoft.Automation/automationAccounts -ResourceGroupName $parameters.resourceGroupName.Value -RoleDefinitionName "Automation Job Operator"
 
@@ -766,22 +756,15 @@ function AssignManagedIdentityPermissions {
         Write-Host "Assigning SharePoint app role to managed identity" -ForegroundColor Yellow
 
         # Get service principal for the automation account
-        $paAutoServicePrincipal = Get-MgServicePrincipal -Filter "DisplayName eq '$($automationAccountName)'"
+        $paAutoServicePrincipal = Get-AzADServicePrincipal -DisplayName "$automationAccountName"
 
-        $spoResource = Get-MgServicePrincipal -Filter "DisplayName eq 'Office 365 SharePoint Online'"
+        $spoResource = Get-AzADServicePrincipal -DisplayName "Office 365 SharePoint Online"
 
         # Get the app role we need to assign
-        $spoFullControlAppRole = $spoResource.AppRoles | Where-Object { $_.value -eq 'Sites.FullControl.All' }
+        $spoFullControlAppRole = $spoResource.AppRole | Where-Object DisplayName -eq 'Have full control of all site collections'
 
         # Get existing role assignments
-        $roles = Get-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id
-
-        # Build the params
-        $spoParams = @{
-            "PrincipalId" = $paAutoServicePrincipal.Id 
-            "ResourceId"  = $spoResource.Id
-            "AppRoleId"   = $spoFullControlAppRole.Id
-        }
+        $roles = Get-AzADServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id
 
         # Check that the role assigments do not already exist
 
@@ -789,7 +772,7 @@ function AssignManagedIdentityPermissions {
 
         if ($null -eq $existingRoleAssignment) {
             # Assign SharePoint app roles to the service principal
-            New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -BodyParameter $spoParams
+            New-AzADServicePrincipalAppRoleAssignment -ServicePrincipalId $paAutoServicePrincipal.Id -AppRoleId $spoFullControlAppRole.Id -ResourceId $spoResource.Id
         }
 
         Write-Host "Finished assigning SharePoint app role to managed identity" -ForegroundColor Green
@@ -798,7 +781,6 @@ function AssignManagedIdentityPermissions {
         throw('Failed to assign graph and SharePoint app roles to the managed identity {0}', $_.Exception.Message)
     }
 }
-
 
 # Deploy ARM templates
 function DeployARMTemplates {
@@ -994,33 +976,33 @@ Write-Host "Launching Azure sign-in..." -ForegroundColor Yellow
 $azConnect = Connect-AzAccount -Subscription $parameters.subscriptionId.Value -Tenant $parameters.tenantId.Value
 ValidateKeyVault
 ValidateAzureLocation
-Write-Host "Launching Azure AD sign-in..." -ForegroundColor Yellow
-AzureADPreview\Connect-AzureAD
 Write-Host "Launching Azure CLI sign-in..." -ForegroundColor Yellow
-$cliLogin = az login
+az login
 Write-Host "Connected to Azure" -ForegroundColor Green
-
-# Connect to Microsfot Graph
-
-# Define the scopes to use
-$scopes = @("AppRoleAssignment.ReadWrite.All", "Application.Read.All", "Directory.Read.All")
-
-# Connect to Microsoft Graph using the specified scopes
-Write-Host "Launching Microsoft Graph sign-in...please consent"
-Connect-MgGraph -Scopes $scopes
-Write-Host "Connected to Microsoft Graph" -ForegroundColor Green
 
 # Connect to PnP
 Write-Host "Launching PnP sign-in..." -ForegroundColor Yellow
-Connect-PnPOnline -Url "https://$($parameters.spoTenantName.Value)-admin.sharepoint.com" -Interactive
+
+$pnpCertPassword = Read-Host -Prompt "Enter password for PnP certificate (leave blank if your certficate is not secured with a password)" -AsSecureString
+
+if ($pnpCertPassword.Length -eq 0) {
+    Connect-PnPOnline -Url "https://$($parameters.spoTenantName.Value)-admin.sharepoint.com" -ClientId $parameters.pnpAppId.Value -CertificatePath $parameters.pnpCertPath.Value -Tenant $parameters.fullTenantName.Value
+} else {
+    Connect-PnPOnline -Url "https://$($parameters.spoTenantName.Value)-admin.sharepoint.com" -ClientId $parameters.pnpAppId.Value -CertificatePath $parameters.pnpCertPath.Value -CertificatePassword $pnpCertPassword -Tenant $parameters.fullTenantName.Value
+}
 Write-Host "Connected to SPO" -ForegroundColor Green
 
 $currUserId = az ad signed-in-user show --query id | ConvertFrom-Json
 CreateAzureADAppSecret
-GetSiteClassifications
 CreateRequestsSharePointSite
 # Connect to the new site
-Connect-PnPOnline $requestsSiteUrl -Interactive
+
+if ($pnpCertPassword.Length -eq 0) {
+    Connect-PnPOnline -Url $requestsSiteUrl -ClientId $parameters.pnpAppId.Value -CertificatePath $parameters.pnpCertPath.Value -Tenant $parameters.fullTenantName.Value
+} else {
+    Connect-PnPOnline -Url $requestsSiteUrl -ClientId $parameters.pnpAppId.Value -CertificatePath $parameters.pnpCertPath.Value -CertificatePassword $pnpCertPassword -Tenant $parameters.fullTenantName.Value
+}
+
 ConfigureSharePointSite
 UploadAssets
 
