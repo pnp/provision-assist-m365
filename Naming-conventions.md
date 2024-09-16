@@ -53,11 +53,11 @@ e.g. VE_My Viva Engage Community_IT (Where IT is the users' department).
 
 ![Viva Engage naming convention screenshot text](./images/VivaEngageNamingConvention.png)
 
-**Azure AD:**
+**Entra ID:**
 
-The group name and email address in Azure AD will match the specified naming convention. The group name will retain spaces but the email will have these automatically removed.
+The group name and email address in Entra ID will match the specified naming convention. The group name will retain spaces but the email will have these automatically removed.
 
-![Azure ad naming convention screenshot](./images/AADNamingConvention.png)
+![Entra id naming convention screenshot](./images/AADNamingConvention.png)
 
 
 ## Configuration

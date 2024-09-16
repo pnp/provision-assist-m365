@@ -10,38 +10,58 @@ To begin, you will need:
 - Service account (used by Logic Apps to connect to SPO, Outlook and Teams) with an appropriate Microsoft 365 license (This account should NOT be an admin). This account CAN have MFA.
 - Service account for sensitivity label functionality (applying sensitivity labels), if you wish to use it. This can be the same account as the above if you wish however at the time of writing this account CANNOT use MFA due to restrictions in the Microsoft Graph. 
 - Windows 10/11 machine on which to execute the PowerShell deployment script.
+- PowerShell 7 downloaded and installed - https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4.
 - Azure CLI (Command Line Interface) - https://learn.microsoft.com/en-us/cli/azure/install-azure-cli.
 - Firewall/Proxy configured to allow connectivity using the Azure CLI - please test the 'az login' cmdlet works before proceeding.
- - Global Administrator (to execute the `createazureadapp.ps1` script and authorize PnP PowerShell).
+ - Global Administrator (to execute the `createazureadapp.ps1` script and create/authorize the PnP app registration).
  - A user account with **Owner** rights to the Azure Subscription that is also a SharePoint, Power Platform and Teams Administrator. 
  - A certificate (self-signed is ok) to use for Microsoft Graph and SharePoint REST API authentication (**Optional** as the deployment script will create a self-signed cert for you if preffered). 
+ - App Registration for PnP PowerShell (see below).
+
+ #### PnP PowerShell App Registration
+
+ PnP PowerShell no longer supports the 'multi-tenant app registration' option. This previously created an app registration automatically for PnP PowerShell with all neccessary permissions. 
+
+ In order to authenticate and use PnP PowerShell moving forward, it is neccessary to create your own app registration with the required permissions. 
+
+ Before you execute the deployment script for Provision Assist, make sure you have created this app registration and have the certificate file and password to hand.
+
+ The minimum permissions required for the PnP app registration to be able to run the deployment script are:
+
+ **Microsoft Graph**
+
+ - Group.Create
+ - Group.Read.All
+
+ **SharePoint**
+
+ - Sites.FullControl.All
+
+ Once the Provision Assist deployment is complete, you may delete the PnP PowerShell app registration or remove the above permissions if you no longer require them.
+
+ You can find more details on the changes to PnP PowerShell authentication [here](https://pnp.github.io/blog/post/changes-pnp-management-shell-registration/).
+
+ Please see [this video](https://www.youtube.com/watch?v=ecRZrHOucz4&t=359s) for details of how to create and use the app registration.
+
+ If Sites.FullControl.All is a concern, you may create the SharePoint site for Provision Assist manually and make sure the name in the parameters.json file matches the name of the site you created.
+
+#### PowerShell 7.x
+
+The Provision Assist deployment script requires PowerShell 7 and no longer supports 5.1. Please ensure PowerShell 7 is installed before installing the PowerShell modules listed below.
 
 #### PowerShell Modules
 
 The following PowerShell modules are used by the deployment script and must be installed before executing the script:
 
-- PnP.PowerShell (We do not support v2 - please install the latest v1 version)
+- PnP.PowerShell
 - Az
-- AzureADPreview
 - ImportExcel
 - WriteAscii
-- Microsoft.Graph (Due to a dependency issue, please install version 2.9.1 ONLY)
-
-Once installed, please perform the following steps to 'authorize' the PnP Management Shell (PnP PowerShell). PnP now uses an Azure AD app registration to carry out operations, this requires the consent of a **Global Administrator** and must be performed BEFORE the main deployment script can be executed.
-
-1. Launch PowerShell as an Administrator (Global Administrator).
-2. Connect to your SharePoint admin center by running the following cmdlet - ```Connect-PnPOnline -Url https://contoso-admin.sharepoint.com``` (replace contoso with your tenant name).
-3. Check the 'Consent on behalf of your organization' checkbox and click 'Accept', wait for the cmdlet to finish. 
-4. Close the PowerShell window.
-
-![PnP powershell consent screenshot](/Images/PnPPowerShellConsent.png)
-
-You can delete this Azure AD app registration AFTER deployment of Provision Assist is completed if you wish.
 
 ## Step 1: Configuring PowerShell
 
 1. Download the [latest release](https://github.com/pnp/provision-assist-m365/releases/latest) of Provision Assist.
-2. Launch PowerShell as an Administrator.
+2. Launch PowerShell 7 as an Administrator.
 3. Set the PowerShell Execution Policy to 'Unrestricted' by running the following cmdlet - ```Set-ExecutionPolicy -ExecutionPolicy unrestricted```
 
 ## Step 2: Updating Parameters.json file
@@ -62,13 +82,13 @@ You may refer to the following to understand each parameter:
 
 - `managedPath ` - Managed path configured in the tenant e.g. 'sites' or 'teams' (no forward slash).
 
-- `subscriptionId` - Azure subscription to deploy the solution to (MUST be associated with the Azure AD of the Microsoft 365 tenant that you wish to deploy this solution to).
+- `subscriptionId` - Azure subscription to deploy the solution to (MUST be associated with the Entra ID directory of the Microsoft 365 tenant that you wish to deploy this solution to).
 
 - `region` - Azure region in which to create the resources. The internal name should be used e.g. `uksouth`. The location MUST support Automation and Logic Apps. See [Valid Azure locations](https://azure.microsoft.com/en-gb/explore/global-infrastructure/products-by-region/?products=logic-apps%2Cautomation&regions=all).
 
 - `resourceGroupName` - Name for a new resource group to deploy the solution to - the script will create this resource group.
 
- - `appName` - Name for the Azure AD app that will be created e.g. `ProvisionAssist`.
+ - `appName` - Name for the Entra ID app that will be created e.g. `ProvisionAssist`.
 
  - `createSelfSignedCert` - Specifies whether to create a self-signed certificate as part of the deployment. If set to true, a self-signed cert will be created through the Azure CLI with the name specified in the 'certName' parameter.
 
@@ -76,13 +96,17 @@ You may refer to the following to understand each parameter:
 
  - `certValidityDays` - Number of days that the certificate is valid for (if 'createSelfSignedCert' is set to true). The default is 365 days.
 
+ - `pnpAppId` - Id of the PnP Entra app registration that you created when configuring PnP PowerShell.
+
+- `pnpCertPath` - Path to the PnP certificate on your local machine that you created when configuring PnP PowerShell.
+
 - `siteLogoPath` (**Optional)** - Path to a company logo (ideally stored in SharePoint) that all users can access to set as the logo for created sites. Please ensure this path is to an image, if you don't have an image leave this blank.
 
 - `serviceAccountUPN` - UPN of Service Account to be used for the solution - used to connect the Logic App API connections. Service account should be a standard Microsoft 365 user who has SPO/Exchange/Teams licenses enabled. Refer to [Assign licenses to users](https://docs.microsoft.com/en-us/microsoft-365/admin/manage/assign-licenses-to-users?view=o365-worldwide) for more details.
 
 - `isEdu` - Specifies whether the current tenant is an Education tenant. If set to true, the Education Teams Templates will be deployed. These will be skipped if set to false or left blank
 
-- `KeyVaultName` - Name to use for the Key Vault that is provisioned by the deployment script. The Key Vault stores the app id and secret of the Azure AD app that this solution uses. This ensures that these are held securely. The name of the key vault must be unique across the Azure region that you are deploying to. If a key vault matching the name provided exists ***in*** the current subscription, it can be used. **PLEASE NOTE - IF YOU USE AN EXISTING KEY VAULT, IT WILL BE OVERWRITTEN AND CONFIGURATION SUCH AS ROLE ASSIGNMENTS WILL BE LOST. WE RECOMMEND USING A DEDICATED KEY VAULT FOR PROVISION ASSIST**. The script will validate that the name is available and if not, an alternative name will need to be provided.
+- `KeyVaultName` - Name to use for the Key Vault that is provisioned by the deployment script. The Key Vault stores the app id and secret of the Entra ID app that this solution uses. This ensures that these are held securely. The name of the key vault must be unique across the Azure region that you are deploying to. If a key vault matching the name provided exists ***in*** the current subscription, it can be used. **PLEASE NOTE - IF YOU USE AN EXISTING KEY VAULT, IT WILL BE OVERWRITTEN AND CONFIGURATION SUCH AS ROLE ASSIGNMENTS WILL BE LOST. WE RECOMMEND USING A DEDICATED KEY VAULT FOR PROVISION ASSIST**. The script will validate that the name is available and if not, an alternative name will need to be provided.
 
  - `enableSensitivity` - Enable the Sensitivity Label functionality. Note - this will require you to have a Service Account with NO MFA, this can be the same service account as above if you wish.
 
@@ -90,16 +114,16 @@ You may refer to the following to understand each parameter:
 
  ## Step 3: Execute the scripts
 
-### Azure AD App Creation
+### Entra ID App Creation
 
-The first step is to execute the dedicated script responsible for creating the Azure AD app and granting admin consent for the Microsoft Graph API permissions. 
+The first step is to execute the dedicated script responsible for creating the Entra ID app and granting admin consent for the Microsoft Graph API permissions. 
 
 **This part of the deployment requires a user account with Global Administrator access.**
 
-1. Launch a PowerShell window as an Administrator.
+1. Launch a PowerShell 7 window as an Administrator.
 2. Navigate to the 'Scripts' folder.
-3. Execute the createazureadapp script in the PowerShell window - ```.\createazureadapp.ps1```
-4. Enter a name for the Azure AD app when prompted (**This must be the same name as the 'appName' parameter in the parameters.json file**).
+3. Execute the createazureadapp script in the PowerShell window - ```.\createentraidapp.ps1```
+4. Enter a name for the Entra ID app when prompted (**This must be the same name as the 'appName' parameter in the parameters.json file**).
 5. Wait for the script to complete.
 
 ### Deployment of Resources
@@ -108,15 +132,15 @@ The next step of deployment is to execute the deploy script.
 
 **Ensure the account you are using at this stage has owner rights to the Azure Subscription and is also a SharePoint Administrator.**
 
-**The deployment script generates a secret for the AD app created above. The default expiry period for this secret is to 1 year, for details on how refresh the secret when it expires, see [Refreshing app secret](./Refreshing-app-secret.md).**
+**The deployment script generates a secret for the Entra ID app created above. The default expiry period for this secret is to 1 year, for details on how refresh the secret when it expires, see [Refreshing app secret](./Refreshing-app-secret.md).**
 
 As the script uses various PowerShell modules to perform deployment, it will prompt for authentication a number of times.
 
-1. Launch a PowerShell window as an Administrator.
+1. Launch a PowerShell 7 window as an Administrator.
 2. Navigate to the 'Scripts' folder.
 3. Execute the deploy script in the PowerShell window - ```.\deploy.ps1```
 
-During installation PnP Management Shell will request permissions for the application on behalf of your organization. Please grant consent. You will be able to revoke that access after the deployment of the solution.
+You will be prompted during the script to enter the password for the PnP app registration certificate. 
 
 If you chose to enable the Sensitivity Label functionality, a dialog will be displayed prompting for the password for the Service Account. Please complete the prompt.
 
@@ -347,7 +371,7 @@ Details of what these are and what they do can be seen below:
 - **GetHubSites** (Retrieves all Hub Sites in the tenant and creates these as list items in the 'Hub Sites' list in the SharePoint site.)
 - **GetSiteTemplates** (Retrieves all SharePoint Site Templates deployed in the tenant and creates these as list items in the 'Site Templates' list in the SharePoint site.)
 - **GetTeamsTemplates** (Retrieves Teams Templates configured in the Teams Admin Center and creates references to these as list items in the 'Teams Templates' list in the SharePoint site.)
-- **SyncGroupSettings** (Gets group settings - Blocked Words and Classifications from Azure AD and updates list items in the 'Provisioning Request Settings' list in the SharePoint site.)
+- **SyncGroupSettings** (Gets group settings - Blocked Words and Classifications from Entra ID and updates list items in the 'Provisioning Request Settings' list in the SharePoint site.)
 - **SyncLabels** (Retrieves all Sensitivity labels from Purview in the tenant and adds these to the 'IP Labels' list in the SharePoint site.)
 
 Follow these steps to run them 'on demand':

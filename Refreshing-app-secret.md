@@ -1,6 +1,6 @@
 # Refreshing App Secret
 
-From time to time you may need to update/refresh the client secret used in the Azure AD App for Provision Assist. This may be because the secret has expired or you wish to generate a new one.
+From time to time you may need to update/refresh the client secret used in the Entra ID App for Provision Assist. This may be because the secret has expired or you wish to generate a new one.
 
 When you deploy Provision Assist, the secret generated for the AD app has a default expiry of 1 year from the date the deployment script was executed.
 
