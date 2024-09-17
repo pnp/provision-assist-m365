@@ -25,7 +25,7 @@ See the [Provision Assist Roadmap](https://github.com/orgs/pnp/projects/5) for m
 
 ## Deploying V2
 
-1. Download the [V2 release](https://github.com/pnp/provision-assist-m365/releases/tag/v2.0.0).
+1. Download the [V2 release](https://github.com/pnp/provision-assist-m365/releases/tag/v2.0.0a).
 2. Manually create the following setting list items in the 'Provisioning Request Settings' list. Feel free to update the colour values to your brand colours at this point. 
 
 ---
