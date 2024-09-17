@@ -1,6 +1,6 @@
 # Data Access & Security
 
-The Provision Assist solution uses the **Microsoft Graph API**, **Yammer REST API** and the **SharePoint REST API** to perform provisioning of Groups, Sites, Teams and Yammer Communities.
+The Provision Assist solution uses the **Microsoft Graph API** and the **SharePoint REST API** to perform provisioning of Groups, Sites, Teams and Viva Engage Communities.
 
 Provisioning is carried out using an **Entra ID App Registration** which has the required permissions to the Microsoft Graph API assigned to it. For the most part **Application Permissions** are used with one exception - the application of sensitivity labels.
 
@@ -27,6 +27,7 @@ The API permissions required for the Entra ID app are as follows:
 | InformationProtectionPolicy.Read.All | Application | Read all published labels and label policies for an organization. |Used to syncronize sensivity labels in the tenant to a SharePoint list.|
 | Sites.FullControl.All | Application | Have full control of all site collections. |Update the properties of provisioned SharePoint sites.|
 | TeamsTemplates.Read.All | Application | Read all available Teams Templates |Used to read the teams templates in the tenant and syncronize them to a SharePoint list.|
+| Community.ReadWrite.All | Application | Read and write all Viva Engage communities. |Used to create Viva Engage communities.| 
 | User.Invite.All | Application | Invite guest users to the organization |Used to invite guest users in Entra ID if they are requested.|
 | User.ReadWrite.All | Application | Read and write to all users' full profiles |Used to update guest users in Entra ID if they are requested.|
 
@@ -39,9 +40,3 @@ The API permissions required for the Entra ID app are as follows:
 In addition to the above, the Entra ID App must be registered as a **SharePoint add-in** and granted **Full Control permissions** to the SharePoint tenant. 
 
 This is required because, as part of the provisioning there is a check to see if a SharePoint site matching the URL already exists both as an active site but also in the tenant recycle bin. 
-
-### Viva Engage
-
-For the Viva Engage functionality, an 'App' must be created in the Yammer 'Registered applications' page and a developer token generated.
-
-The developer token is then stored in a variable in the main Logic App which is used for provisioning. 

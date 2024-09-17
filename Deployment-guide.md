@@ -186,7 +186,7 @@ Approvals are now configured to use Power Automate Approvals tasks.
 1. Create (OR use an existing) Microsoft Teams Team to use for the approval adaptive cards. You may wish to connect the **Provision Assist** SharePoint site (group) to a new Teams Team.
 2. Create (OR use an existing) channel in the same team for the approval cards. This is where they will be posted.
 3. Add the appropriate users that will approve requests to the team.
-4. In the Teams client, click on the epilsis and select 'Get link to channel'.
+4. In the Teams client, click on the elipsis and select 'Get link to channel'.
 
 ![Microsoft Teams get link to channel screenshot](/Images/LinkToChannel.png)
 
@@ -415,38 +415,6 @@ The admins group is now set up and configured.
 ![Provision Assist settings screen screenshot](/Images/PASettingsScreen.png)
 
 ## Deployment of the solution is now complete and the app should be accessible in Teams.
-
-## Step 13 (Optional): Enable provisioning of Viva Engage Communities
-
-Provision Asssist includes the ability to provision Viva Engage Communities, this is disabled upon deployment because it requires an App to be registered through the Yammer Developer Center and a developer token to be generated.
-
-To enable this functionality, please perform the following steps:
-
-1. Ensure that Viva Engage is in Native mode. **Non-Native mode or Hybrid mode are not supported**.
-2. Sign in with the service account.
-3. Navigate to `https://www.yammer.com/client_applications` and click **Register New App** (You may need to sign into Viva Engage first).
-4.  Complete the required details, tick the box and click 'Continue'.
-
-- Application Name: e.g. Provision Assist
-- Organization: Your organization name
-- Support e-amil: Email address of an appropriate person
-- Website: Not used but requires a value e.g. Your public facing website address
-- Redirect URI: Not used but requires a value e.g. Your public facing website address
-
-![Register Viva Engage app screenshot](/Images/RegisterVEApp.png)
-
-5. Once the app has been registered, click the 'Generate a developer token for this application' link.
-6. Copy the token that is displayed as you will need it shortly.
-7. Navigate to the Azure Portal (as a user with appropriate rights) and locate the **ProcessProvisionRequest** logic app.
-8. Edit the logic app and update the value of the **VIvaEngageAppToken** variable with the token you copied earlier.
-
-![Update logic app with Viva Engage token screenshot](/Images/UpdateLogicAppVEApp.png)
-
-9. Save and close the logic app.
-10. Navigate to the SharePoint site created as part of the deployment and locate the **Provisioning Types** list.
-11. Edit the list item entitled **Viva Engage Community** and set the **Allowed** column to **Yes**.
-12. Launch the Provision Assist Power App and complete a test request. Observe that the **Recommendation** step now displays an option to select a Viva Engage Community.
-13. Viva Engage Community provisioning is now enabled.
 
 ## Step 14 (Optional): Enable auto approval (disabling approval process)
 
