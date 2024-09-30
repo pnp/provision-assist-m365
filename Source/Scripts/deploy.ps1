@@ -696,7 +696,7 @@ function CreateEntraIDAppSecret {
         Write-Host "### ENTRA ID APP SECRET CREATION ###" -ForegroundColor Yellow
 
         # Check if the app already exists - script has been previously executed
-        $app = GetAzureADApp $parameters.appName.Value
+        $app = GetEntraIDApp $parameters.appName.Value
 
         if (-not ([string]::IsNullOrEmpty($app))) {
 
@@ -993,7 +993,7 @@ if ($pnpCertPassword.Length -eq 0) {
 Write-Host "Connected to SPO" -ForegroundColor Green
 
 $currUserId = az ad signed-in-user show --query id | ConvertFrom-Json
-CreateAzureADAppSecret
+CreateEntraIDAppSecret
 CreateRequestsSharePointSite
 # Connect to the new site
 
