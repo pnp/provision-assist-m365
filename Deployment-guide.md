@@ -313,6 +313,8 @@ If you don't have a group you can add users individually or share with everyone 
 4. Choose whether or not to send an email invitation and click 'Share'. 
 5. The users will now have access to the Power App. 
 
+**Note:** Every user accessing the app for the first time will be prompted to consent to accessing the data sources. The user should click on 'Allow' to proceed. This can be bypassed by using the Power Apps admin PowerShell module. See [this documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powerapps.administration.powershell/set-adminpowerappapistobypassconsent?view=pa-ps-latest) for more details. It is recommended to disable the consent popup using PowerShell before production deployment.
+
 ### Flows
 
 Next, we will share the flows that are used by Provision Assist with admins that wish to view flow runs/edit the flows. This step is optional but will avoid the need to sign in with the service account when viewing flow runs. Repeat these steps for each flow.
@@ -344,8 +346,6 @@ The steps below will share the SharePoint site with end users, giving them acces
 5. Click the Grant Permission option from the top menu bar and search for the user name or type the email address of the user to whom you want to share the site OR select a group containing the users.
 6. Click 'Show Options' and under the permission level, select the visitors group (this will grant the users read-only access to the site initially).
 7. Navigate to the 'Provisioning Requests' list and [follow these steps](https://support.office.com/en-gb/article/customize-permissions-for-a-sharepoint-list-or-library-02d770f3-59eb-4910-a608-5f84cc297782) to break permission inheritance. Give the Visitors group 'Edit' rights (this will ensure that users can create requests).
-
-**Note:** Every user accessing the app for the first time will be prompted to consent to accessing the data sources. The user should click on 'Allow' to proceed. This can be bypassed by using the Power Apps admin PowerShell module. See the [Solution Overview](/Solution-Overview) for more details. It is recommended to disable the consent popup using PowerShell before production deployment.
 
 ## Step 9: Add the app to Teams
 
