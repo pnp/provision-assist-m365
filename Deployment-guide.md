@@ -313,6 +313,8 @@ If you don't have a group you can add users individually or share with everyone 
 4. Choose whether or not to send an email invitation and click 'Share'. 
 5. The users will now have access to the Power App. 
 
+**Note:** Every user accessing the app for the first time will be prompted to consent to accessing the data sources. The user should click on 'Allow' to proceed. This can be bypassed by using the Power Apps admin PowerShell module. See [this documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powerapps.administration.powershell/set-adminpowerappapistobypassconsent?view=pa-ps-latest) for more details. It is recommended to disable the consent popup using PowerShell before production deployment.
+
 ### Flows
 
 Next, we will share the flows that are used by Provision Assist with admins that wish to view flow runs/edit the flows. This step is optional but will avoid the need to sign in with the service account when viewing flow runs. Repeat these steps for each flow.
