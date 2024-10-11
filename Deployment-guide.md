@@ -13,7 +13,7 @@ To begin, you will need:
 - PowerShell 7 downloaded and installed - https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4.
 - Azure CLI (Command Line Interface) - https://learn.microsoft.com/en-us/cli/azure/install-azure-cli.
 - Firewall/Proxy configured to allow connectivity using the Azure CLI - please test the 'az login' cmdlet works before proceeding.
- - Global Administrator (to execute the `createazureadapp.ps1` script and create/authorize the PnP app registration).
+ - Global Administrator (to execute the `createentraidapp.ps1` script and create/authorize the PnP app registration).
  - A user account with **Owner** rights to the Azure Subscription that is also a SharePoint, Power Platform and Teams Administrator. 
  - A certificate (self-signed is ok) to use for Microsoft Graph and SharePoint REST API authentication (**Optional** as the deployment script will create a self-signed cert for you if preffered). 
  - App Registration for PnP PowerShell (see below).
@@ -122,7 +122,7 @@ The first step is to execute the dedicated script responsible for creating the E
 
 1. Launch a PowerShell 7 window as an Administrator.
 2. Navigate to the 'Scripts' folder.
-3. Execute the createazureadapp script in the PowerShell window - ```.\createentraidapp.ps1```
+3. Execute the createentraidapp script in the PowerShell window - ```.\createentraidapp.ps1```
 4. Enter a name for the Entra ID app when prompted (**This must be the same name as the 'appName' parameter in the parameters.json file**).
 5. Wait for the script to complete.
 
@@ -238,45 +238,9 @@ The approvals will now use adaptive cards in Teams. Please revisit this section 
 
 ![Power Apps solution import success message screenshot](/Images/PASolutionImportSuccess.png)
 
-The solution has now been imported, please proceed to the next step to configure the Power App.
+The solution has now been imported.
 
-## Step 6: Configure Provision Assist Power App
-
-**At the time of writing there is known bug with Environment Variables in the Power Platform which causes them to remain connected to the source tenant. The Power App needs to be edited and re-pointed at the variables.**
-
-Therefore this step of the deployment guide is only required while the bug remains, once the bug is fixed by the product team, this deployment guide will be updated. 
-
-1. Navigate to the Power Apps portal as the service account and click 'Apps' in the left pane, you should see the Provision Assist Power App.
-2. Open the Power App in **Edit** mode.
-3. Click 'Allow' to consent to the connections.
-4. When the app opens in the studio, click the 'Data' icon in the left pane to bring up the data sources.
-5. Click the elipsis next to each SharePoint list and click 'Remove'. Repeat this process for all SharePoint lists.
-
-![Power App remove data sources screenshot](/Images/PARemoveDataSources.png)
-
-6. Click the 'Add data' option from the Data pane and search for the SharePoint data sources.
-
-![Power App add data source screenshot](/Images/PAAddDataSources.png)
-
-7. Click on the SharePoint data source.
-8. Select the SharePoint connection you created earlier.
-
-![Power App select SPO data source screenshot](/Images/PASelectSPODataSource.png)
-
-9. On the 'Connect to a SharePoint site' pane that appears, click 'Advanced' and select the 'Provision Assist SPO Site' environment variable.
-
- ![Power App connect to SPO site screenshot](/Images/PAConnectSPOSite.png)  
-
- 10. In the 'Choose a list' pane, click 'Advanced' and select all list environment variables.
-
-![Power App connect SPO lists screenshot](/Images/PAConnectLists.png)
-
-11. Click 'Connect'.
-12. Wait for the data sources to appear in the Data pane.
-13. Save and publish the Power App using the icons in the top right. 
-14. Close the app. 
-
-## Step 7: Configure 'Run only users' for 'Check Space Availability' flow
+## Step 6: Configure 'Run only users' for 'Check Space Availability' flow
 
 In order for this flow to be executed from the Power App (when users are checking to ensure the availability of their desired collaboration space) by users, the 'Provisioning Requests' list needs to be added as a 'Run only user' for the flow.
 
@@ -294,7 +258,7 @@ Follow the steps below to do this.
 
 ![Run only users screenshot](/Images/RunOnlyUsers.png)
 
-## Step 8: Share Power App, Flows and SharePoint site
+## Step 7: Share Power App, Flows and SharePoint site
 
 Before Provision Assist can be rolled out, the Power App and SharePoint site need to be shared with all users to will submit requests.
 
@@ -349,7 +313,7 @@ The steps below will share the SharePoint site with end users, giving them acces
 
 **Note:** Every user accessing the app for the first time will be prompted to consent to accessing the data sources. The user should click on 'Allow' to proceed. This can be bypassed by using the Power Apps admin PowerShell module. See the [Solution Overview](/Solution-Overview) for more details. It is recommended to disable the consent popup using PowerShell before production deployment.
 
-## Step 9: Add the app to Teams
+## Step 8: Add the app to Teams
 
 1. Navigate to the Power Apps portal as the account you wish to install the app for and click 'Apps' in the left pane, you should see the Provision Assist Power App. **You may need to select the correct Environment in which you deployed the solution from the Environment menu at the top**.
 2. Select the app and click 'Add to Teams' from the top menu bar.
@@ -362,7 +326,7 @@ Add the app to Teams globally using policies in the Teams Admin Center OR sidelo
 
 If you wish to roll the app out via policies, please refer to our general documentation on docs.microsoft.com for how to upload to the Teams Admin Center and deploy globally.
 
-## Step 10: Running/Configuring supporting Logic Apps
+## Step 9: Running/Configuring supporting Logic Apps
 
 There are a few supporting Logic Apps which should be executed manually after the initial deployment.
 
@@ -385,7 +349,7 @@ Follow these steps to run them 'on demand':
 5. Once the logic app has executed, you should see a status of 'Succeeded' in the run history.
 6. Repeat the steps to execute each logic app.
 
-## Step 11 (Optional): Enabling Site Templates & Hub Sites
+## Step 10 (Optional): Enabling Site Templates & Hub Sites
 
 Before Hub Sites and Site Templates are visible to end users in the Power App, they must be 'Enabled'.
 
@@ -395,7 +359,7 @@ The reason for this column is to allow admins the flexibility to show/hide Site 
 
 ![Enabled column in Site Templates list](/Images/SiteTemplatesListEnabled.png)
 
-## Step 12: Set up Admins group
+## Step 11: Set up Admins group
 
 The Provision Assist Power App leverages a setting in the 'Provisioning Request Settings' list to determine whether or not to display the 'settings' screen to a user in the app. Settings for the solution can be configured via this screen as an alternative to using the settings list in the SharePoint site. *At the time of writing this screen is experimental and should be considered a work in progress.* Settings should be visible to Administrators of Provision Assist only. Before following the steps, please create one of the following (or use an existing) which will contain the admins for Provision Assist:
 
@@ -418,7 +382,7 @@ The admins group is now set up and configured.
 
 ## Deployment of the solution is now complete and the app should be accessible in Teams.
 
-## Step 14 (Optional): Enable auto approval (disabling approval process)
+## Step 12 (Optional): Enable auto approval (disabling approval process)
 
 If you do not wish to use the provided Power Automate approval process, you can enable 'Auto approval' through the 'Provisioning Request Settings' list.
 
