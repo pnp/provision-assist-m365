@@ -246,15 +246,21 @@ In order for this flow to be executed from the Power App (when users are checkin
 
 This ensures that all users who have access to the list can execute this flow through the app. 
 
+**At the time of writing there is a known bug that prevents the selection of your SharePoint site and list UNTIL the flow is edited for the first time, please ensure you follow all the steps below.**
+
 Follow the steps below to do this.
+
 
 1. Navigate to the Power Apps portal as the service account.
 2. Click 'Flows' in the left hand pane and locate the **Check Space Availability** flow.
 3. Click on the flow.
-4. Click 'Edit' next to 'Run only users'.
-5. In the pane that appears, select the 'SharePoint' tab.
-6. Select the Provision Assist site and 'Provisioning Requests' list in the drop downs beneath.
-7. Set the values in the 'Connections Used' drop downs to use the connection from the owner of the flow.
+4. Click 'Edit' in the top menu.
+5. Click 'Save' in the top menu without making any changes.
+6. Click the back arrow.
+7. Click 'Edit' next to 'Run only users'.
+8. In the pane that appears, select the 'SharePoint' tab.
+9. Select the Provision Assist site and 'Provisioning Requests' list in the drop downs beneath.
+10. Set the values in the 'Connections Used' drop downs to use the connection from the owner of the flow.
 
 ![Run only users screenshot](/Images/RunOnlyUsers.png)
 
