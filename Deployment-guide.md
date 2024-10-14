@@ -250,7 +250,6 @@ This ensures that all users who have access to the list can execute this flow th
 
 Follow the steps below to do this.
 
-
 1. Navigate to the Power Apps portal as the service account.
 2. Click 'Flows' in the left hand pane and locate the **Check Space Availability** flow.
 3. Click on the flow.
