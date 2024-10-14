@@ -263,7 +263,18 @@ Follow the steps below to do this.
 
 ![Run only users screenshot](/Images/RunOnlyUsers.png)
 
-## Step 7: Share Power App, Flows and SharePoint site
+## Step 7: Turn on 'Provisioning Request Approval' flow
+
+The **Provisioning Request Approval** is turned off by default and needs to be turned on. 
+
+Follow the steps below to turn it on.
+
+1. Navigate to the Power Apps portal as the service account.
+2. Click 'Flows' in the left hand pane and locate the **Provisioning Request Approval** flow.
+3. Click on the flow.
+4. Click 'Turn on' in the top menu.
+
+## Step 8: Share Power App, Flows and SharePoint site
 
 Before Provision Assist can be rolled out, the Power App and SharePoint site need to be shared with all users to will submit requests.
 
@@ -318,7 +329,7 @@ The steps below will share the SharePoint site with end users, giving them acces
 
 **Note:** Every user accessing the app for the first time will be prompted to consent to accessing the data sources. The user should click on 'Allow' to proceed. This can be bypassed by using the Power Apps admin PowerShell module. See the [Solution Overview](/Solution-Overview) for more details. It is recommended to disable the consent popup using PowerShell before production deployment.
 
-## Step 8: Add the app to Teams
+## Step 9: Add the app to Teams
 
 1. Navigate to the Power Apps portal as the account you wish to install the app for and click 'Apps' in the left pane, you should see the Provision Assist Power App. **You may need to select the correct Environment in which you deployed the solution from the Environment menu at the top**.
 2. Select the app and click 'Add to Teams' from the top menu bar.
@@ -331,7 +342,7 @@ Add the app to Teams globally using policies in the Teams Admin Center OR sidelo
 
 If you wish to roll the app out via policies, please refer to our general documentation on docs.microsoft.com for how to upload to the Teams Admin Center and deploy globally.
 
-## Step 9: Running/Configuring supporting Logic Apps
+## Step 10: Running/Configuring supporting Logic Apps
 
 There are a few supporting Logic Apps which should be executed manually after the initial deployment.
 
@@ -354,7 +365,7 @@ Follow these steps to run them 'on demand':
 5. Once the logic app has executed, you should see a status of 'Succeeded' in the run history.
 6. Repeat the steps to execute each logic app.
 
-## Step 10 (Optional): Enabling Site Templates & Hub Sites
+## Step 11 (Optional): Enabling Site Templates & Hub Sites
 
 Before Hub Sites and Site Templates are visible to end users in the Power App, they must be 'Enabled'.
 
@@ -364,7 +375,7 @@ The reason for this column is to allow admins the flexibility to show/hide Site 
 
 ![Enabled column in Site Templates list](/Images/SiteTemplatesListEnabled.png)
 
-## Step 11: Set up Admins group
+## Step 12: Set up Admins group
 
 The Provision Assist Power App leverages a setting in the 'Provisioning Request Settings' list to determine whether or not to display the 'settings' screen to a user in the app. Settings for the solution can be configured via this screen as an alternative to using the settings list in the SharePoint site. *At the time of writing this screen is experimental and should be considered a work in progress.* Settings should be visible to Administrators of Provision Assist only. Before following the steps, please create one of the following (or use an existing) which will contain the admins for Provision Assist:
 
@@ -387,7 +398,7 @@ The admins group is now set up and configured.
 
 ## Deployment of the solution is now complete and the app should be accessible in Teams.
 
-## Step 12 (Optional): Enable auto approval (disabling approval process)
+## Step 13 (Optional): Enable auto approval (disabling approval process)
 
 If you do not wish to use the provided Power Automate approval process, you can enable 'Auto approval' through the 'Provisioning Request Settings' list.
 
