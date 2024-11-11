@@ -980,6 +980,9 @@ Write-Host "Launching Azure CLI sign-in..." -ForegroundColor Yellow
 az login
 Write-Host "Connected to Azure" -ForegroundColor Green
 
+# Change the subscription
+az account set --subscription $parameters.subscriptionId.Value
+
 # Connect to PnP
 Write-Host "Launching PnP sign-in..." -ForegroundColor Yellow
 
