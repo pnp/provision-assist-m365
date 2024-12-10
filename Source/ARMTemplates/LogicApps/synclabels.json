@@ -183,7 +183,7 @@
                                     "content-type": "application/json"
                                 },
                                 "method": "GET",
-                                "uri": "@{variables('GraphURL')}/informationProtection/policy/labels"
+                                "uri": "@{variables('GraphURL')}/security/informationProtection/sensitivityLabels"
                             }
                         },
                         "Parse_sensitivity_labels_JSON": {
@@ -196,35 +196,56 @@
                             "inputs": {
                                 "content": "@body('List_sensitivity_labels')",
                                 "schema": {
+                                    "type": "object",
                                     "properties": {
                                         "@@odata.context": {
                                             "type": "string"
                                         },
+                                        "@@microsoft.graph.tips": {
+                                            "type": "string"
+                                        },
                                         "value": {
+                                            "type": "array",
                                             "items": {
+                                                "type": "object",
                                                 "properties": {
-                                                    "color": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
                                                         "type": "string"
                                                     },
                                                     "description": {
                                                         "type": "string"
                                                     },
-                                                    "id": {
+                                                    "color": {
                                                         "type": "string"
                                                     },
-                                                    "isActive": {
-                                                        "type": "boolean"
-                                                    },
-                                                    "name": {
-                                                        "type": "string"
-                                                    },
-                                                    "parent": {},
                                                     "sensitivity": {
                                                         "type": "integer"
                                                     },
                                                     "tooltip": {
                                                         "type": "string"
-                                                    }
+                                                    },
+                                                    "isActive": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "isAppliable": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "contentFormats": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "hasProtection": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "parent@odata.context": {
+                                                        "type": "string"
+                                                    },
+                                                    "parent": {}
                                                 },
                                                 "required": [
                                                     "id",
@@ -234,21 +255,21 @@
                                                     "sensitivity",
                                                     "tooltip",
                                                     "isActive",
+                                                    "isAppliable",
+                                                    "contentFormats",
+                                                    "hasProtection",
+                                                    "parent@odata.context",
                                                     "parent"
-                                                ],
-                                                "type": "object"
-                                            },
-                                            "type": "array"
+                                                ]
+                                            }
                                         }
-                                    },
-                                    "type": "object"
+                                    }
                                 }
                             }
                         },
                         "Process_deleted_sensitivity_labels": {
                             "actions": {
                                 "Get_all_labels_from_the_SharePoint_list": {
-                                    "runAfter": {},
                                     "type": "ApiConnection",
                                     "inputs": {
                                         "host": {
@@ -266,7 +287,6 @@
                                         "Check_if_label_exists": {
                                             "actions": {
                                                 "Delete_label_list_item": {
-                                                    "runAfter": {},
                                                     "type": "ApiConnection",
                                                     "inputs": {
                                                         "host": {
@@ -283,6 +303,9 @@
                                                 "Loop_through_sensitivity_labels_-_delete": [
                                                     "Succeeded"
                                                 ]
+                                            },
+                                            "else": {
+                                                "actions": {}
                                             },
                                             "expression": {
                                                 "and": [
@@ -302,7 +325,6 @@
                                                 "Check_if_label_id_matches": {
                                                     "actions": {
                                                         "Set_LabelExists_variable": {
-                                                            "runAfter": {},
                                                             "type": "SetVariable",
                                                             "inputs": {
                                                                 "name": "LabelExists",
@@ -310,7 +332,9 @@
                                                             }
                                                         }
                                                     },
-                                                    "runAfter": {},
+                                                    "else": {
+                                                        "actions": {}
+                                                    },
                                                     "expression": {
                                                         "and": [
                                                             {
@@ -337,7 +361,6 @@
                                             }
                                         },
                                         "Reset_LabelExists_variable": {
-                                            "runAfter": {},
                                             "type": "SetVariable",
                                             "inputs": {
                                                 "name": "LabelExists",
@@ -368,26 +391,25 @@
                         "Process_sensitivity_labels": {
                             "actions": {
                                 "Loop_through_sensitivity_labels": {
-                                    "foreach": "@body('Parse_sensitivity_labels_JSON')?['value']",
+                                    "foreach": "@body('Filter_array')",
                                     "actions": {
                                         "Check_if_the_label_was_found_in_the_list": {
                                             "actions": {
                                                 "Create_label_item": {
-                                                    "runAfter": {},
                                                     "type": "ApiConnection",
                                                     "inputs": {
-                                                        "body": {
-                                                            "LabelDescription": "@items('Loop_through_sensitivity_labels')?['description']",
-                                                            "LabelId": "@items('Loop_through_sensitivity_labels')?['id']",
-                                                            "LabelName": "@items('Loop_through_sensitivity_labels')?['name']",
-                                                            "Title": "@items('Loop_through_sensitivity_labels')?['name']"
-                                                        },
                                                         "host": {
                                                             "connection": {
                                                                 "name": "@parameters('$connections')['sharepointonline']['connectionId']"
                                                             }
                                                         },
                                                         "method": "post",
+                                                        "body": {
+                                                            "Title": "@items('Loop_through_sensitivity_labels')?['name']",
+                                                            "LabelName": "@items('Loop_through_sensitivity_labels')?['name']",
+                                                            "LabelId": "@items('Loop_through_sensitivity_labels')?['id']",
+                                                            "LabelDescription": "@items('Loop_through_sensitivity_labels')?['description']"
+                                                        },
                                                         "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('ipLabelsListId'),variables('singlequote'),'))}/items')]"
                                                     }
                                                 }
@@ -400,21 +422,20 @@
                                             "else": {
                                                 "actions": {
                                                     "Update_label_list_item": {
-                                                        "runAfter": {},
                                                         "type": "ApiConnection",
                                                         "inputs": {
-                                                            "body": {
-                                                                "LabelDescription": "@items('Loop_through_sensitivity_labels')?['description']",
-                                                                "LabelId": "@items('Loop_through_sensitivity_labels')?['id']",
-                                                                "LabelName": "@items('Loop_through_sensitivity_labels')?['name']",
-                                                                "Title": "@items('Loop_through_sensitivity_labels')?['name']"
-                                                            },
                                                             "host": {
                                                                 "connection": {
                                                                     "name": "@parameters('$connections')['sharepointonline']['connectionId']"
                                                                 }
                                                             },
                                                             "method": "patch",
+                                                            "body": {
+                                                                "Title": "@items('Loop_through_sensitivity_labels')?['name']",
+                                                                "LabelName": "@items('Loop_through_sensitivity_labels')?['name']",
+                                                                "LabelId": "@items('Loop_through_sensitivity_labels')?['id']",
+                                                                "LabelDescription": "@items('Loop_through_sensitivity_labels')?['description']"
+                                                            },
                                                             "path": "[concat('/datasets/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('requestsSiteUrl'),variables('singlequote'),'))}/tables/@{encodeURIComponent(encodeURIComponent(',variables('singlequote'),parameters('ipLabelsListId'),variables('singlequote'),'))}/items/@{encodeURIComponent(first(body(',variables('singlequote'),'Get_label_from_the_sharepoint_list',variables('Singlequote'),')?[',variables('singlequote'),'Value',variables('singlequote'),'])?[',variables('singlequote'),'ID',variables('singlequote'),'])}')]"
                                                         }
                                                     }
@@ -433,7 +454,6 @@
                                             "type": "If"
                                         },
                                         "Get_label_from_the_SharePoint_list": {
-                                            "runAfter": {},
                                             "type": "ApiConnection",
                                             "inputs": {
                                                 "host": {
@@ -449,8 +469,19 @@
                                             }
                                         }
                                     },
-                                    "runAfter": {},
+                                    "runAfter": {
+                                        "Filter_array": [
+                                            "Succeeded"
+                                        ]
+                                    },
                                     "type": "Foreach"
+                                },
+                                "Filter_array": {
+                                    "type": "Query",
+                                    "inputs": {
+                                        "from": "@body('Parse_sensitivity_labels_JSON')?['value']",
+                                        "where": "@or(contains(item()?['contentFormats'], 'site'), contains(item()?['contentFormats'], 'unifiedgroup'))"
+                                    }
                                 }
                             },
                             "runAfter": {
