@@ -5,6 +5,8 @@
 
 Provision Assist is a Power Platform and Azure based solution that provides an alternative to self-service creation in Microsoft 365. It provides governance over this process through a frontend Power App allowing users to request Collaboration 'Spaces' (Teams, Groups, SharePoint Online Sites & Viva Engage Communities) and backend Azure components providing automated provisioning. Provision Assist can be used as part of a Copilot for Microsoft 365 deployment in order to establish a layer of governance over self-service.
 
+**Note - V2 of the solution is now the 'current' version, V1 is no longer supported and will not be included in future releases. The documentation and screenshots will be updated to reflect this shortly.**
+
 ![Provision Assist Home Screenshot](/Images/ProvisionAssistHome.png)
 
 ![Provision Assist Recommendations Screenshot](/Images/ProvisionAssistRecommendations.png)
