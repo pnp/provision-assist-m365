@@ -41,5 +41,24 @@ Rejected requests can be edited by users in the Power App and resubmitted.
 
 As mentioned above, you may edit the approval flow **however this will create an unmanaged layer in the Provision Assist Power Apps solution**. This means if the solution is upgraded in the future, updates to the approval flow will not be applied in your tenant.
 
+## Approval of 'Public' spaces only
+
+Provision Assist can be configured to only require approval for 'Public' spaces. If configured, requests set to 'Private' will be auto approved by the approval flow.
+
+A settings in the 'Provisioning Request Settings' enables/disables this functionality.
+
+Simply update the value of the setting named **'EnablePublicSpaceApprovalOnly'** to enable (true) or disable (false) the functionality.
+
+This is designed for those organizations where 'Private' spaces are deemed to have less risk than 'Public' spaces.
+
+**Please note - This option may not be available in your deployed version of Provision Assist. If you wish to upgrade to the latest Provision Assist Power App, you must follow the steps below To add this functionality for the approval flow to work.
+
+1. Locate and navigate to the 'Provisioning Request Settings' list.
+2. Open the [SharePoint List Items](./Source/Settings/SharePoint%20List%20items.xlsx) spreadsheet.
+3. In the 'Provisioning Request Settings' worksheet locate the **'EnablePublicSpaceApprovalOnly'** setting and create the item in the settings list copying and pasting the Title, Value and Description.
+4. Enable or disable the functionality by setting the value column to 'true' or 'false'. 
+5. Import the latest Provision Assist Power Apps solution (this will upgrade earlier versions). 
+
+
 
 
