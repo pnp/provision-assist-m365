@@ -8,7 +8,7 @@ You can define a text 'Prefix' and 'Suffix' per business unit, for example you m
 
 When a user makes a request through the Power App, the naming convention will be applied and a preview of how this will look when combined with the title they have entered will be shown (See 'Space display name' below). 
 
-![Business units drop down screenshot](./images/BusinessUnitsApp.png)
+![Business units drop down screenshot](./Images/BusinessUnitsApp.png)
 
 A lookup column in the 'Provisioning Requests' list stores the business unit that the user selected in the app.
 
@@ -38,13 +38,13 @@ Approvers for business units are configured in the 'Business Units' list, multip
 
 **Business unit approval does not need to be enabled for the business units functionality to work, if disabled, approval will take place as normal.**
 
-![Business units settings screenshot](./images/BusinessUnitsSettings.png)
+![Business units settings screenshot](./Images/BusinessUnitsSettings.png)
 
 ## Creating Business Units
 
 To create a business unit, simply locate the 'Business Units' list in the Provision Assist SharePoint site and create a list item.
 
-![Business units list screenshot](./images/BusinessUnitsList.png)
+![Business units list screenshot](./Images/BusinessUnitsList.png)
 
 Populate the columns as follows:
 
