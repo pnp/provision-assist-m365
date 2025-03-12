@@ -843,7 +843,7 @@ Set(
             }
         };
         {
-            Language: "de",
+            Language: "de-DE",
             Labels: {
                 //Collaboration Space Types List
                 descTeamSite: "Eine SharePoint-Teamwebsite ermöglicht Ihnen und Ihrem Team das Speichern von Dokumenten, Veröffentlichen von Neuigkeiten und mehr.";
