@@ -841,6 +841,215 @@ Set(
                 //Widths
                 sectionHeaderBtnWidth:105
             }
+        };
+        {
+            Language: "de",
+            Labels: {
+                //Collaboration Space Types List
+                descTeamSite: "Eine SharePoint-Teamwebsite ermöglicht Ihnen und Ihrem Team das Speichern von Dokumenten, Veröffentlichen von Neuigkeiten und mehr.";
+                descO365Group: "Eine Office 365-Gruppe bietet zusätzliche Funktionen gegenüber einer Teamwebsite, darunter ein Aufgabenboard, einen gemeinsamen Kalender, Posteingang und mehr.";
+                descCommSite: "Eine Kommunikationswebsite ist eine attraktive Website zum Präsentieren von Fallstudien, Produkten oder als Teil eines Intranets.";
+                descTeam: "Teams ist eine kollaborative Kommunikationsplattform, die Chats, Videoanrufe, Sprachanrufe, Dokumente und Dateien eines Teams organisiert.";
+                descHub: "SharePoint-Hubwebsites helfen Ihnen, die Bedürfnisse Ihrer Organisation zu erfüllen, indem sie Websites nach Projekt, Abteilung, Bereich oder Region verbinden und organisieren.";
+                descVivaEngage: "Eine Viva Engage Community bietet einen Bereich für Wissensaustausch, unternehmensweite Kommunikation, Führungskräfte-Interaktion sowie Gespräche, Dateien, Veranstaltungen und Updates.";
+                //Recommendation Scoring List
+                reqDocs: "Dokumente speichern und teilen";
+                reqWork: "Eng innerhalb eines Teams zusammenarbeiten";
+                reqCollab: "Zusammenarbeit mit externen Benutzern (Kunden, Partnern, Lieferanten)";
+                reqIntranet: "Intranet-Seite für ein Projekt/Produkt";
+                reqInfosite: "Informations-/Präsentations-Intranetseite";
+                reqConversations: "Gespräche/Diskussionen in kleinen Gruppen";
+                reqChat: "Chat-basierte direkte Zusammenarbeit innerhalb eines Teams";
+                reqTasks: "Aufgaben verwalten und Notizen erstellen/speichern";
+                reqProject: "An einem Projekt/Produkt arbeiten";
+                reqStorage: "Strukturierte Speicherung großer Datenmengen";
+                reqInbox: "Gemeinsamer Posteingang für Team-E-Mails";
+                reqMeetings: "Meeting-Verwaltung";
+                reqTracking: "Vorfälle melden/nachverfolgen";
+                reqTraining: "Schulungsmaterial bereitstellen und Support anbieten";
+                reqRegion: "Regionale Inhalte nur mit einer spezifischen Region teilen";
+                reqSharing: "Kurzfristiges Teilen während der Projektdauer";
+                reqNav: "Einheitliche Navigation und Branding auf meiner Website anwenden";
+                //Preloading Component
+                firstloading: "Provision Assist laden";
+                loading: "Laden...";
+                verify: "Überprüfen...";
+                process: "Verarbeiten...";
+                //Header Component
+                lblHeading: "Provision Assist";
+                //Progress Bar Component
+                stepOne: "Anforderungen";
+                stepTwo: "Empfehlung";
+                stepThree: "Datenklassifizierung";
+                stepFour: "Vorlage wählen";
+                stepFive: "Informationen";
+                stepSix: "Externes Teilen";
+                stepSeven: "Hub beitreten";
+                stepEight: "Prüfen und absenden";
+                //Rating Component
+                lblMessage: "Vielen Dank für Ihr Feedback!";
+                txtNote: "Notiz schreiben";
+                lblRatingTitle: "Diese App bewerten";
+                //Dialog Component
+                locDialogTitle: "Anfrage unvollständig";
+                locDialogTitle2: "Kommentare zur Anfrage";
+                locDialogDesc: "Ihre Anfrage wurde nicht abgeschlossen. Möchten Sie wirklich zurückgehen? (Sie können diese Anfrage später weiter bearbeiten.)";
+                locDialogDescSubmit: "Anfrage erfolgreich übermittelt und wartet auf Freigabe. Sie können diese Anfrage unter 'Meine Anfragen' ansehen.";
+                locDialogTitleSubmit: "Anfrage übermittelt";
+                locDialogDelete: "Anfrage löschen";
+                locDialogDescDelete: "Ihre Anfrage wurde nicht abgeschlossen. Möchten Sie sie wirklich löschen?";
+                locDialogDescDelete2: "Diese Anfrage wurde nicht abgeschickt. Möchten Sie sie wirklich löschen?";
+                mesRequestDeleted: "Anfrage erfolgreich gelöscht";
+                //Buttons
+                btnBack: "Zurück";
+                btnNext: "Weiter";
+                btnSubmit: "Absenden";
+                radYes: "Ja";
+                radNo: "Nein";
+                btnClose: "Schließen";
+                btnCancel: "Abbrechen";
+                //Welcome Screen
+                lblWelcome: "Willkommen bei Provision Assist" & Char(10) & Char(10) & "Teilen Sie uns Ihre Anforderungen mit und wir empfehlen Ihnen eine passende Kollaborationsumgebung." & Char(10) & Char(10) & "Sobald Sie gewählt haben, können Sie Ihre Anfrage zur Freigabe absenden." & Char(10) & Char(10) & "Verwenden Sie die Schaltflächen unten zum Starten.";
+                lblUnsubmitted: "Es scheint, dass Sie eine nicht abgeschickte Anfrage haben. Bitte klicken Sie auf 'Meine Anfragen', um die Bearbeitung fortzusetzen.";
+                lblRate: "Diese App bewerten";
+                lblStartRequest: "Neue Anfrage starten";
+                lblStartRequestDesc: "Starten Sie eine neue Anfrage für eine Kollaborationsumgebung.";
+                lblMyRequests: "Meine Anfragen";
+                lblMyRequestsDesc: "Status Ihrer Anfragen anzeigen.";
+                //My Requests Screen
+                lblMyRequestsUseDesktop: "Verwenden Sie die Desktop-App für volle Funktionalität.";
+                btnRefresh: "Aktualisieren";
+                lblCommentsHeading: "Kommentare";
+                lblAreaTypeHeading: "Typ";
+                lblDateHeading: "Datum";
+                lblPrivacyHeading: "Datenschutzeinstellungen";
+                lblStatusHeading: "Status";
+                lblAreaTitleHeading: "Titel des Bereichs";
+                lblMyRequestsMRS: "Meine Anfragen";
+                lblMyRequestsDescMRS: "Hier können Sie den Status Ihrer Anfragen sehen. Verwenden Sie die Symbole unten, um Kommentare zur Freigabe anzusehen sowie abgelehnte oder nicht abgeschickte Anfragen zu bearbeiten bzw. erneut einzureichen.";
+                lblNoRequests: "Sie haben keine Anfragen.";
+                lblCopyDesc: "Erstellen Sie eine neue Anfrage durch Kopieren der Details einer früheren Anfrage. Aktualisieren Sie Titel und Beschreibung unten und klicken Sie auf 'Anfrage kopieren'.";
+                lblCopyHeading: "Anfrage kopieren";
+                lblCopySiteDescriptionKey: "Beschreibung";
+                icoEditRequest: "Anfrage bearbeiten";
+                icoDeleteRequest: "Anfrage löschen";
+                lblCopyError: "Ändern Sie den Titel des Bereichs, um diese Anfrage zu kopieren.";
+                notifyCopied: "Anfrage erfolgreich kopiert. Sie können sie über das Bearbeitungssymbol bearbeiten.";
+                //Site Requirements Screen
+                lblHeadingSRS: "Umgebungsanforderungen und Eigentümerschaft";
+                lblSitePurposeKey: "Beschreibung des Zwecks und Inhalts der Umgebung";
+                txtSitePurposeValue: "Wofür werden Sie diese Umgebung verwenden?";
+                lblSiteRequirementsCustomError: "Wählen Sie Ihre Anforderungen";
+                cmbSiteRequirements: "Ich möchte gerne...";
+                lblSiteRequirementsCustomKey: "Umgebungsanforderungen (wählen Sie alle anwendbaren)";
+                lblSiteOwnersError: "Geben Sie zwei verschiedene Eigentümer ein.";
+                cmbSiteOwnersMembers: "Beginnen Sie mit der Eingabe eines Namens";
+                lblSiteOwnersKey: "Eigentümer (mindestens zwei erforderlich)";
+                lblGranularPerms: "Detaillierte Berechtigungen wie nur-Lesezugriff oder Zugriff auf bestimmte Dateien können nach der Erstellung der Umgebung festgelegt werden.";
+                lblSiteMembersError1: "Doppelte Mitgliedseigentümer";
+                lblSiteMembersError2: "Mitglieder und Eigentümer können nicht dieselben Benutzer enthalten.";
+                lblSiteMembersKey: "Mitglieder";
+                txtSiteTitleValueSRS: "Namenslose Anfrage";
+                //Data Classification Screen
+                lblHeadingDCS: "Datenklassifizierung";
+                lblSensitiveDataKey: "Wird in dieser Umgebung vertrauliche oder sensible Daten gespeichert?";
+                lblSensitivityKey: "Sensibilität";
+                lblRetentionDesc: "Wählen Sie ein Aufbewahrungslabel, das auf alle Inhalte Ihrer Umgebung angewendet wird.";
+                lblRetentionKey: "Aufbewahrung";
+                lblVisibilityKey: "Sichtbarkeit";
+                htmVisibilityDetails1: "Öffentlich: Benutzer können Ihre Zusammenarbeitsumgebung finden und eine Mitgliedschaft beantragen.";
+                htmVisibilityDetails2: "Privat: Verborgen für Benutzer, sie können keine Mitgliedschaft beantragen.";
+                lblRetentionError: "Aufbewahrung ist erforderlich.";
+                //Recommendation Screen
+                lblSubHeading: "Empfohlene Zusammenarbeitsumgebung basierend auf Ihren Anforderungen. Klicken Sie auf das Video für weitere Informationen zu den verschiedenen Umgebungen.";
+                lblHeadingRS: "Empfohlene Zusammenarbeitsumgebung";
+                lblRecommended: "Empfohlen";
+                //Site Information Screen
+                lblRotateSIS: "Drehen Sie Ihr Gerät, diese App kann nur im Querformat verwendet werden.";
+                lblSiteExists1_1: "Titel und Alias dürfen das Wort '";
+                lblSiteExists1_2: "' nicht enthalten, gemäß der Unternehmensrichtlinie.";
+                lblSiteExists2: "Klicken Sie auf 'Überprüfen'";
+                lblSiteExists3: "Umgebung ist verfügbar";
+                lblSiteExists4: "Umgebung existiert bereits, ändern Sie den Titel.";
+                lblSiteExists5: "Eine ähnliche Anfrage existiert bereits, ändern Sie den Titel.";
+                lblSiteExists6: "Sie haben bereits eine Anfrage mit diesen Details, bearbeiten und senden Sie diese Anfrage oder ändern Sie den Titel.";
+                btnVerify: "Überprüfen";
+                htmSiteDisplayName: "Anzeigename der Umgebung: ";
+                txtSiteTitleValue: "Geben Sie einen Titel ein (der zu Ihrer Umgebung passt)";
+                lblSiteTitleKey: "Titel der Umgebung";
+                lblSiteAliasKey: "Umgebungsalias (letzter Teil der URL)";
+                txtSiteDesc: "Beschreiben Sie den Zweck dieser Umgebung.";
+                lblSiteDescMessage: "Verwenden Sie nur Buchstaben, Zahlen, Leerzeichen und Zeilenumbrüche. Alle anderen Satzzeichen gehen beim Senden verloren.";
+                lblSiteDescKey: "Beschreibung";
+                txtBusinessJustValue: "Warum benötigen Sie diese Umgebung?";
+                lblBusinessJustKey: "Geschäftliche Rechtfertigung";
+                lblTimeZoneIdKey: "Zeitzone";
+                lblLCIDKey: "Standort";
+                lblRequired: "* gibt ein erforderliches Feld an";
+                lblHeadingSIS: "Informationen zur Zusammenarbeitsumgebung";
+                txtSiteTitleTooltip: "Titel für den Raum";
+                //External Collab Screen
+                lblGuestEmailError: "Geben Sie eine gültige E-Mail-Adresse ein";
+                txtGuestEmail: "Geben Sie eine Gast-E-Mail-Adresse ein";
+                lblGuestEmail: "Geben Sie die Gast-E-Mail ein";
+                lblAddGuests: "Möchten Sie Gäste hinzufügen? Geben Sie die Details unten ein";
+                lblEmailHeading: "E-Mail";
+                lblHeadingECS: "Müssen Sie extern teilen?";
+                lblExternalSharingInfo1: "Wenn Sie 'Nein' auswählen, wird externes Teilen für die gesamte Umgebung deaktiviert. Sie müssen dann einen Administrator kontaktieren, wenn Sie dies später aktivieren möchten.";
+                lblExternalSharingInfo2: "Sie dürfen nicht extern teilen.";
+                txtExternalJustValue: "Warum ist externes Teilen erforderlich?";
+                lblExternalJustKey: "Begründung";
+                //Site Design Screen
+                lblTeamsTemplateDescHeading: "Über dieses Template";
+                lblNoTemplates: "Keine Templates gefunden - klicken Sie auf 'Weiter'";
+                lblSiteDesignKey: "Wählen Sie ein Template";
+                lblHeadingSDS1: "Wählen Sie ein Template für Ihre Umgebung";
+                lblHeadingSDS2: "Möchten Sie ein Template anwenden?";
+                //Join Hub Screen
+                lblNoHubSites: "Keine Hubseiten gefunden - klicken Sie auf 'Weiter'";
+                lblHubSiteKey: "Wählen Sie eine Hubseite";
+                lblHubSiteJustKey: "Geben Sie eine Begründung ein, um mit dieser Hubseite zu verbinden.";
+                htmSubtitle1: "Nicht klar, was eine Hubseite ist?";
+                htmSubtitle2: "Klicken Sie hier für weitere Informationen.";
+                lblHeadingJHS: "Möchten Sie Ihre Umgebung mit einer Hubseite verbinden?";
+                lblHubSiteError: "Hubseite ist erforderlich";
+                cmbHubSite: "Wählen Sie eine Hubseite...";
+                txtHubSiteJustValue: "Geben Sie eine Begründung ein";
+                //Submit Screen
+                lblHeadingSS: "Überprüfen und senden";
+                lblSiteTitleReviewKey: "Titel der Umgebung";
+                lblAreaDisplayNameKey: "Anzeigename der Umgebung";
+                lblSiteDescriptionReviewKey: "Beschreibung der Umgebung";
+                lblSiteTypeReviewKey: "Typ der Umgebung";
+                lblTimeZoneReviewKey: "Zeitzone";
+                lblLCIDReviewKey: "Standort";
+                lblSiteURLReviewKey: "Umgebungs-URL";
+                lblSiteAliasReviewKey: "Umgebungsalias";
+                lblSiteRequirementsReviewKey: "Anforderungen der Umgebung";
+                lblSitePurposeReviewKey: "Zweck und Inhalt der Umgebung";
+                lblBusinessJustificationReviewKey: "Geschäftliche Rechtfertigung";
+                lblConfidentialDataReviewKey: "Vertrauliche Daten";
+                lblSensitivityKeyReview: "Sensibilität";
+                lblRetentionKeyReview: "Aufbewahrung";
+                lblMembersReviewKey: "Mitglieder";
+                lblOwnersReviewKey: "Eigentümer";
+                lblExternalSharingReviewKey: "Externes Teilen erforderlich";
+                lblExternalSharingJustificationKey: "Begründung für externes Teilen";
+                lblGuestsReviewKey: "Gäste";
+                lblJoinHubReviewKey: "Verbinden mit einer Hubseite";
+                lblHubSiteTitleReviewKey: "Titel der Hubseite";
+                lblHubSiteJustificationReviewKey: "Begründung für die Hubseite";
+                lblSiteDesignTitleReviewKey: "Template";
+                lblVisibilityReviewKey: "Sichtbarkeit";
+                htmSiteURLReview: "URL wird sichtbar, sobald diese erstellt ist";
+                //Disable Load Screen
+                btnDisableLoad: "Automatisches Laden deaktivieren";
+                lblDisableLoad: "Verwenden Sie diese Schaltfläche, um die automatische Lade-Funktion zu deaktivieren, während Sie sich im Bearbeitungsmodus befinden. Hierdurch können Sie den OnSelect-Code des lblLoadingApp-Steuerlements auf dem Ladescherm bearbeiten. Der Wert wird zurückgesetzt, sobald Sie die OnStart-Ereignis der App ausführen oder schließen und erneut öffnen.";
+                //More Screen
+                //Delete Request Screen
+                //Widths
+                sectionHeaderBtnWidth: 105
+            }
         }
     )
 )
