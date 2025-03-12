@@ -44,8 +44,7 @@
                     "contentVersion": "1.0.0.0",
                     "parameters": {
                         "$connections": {
-                            "defaultValue": {
-                            },
+                            "defaultValue": {},
                             "type": "Object"
                         }
                     },
@@ -414,10 +413,12 @@
                                                 "schema": {
                                                     "items": {
                                                         "properties": {
-                                                            "Description": [
-                                                                "string",
-                                                                "null"
-                                                            ],
+                                                            "Description": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "PreviewImage": {
                                                                 "type": [
                                                                     "string",
@@ -496,9 +497,5 @@
                 }
             }
         }
-
-
-
-
     ]
 }
