@@ -414,9 +414,10 @@
                                                 "schema": {
                                                     "items": {
                                                         "properties": {
-                                                            "Description": {
-                                                                "type": "string"
-                                                            },
+                                                            "Description": [
+                                                                "string",
+                                                                "null"
+                                                            ],
                                                             "PreviewImage": {
                                                                 "type": [
                                                                     "string",
