@@ -68,8 +68,7 @@ Set(
                 btnClose: "Close",
                 btnCancel: "Cancel",
                 //Welcome Screen
-                lblWelcome: "Welcome to the Provision Assist",
-                lblRequirements: "Share with us your requirements and we will recommend a collaboration space to suit your needs. Once you have chosen, you can submit your request for approval.",
+                lblWelcome: "Welcome to Provision Assist" & Char(10) & Char(10) & "Share with us your requirements and we will recommend a collaboration space to suit your needs." & Char(10) & Char(10) & "Once you have chosen, you can submit your request for approval." & Char(10) & Char(10) & "Use the buttons to get started.",
                 lblUnsubmitted: "It looks like you have an unsubmitted request, please click 'My Requests' to continue editing.",
                 lblRate: "Rate this app",
                 lblStartRequest: "Start a request",
@@ -91,6 +90,10 @@ Set(
                 lblCopyDesc: "Create a new request by copying the details from an earlier request. Update the Space Title and Description below and click 'Copy Request' to copy this request.",
                 lblCopyHeading: "Copy Request",
                 lblCopySiteDescriptionKey: "Description",
+                icoEditRequest: "Edit request",
+                icoDeleteRequest: "Delete request",
+                lblCopyError: "Change space title in order to copy this request.",
+                notifyCopied: "Request copied successfully. You can edit it using the edit icon.",
                 //Requirements Screen
                 lblHeadingSRS: "Requirements & Ownership",
                 lblRequiredSRS: "* indicates a required field",
@@ -114,12 +117,12 @@ Set(
                 lblRetentionKey: "Retention",
                 lblVisibilityKey: "Visibility",
                 htmVisibilityDetails1: "Public: Users can find your space and request to join.",
-                htmVisibilityDetails2: "Private: Hidden from other users with no ability to request access.", 
-                lblRetentionError: "Retention is required.",               
+                htmVisibilityDetails2: "Private: Hidden from other users with no ability to request access.",
+                lblRetentionError: "Retention is required.",
                 //Recommendation Screen
                 lblSubHeading: "Recommended type of collaboration space based on your requirements. To learn more about the different types, click the video icon.",
-                lblHeadingRS: "Recommendation",   
-                lblRecommended: "Recommended",         
+                lblHeadingRS: "Recommendation",
+                lblRecommended: "Recommended",
                 //Site Information Screen
                 lblHeadingSIS: "Collaboration Space Information",
                 lblRotateSIS: "Please rotate your device. To create a request your device must be in Landscape mode.",
@@ -144,6 +147,8 @@ Set(
                 lblTimeZoneIdKey: "Time Zone",
                 lblLCIDKey: "Locale",
                 lblRequired: "* indicates a required field",
+                lblBusinessUnitKey: "Business Unit",
+                cmbBusinessUnit: "Find a Business Unit...",
                 //External Collab Screen
                 lblGuestEmailError: "Enter a valid email address",
                 txtGuestEmail: "Enter guest email address",
@@ -198,6 +203,7 @@ Set(
                 lblSiteDesignTitleReviewKey: "Template",
                 lblVisibilityReviewKey: "Visibility",
                 htmSiteURLReview: "URL visible once created",
+                lblBusinessUnitReviewKey: "Business Unit",
                 //Disable Load Screen
                 btnDisableLoad: "Disable Auto Load",
                 lblDisableLoad: "Use this button to disable the auto load functionality whilst in Edit mode. 
@@ -207,8 +213,8 @@ Set(
                 The value will be reset once you run the OnStart event of the App or close and reopen it.",
                 //More Screen
                 //Delete Request Screen
-                //Widths
-                sectionHeaderBtnWidth:105
+//Widths
+sectionHeaderBtnWidth: 105
             }
         },
         {
@@ -278,8 +284,7 @@ Set(
                 btnClose: "Close",
                 btnCancel: "Cancel",
                 //Welcome Screen
-                lblWelcome: "Welcome to the Provision Assist",
-                lblRequirements: "Share with us your requirements and we will recommend a collaboration space to suit your needs. Once you have chosen, you can submit your request for approval.",
+                lblWelcome: "Welcome to Provision Assist" & Char(10) & Char(10) & "Share with us your requirements and we will recommend a collaboration space to suit your needs." & Char(10) & Char(10) & "Once you have chosen, you can submit your request for approval." & Char(10) & Char(10) & "Use the buttons to get started.",
                 lblUnsubmitted: "It looks like you have an unsubmitted request, please click 'My Requests' to continue editing.",
                 lblRate: "Rate this app",
                 lblStartRequest: "Start a request",
@@ -301,6 +306,10 @@ Set(
                 lblCopyDesc: "Create a new request by copying the details from an earlier request. Update the Space Title and Description below and click 'Copy Request' to copy this request.",
                 lblCopyHeading: "Copy Request",
                 lblCopySiteDescriptionKey: "Description",
+                icoEditRequest: "Edit request",
+                icoDeleteRequest: "Delete request",
+                lblCopyError: "Change space title in order to copy this request.",
+                notifyCopied: "Request copied successfully. You can edit it using the edit icon.",
                 //Requirements Screen
                 lblHeadingSRS: "Requirements & Ownership",
                 lblRequiredSRS: "* indicates a required field",
@@ -324,12 +333,12 @@ Set(
                 lblRetentionKey: "Retention",
                 lblVisibilityKey: "Visibility",
                 htmVisibilityDetails1: "Public: Users can find your space and request to join.",
-                htmVisibilityDetails2: "Private: Hidden from other users with no ability to request access.", 
-                lblRetentionError: "Retention is required.",               
+                htmVisibilityDetails2: "Private: Hidden from other users with no ability to request access.",
+                lblRetentionError: "Retention is required.",
                 //Recommendation Screen
                 lblSubHeading: "Recommended type of collaboration space based on your requirements. To learn more about the different types, click the video icon.",
-                lblHeadingRS: "Recommendation",   
-                lblRecommended: "Recommended",         
+                lblHeadingRS: "Recommendation",
+                lblRecommended: "Recommended",
                 //Site Information Screen
                 lblHeadingSIS: "Collaboration Space Information",
                 lblRotateSIS: "Please rotate your device. To create a request your device must be in Landscape mode.",
@@ -354,6 +363,8 @@ Set(
                 lblTimeZoneIdKey: "Time Zone",
                 lblLCIDKey: "Locale",
                 lblRequired: "* indicates a required field",
+                lblBusinessUnitKey: "Business Unit",
+                cmbBusinessUnit: "Find a Business Unit...",
                 //External Collab Screen
                 lblGuestEmailError: "Enter a valid email address",
                 txtGuestEmail: "Enter guest email address",
@@ -408,6 +419,7 @@ Set(
                 lblSiteDesignTitleReviewKey: "Template",
                 lblVisibilityReviewKey: "Visibility",
                 htmSiteURLReview: "URL visible once created",
+                lblBusinessUnitReviewKey: "Business Unit",
                 //Disable Load Screen
                 btnDisableLoad: "Disable Auto Load",
                 lblDisableLoad: "Use this button to disable the auto load functionality whilst in Edit mode. 
@@ -417,10 +429,9 @@ Set(
                 The value will be reset once you run the OnStart event of the App or close and reopen it.",
                 //More Screen
                 //Delete Request Screen
-                //Widths
-                sectionHeaderBtnWidth:105
+//Widths
+sectionHeaderBtnWidth: 105
             }
-            
         },
         {
             Language: "nl-NL",
@@ -489,8 +500,7 @@ Set(
                 btnClose: "Sluiten",
                 btnCancel: "Annuleer",
                 //Welcome Screen
-                lblWelcome: "Welkom bij de Provision Assist App",
-                lblRequirements: "Deel je eisen met ons en we geven je aan aanbeveling voor een samenwerkomgeving die het beste bij jouw eisen past. Nadat je hebt gekozen, kun je jouw aanvraag verzenden ter goedkeuring.",
+                lblWelcome: "Welkom bij de Provision Assist App. Deel je eisen met ons en we geven je aan aanbeveling voor een samenwerkomgeving die het beste bij jouw eisen past. Nadat je hebt gekozen, kun je jouw aanvraag verzenden ter goedkeuring.",
                 lblUnsubmitted: "Het lijkt erop dat je nog onverzonden verzoeken hebt, klik op 'Mijn aanvragen' om door te gaan met bewerken.",
                 lblRate: "Beoordeel deze app",
                 lblStartRequest: "Start een aanvraag",
@@ -512,6 +522,10 @@ Set(
                 lblCopyDesc: "Maak een nieuwe aanvraag aan door de gegevens van een eerdere aanvraag te kopiëren. Update de titel en beschrijving van de ruimte hieronder en klik op 'Kopieer aanvraag' om dit aanvraag te kopiëren.",
                 lblCopyHeading: "Kopieer aanvraag",
                 lblCopySiteDescriptionKey: "Beschrijving",
+                icoEditRequest: "Bewerk aanvraag",
+                icoDeleteRequest: "Verwijder aanvraag",
+                lblCopyError: "Verander de titel van de ruimte om deze aanvraag te kunnen kopiëren.",
+                notifyCopied: "Aanvraag succesvol gekopieerd. Je kunt deze bewerken met het bewerk icoon.",
                 //Site Requirements Screen
                 lblHeadingSRS: "Omgeving eisen & eigenaarschap",
                 lblSitePurposeKey: "Beschrijving doel en inhoud van de omgeving",
@@ -533,14 +547,14 @@ Set(
                 lblSensitivityKey: "Gevoeligheid",
                 lblRetentionDesc: "Selecteer een retentielabel dat wordt toegepast op alle inhoud van je omgeving.",
                 lblRetentionKey: "Retentie",
-                lblVisibilityKey: "Zichtbaarheid",  
+                lblVisibilityKey: "Zichtbaarheid",
                 htmVisibilityDetails1: "Publiek: Gebruikers kunnen jouw samenwerkomgeving vinden en een aanvraag doen om lid te worden.",
                 htmVisibilityDetails2: "Private: Verborgen voor gebruikers, zij kunnen geen aanvragen doen om lid te worden.",
-                lblRetentionError: "Retentie is vereist.",                             
+                lblRetentionError: "Retentie is vereist.",
                 //Recommendation Screen
                 lblSubHeading: "Aanbevolen samenwerkomgeving op basis van jouw eisen. Klik op de video voor meer informatie over de verschillende omgevingen.",
-                lblHeadingRS: "Aanbevolen samenwerkomgeving", 
-                lblRecommended: "Aanbevolen",           
+                lblHeadingRS: "Aanbevolen samenwerkomgeving",
+                lblRecommended: "Aanbevolen",
                 //Site Information Screen
                 lblRotateSIS: "Draai je device, je kunt deze app alleen liggend gebruiken.",
                 lblSiteExists1_1: "Titel en alias mogen niet het woord '",
@@ -565,6 +579,8 @@ Set(
                 lblRequired: "* geeft een verplicht veld aan",
                 lblHeadingSIS: "Informatie over samenwerkingsruimte",
                 txtSiteTitleTooltip: "Titel voor de ruimte",
+                lblBusinessUnitKey: "Bedrijfseenheid",
+                cmbBusinessUnitKey: "Zoek een bedrijfseenheid...",
                 //External Collab Screen
                 lblGuestEmailError: "Vul een geldig emailadres in",
                 txtGuestEmail: "Vul een gast emailadres in",
@@ -619,6 +635,7 @@ Set(
                 lblSiteDesignTitleReviewKey: "Template",
                 lblVisibilityReviewKey: "Zichtbaarheid",
                 htmSiteURLReview: "URL zichtbaar zodra deze is aangemaakt",
+                lblBusinessUnitReviewKey: "Bedrijfseenheid",
                 //Disable Load Screen
                 btnDisableLoad: "Schakel automatisch laden uit",
                 lblDisableLoad: "Gebruik deze knop om de automatische laadfunctionaliteit uit te schakelen terwijl u zich in de bewerkingsmodus bevindt.
@@ -628,8 +645,8 @@ Set(
                 De waarde wordt opnieuw ingesteld zodra u de OnStart-gebeurtenis van de app uitvoert of sluit en opnieuw opent.",
                 //More Screen
                 //Delete Request Screen
-                //Widths
-                sectionHeaderBtnWidth:105
+//Widths
+sectionHeaderBtnWidth: 105
             }
         },
         {
@@ -699,8 +716,7 @@ Set(
                 btnClose: "Sluiten",
                 btnCancel: "Annuleer",
                 //Welcome Screen
-                lblWelcome: "Welkom bij de Provision Assist App",
-                lblRequirements: "Deel je eisen met ons en we geven je aan aanbeveling voor een samenwerkomgeving die het beste bij jouw eisen past. Nadat je hebt gekozen, kun je jouw aanvraag verzenden ter goedkeuring.",
+                lblWelcome: "Welkom bij de Provision Assist App. Deel je eisen met ons en we geven je aan aanbeveling voor een samenwerkomgeving die het beste bij jouw eisen past. Nadat je hebt gekozen, kun je jouw aanvraag verzenden ter goedkeuring.",
                 lblUnsubmitted: "Het lijkt erop dat je nog onverzonden verzoeken hebt, klik op 'Mijn aanvragen' om door te gaan met bewerken.",
                 lblRate: "Beoordeel deze app",
                 lblStartRequest: "Start een aanvraag",
@@ -722,6 +738,10 @@ Set(
                 lblCopyDesc: "Maak een nieuwe aanvraag aan door de gegevens van een eerdere aanvraag te kopiëren. Update de titel en beschrijving van de ruimte hieronder en klik op 'Kopieer aanvraag' om dit aanvraag te kopiëren.",
                 lblCopyHeading: "Kopieer aanvraag",
                 lblCopySiteDescriptionKey: "Beschrijving",
+                icoEditRequest: "Bewerk aanvraag",
+                icoDeleteRequest: "Verwijder aanvraag",
+                lblCopyError: "Verander de titel van de ruimte om deze aanvraag te kunnen kopiëren.",
+                notifyCopied: "Aanvraag succesvol gekopieerd. Je kunt deze bewerken met het bewerk icoon.",
                 //Site Requirements Screen
                 lblHeadingSRS: "Omgeving eisen & eigenaarschap",
                 lblSitePurposeKey: "Beschrijving doel en inhoud van de omgeving",
@@ -743,14 +763,14 @@ Set(
                 lblSensitivityKey: "Gevoeligheid",
                 lblRetentionDesc: "Selecteer een retentielabel dat wordt toegepast op alle inhoud van je omgeving.",
                 lblRetentionKey: "Retentie",
-                lblVisibilityKey: "Zichtbaarheid", 
+                lblVisibilityKey: "Zichtbaarheid",
                 htmVisibilityDetails1: "Publiek: Gebruikers kunnen jouw samenwerkomgeving vinden en een aanvraag doen om lid te worden.",
                 htmVisibilityDetails2: "Private: Verborgen voor gebruikers, zij kunnen geen aanvragen doen om lid te worden.",
-                lblRetentionError: "Retentie is vereist.",                                            
+                lblRetentionError: "Retentie is vereist.",
                 //Recommendation Screen
                 lblSubHeading: "Aanbevolen samenwerkomgeving op basis van jouw eisen. Klik op de video voor meer informatie over de verschillende omgevingen.",
-                lblHeadingRS: "Aanbevolen samenwerkomgeving",  
-                lblRecommended: "Aanbevolen",                     
+                lblHeadingRS: "Aanbevolen samenwerkomgeving",
+                lblRecommended: "Aanbevolen",
                 //Site Information Screen
                 lblRotateSIS: "Draai je device, je kunt deze app alleen liggend gebruiken.",
                 lblSiteExists1_1: "Titel en alias mogen niet het woord '",
@@ -775,6 +795,8 @@ Set(
                 lblRequired: "* geeft een verplicht veld aan",
                 lblHeadingSIS: "Informatie over samenwerkingsruimte",
                 txtSiteTitleTooltip: "Titel voor de ruimte",
+                lblBusinessUnitKey: "Bedrijfseenheid",
+                cmbBusinessUnitKey: "Zoek een bedrijfseenheid...",
                 //External Collab Screen
                 lblGuestEmailError: "Vul een geldig emailadres in",
                 txtGuestEmail: "Vul een gast emailadres in",
@@ -829,6 +851,7 @@ Set(
                 lblSiteDesignTitleReviewKey: "Template",
                 lblVisibilityReviewKey: "Zichtbaarheid",
                 htmSiteURLReview: "URL zichtbaar zodra deze is aangemaakt",
+                lblBusinessUnitReviewKey: "Bedrijfseenheid",
                 //Disable Load Screen
                 btnDisableLoad: "Schakel automatisch laden uit",
                 lblDisableLoad: "Gebruik deze knop om de automatische laadfunctionaliteit uit te schakelen terwijl u zich in de bewerkingsmodus bevindt.
@@ -838,8 +861,220 @@ Set(
                 De waarde wordt opnieuw ingesteld zodra u de OnStart-gebeurtenis van de app uitvoert of sluit en opnieuw opent.",
                 //More Screen
                 //Delete Request Screen
+//Widths
+sectionHeaderBtnWidth: 105
+            }
+        },
+        {
+            Language: "de",
+            Labels: {
+                //Collaboration Space Types List
+                descTeamSite: "Eine SharePoint-Teamwebsite ermöglicht Ihnen und Ihrem Team das Speichern von Dokumenten, Veröffentlichen von Neuigkeiten und mehr.",
+                descO365Group: "Eine Office 365-Gruppe bietet zusätzliche Funktionen gegenüber einer Teamwebsite, darunter ein Aufgabenboard, einen gemeinsamen Kalender, Posteingang und mehr.",
+                descCommSite: "Eine Kommunikationswebsite ist eine attraktive Website zum Präsentieren von Fallstudien, Produkten oder als Teil eines Intranets.",
+                descTeam: "Teams ist eine kollaborative Kommunikationsplattform, die Chats, Videoanrufe, Sprachanrufe, Dokumente und Dateien eines Teams organisiert.",
+                descHub: "SharePoint-Hubwebsites helfen Ihnen, die Bedürfnisse Ihrer Organisation zu erfüllen, indem sie Websites nach Projekt, Abteilung, Bereich oder Region verbinden und organisieren.",
+                descVivaEngage: "Eine Viva Engage Community bietet einen Bereich für Wissensaustausch, unternehmensweite Kommunikation, Führungskräfte-Interaktion sowie Gespräche, Dateien, Veranstaltungen und Updates.",
+                //Recommendation Scoring List
+                reqDocs: "Dokumente speichern und teilen",
+                reqWork: "Eng innerhalb eines Teams zusammenarbeiten",
+                reqCollab: "Zusammenarbeit mit externen Benutzern (Kunden, Partnern, Lieferanten)",
+                reqIntranet: "Intranet-Seite für ein Projekt/Produkt",
+                reqInfosite: "Informations-/Präsentations-Intranetseite",
+                reqConversations: "Gespräche/Diskussionen in kleinen Gruppen",
+                reqChat: "Chat-basierte direkte Zusammenarbeit innerhalb eines Teams",
+                reqTasks: "Aufgaben verwalten und Notizen erstellen/speichern",
+                reqProject: "An einem Projekt/Produkt arbeiten",
+                reqStorage: "Strukturierte Speicherung großer Datenmengen",
+                reqInbox: "Gemeinsamer Posteingang für Team-E-Mails",
+                reqMeetings: "Meeting-Verwaltung",
+                reqTracking: "Vorfälle melden/nachverfolgen",
+                reqTraining: "Schulungsmaterial bereitstellen und Support anbieten",
+                reqRegion: "Regionale Inhalte nur mit einer spezifischen Region teilen",
+                reqSharing: "Kurzfristiges Teilen während der Projektdauer",
+                reqNav: "Einheitliche Navigation und Branding auf meiner Website anwenden",
+                //Preloading Component
+                firstloading: "Provision Assist laden",
+                loading: "Laden...",
+                verify: "Überprüfen...",
+                process: "Verarbeiten...",
+                //Header Component
+                lblHeading: "Provision Assist",
+                //Progress Bar Component
+                stepOne: "Anforderungen",
+                stepTwo: "Empfehlung",
+                stepThree: "Datenklassifizierung",
+                stepFour: "Vorlage wählen",
+                stepFive: "Informationen",
+                stepSix: "Externes Teilen",
+                stepSeven: "Hub beitreten",
+                stepEight: "Prüfen und absenden",
+                //Rating Component
+                lblMessage: "Vielen Dank für Ihr Feedback!",
+                txtNote: "Notiz schreiben",
+                lblRatingTitle: "Diese App bewerten",
+                //Dialog Component
+                locDialogTitle: "Anfrage unvollständig",
+                locDialogTitle2: "Kommentare zur Anfrage",
+                locDialogDesc: "Ihre Anfrage wurde nicht abgeschlossen. Möchten Sie wirklich zurückgehen? (Sie können diese Anfrage später weiter bearbeiten.)",
+                locDialogDescSubmit: "Anfrage erfolgreich übermittelt und wartet auf Freigabe. Sie können diese Anfrage unter 'Meine Anfragen' ansehen.",
+                locDialogTitleSubmit: "Anfrage übermittelt",
+                locDialogDelete: "Anfrage löschen",
+                locDialogDescDelete: "Ihre Anfrage wurde nicht abgeschlossen. Möchten Sie sie wirklich löschen?",
+                locDialogDescDelete2: "Diese Anfrage wurde nicht abgeschickt. Möchten Sie sie wirklich löschen?",
+                mesRequestDeleted: "Anfrage erfolgreich gelöscht",
+                //Buttons
+                btnBack: "Zurück",
+                btnNext: "Weiter",
+                btnSubmit: "Absenden",
+                radYes: "Ja",
+                radNo: "Nein",
+                btnClose: "Schließen",
+                btnCancel: "Abbrechen",
+                //Welcome Screen
+                lblWelcome: "Willkommen bei Provision Assist" & Char(10) & Char(10) & "Teilen Sie uns Ihre Anforderungen mit und wir empfehlen Ihnen eine passende Kollaborationsumgebung." & Char(10) & Char(10) & "Sobald Sie gewählt haben, können Sie Ihre Anfrage zur Freigabe absenden." & Char(10) & Char(10) & "Verwenden Sie die Schaltflächen unten zum Starten.",
+                lblUnsubmitted: "Es scheint, dass Sie eine nicht abgeschickte Anfrage haben. Bitte klicken Sie auf 'Meine Anfragen', um die Bearbeitung fortzusetzen.",
+                lblRate: "Diese App bewerten",
+                lblStartRequest: "Neue Anfrage starten",
+                lblStartRequestDesc: "Starten Sie eine neue Anfrage für eine Kollaborationsumgebung.",
+                lblMyRequests: "Meine Anfragen",
+                lblMyRequestsDesc: "Status Ihrer Anfragen anzeigen.",
+                //My Requests Screen
+                lblMyRequestsUseDesktop: "Verwenden Sie die Desktop-App für volle Funktionalität.",
+                btnRefresh: "Aktualisieren",
+                lblCommentsHeading: "Kommentare",
+                lblAreaTypeHeading: "Typ",
+                lblDateHeading: "Datum",
+                lblPrivacyHeading: "Datenschutzeinstellungen",
+                lblStatusHeading: "Status",
+                lblAreaTitleHeading: "Titel des Bereichs",
+                lblMyRequestsMRS: "Meine Anfragen",
+                lblMyRequestsDescMRS: "Hier können Sie den Status Ihrer Anfragen sehen. Verwenden Sie die Symbole unten, um Kommentare zur Freigabe anzusehen sowie abgelehnte oder nicht abgeschickte Anfragen zu bearbeiten bzw. erneut einzureichen.",
+                lblNoRequests: "Sie haben keine Anfragen.",
+                lblCopyDesc: "Erstellen Sie eine neue Anfrage durch Kopieren der Details einer früheren Anfrage. Aktualisieren Sie Titel und Beschreibung unten und klicken Sie auf 'Anfrage kopieren'.",
+                lblCopyHeading: "Anfrage kopieren",
+                lblCopySiteDescriptionKey: "Beschreibung",
+                icoEditRequest: "Anfrage bearbeiten",
+                icoDeleteRequest: "Anfrage löschen",
+                lblCopyError: "Ändern Sie den Titel des Bereichs, um diese Anfrage zu kopieren.",
+                notifyCopied: "Anfrage erfolgreich kopiert. Sie können sie über das Bearbeitungssymbol bearbeiten.",
+                //Site Requirements Screen
+                lblHeadingSRS: "Umgebungsanforderungen und Eigentümerschaft",
+                lblSitePurposeKey: "Beschreibung des Zwecks und Inhalts der Umgebung",
+                txtSitePurposeValue: "Wofür werden Sie diese Umgebung verwenden?",
+                lblSiteRequirementsCustomError: "Wählen Sie Ihre Anforderungen",
+                cmbSiteRequirements: "Ich möchte gerne...",
+                lblSiteRequirementsCustomKey: "Umgebungsanforderungen (wählen Sie alle anwendbaren)",
+                lblSiteOwnersError: "Geben Sie zwei verschiedene Eigentümer ein.",
+                cmbSiteOwnersMembers: "Beginnen Sie mit der Eingabe eines Namens",
+                lblSiteOwnersKey: "Eigentümer (mindestens zwei erforderlich)",
+                lblGranularPerms: "Detaillierte Berechtigungen wie nur-Lesezugriff oder Zugriff auf bestimmte Dateien können nach der Erstellung der Umgebung festgelegt werden.",
+                lblSiteMembersError1: "Doppelte Mitgliedseigentümer",
+                lblSiteMembersError2: "Mitglieder und Eigentümer können nicht dieselben Benutzer enthalten.",
+                lblSiteMembersKey: "Mitglieder",
+                txtSiteTitleValueSRS: "Namenslose Anfrage",
+                //Data Classification Screen
+                lblHeadingDCS: "Datenklassifizierung",
+                lblSensitiveDataKey: "Wird in dieser Umgebung vertrauliche oder sensible Daten gespeichert?",
+                lblSensitivityKey: "Sensibilität",
+                lblRetentionDesc: "Wählen Sie ein Aufbewahrungslabel, das auf alle Inhalte Ihrer Umgebung angewendet wird.",
+                lblRetentionKey: "Aufbewahrung",
+                lblVisibilityKey: "Sichtbarkeit",
+                htmVisibilityDetails1: "Öffentlich: Benutzer können Ihre Zusammenarbeitsumgebung finden und eine Mitgliedschaft beantragen.",
+                htmVisibilityDetails2: "Privat: Verborgen für Benutzer, sie können keine Mitgliedschaft beantragen.",
+                lblRetentionError: "Aufbewahrung ist erforderlich.",
+                //Recommendation Screen
+                lblSubHeading: "Empfohlene Zusammenarbeitsumgebung basierend auf Ihren Anforderungen. Klicken Sie auf das Video für weitere Informationen zu den verschiedenen Umgebungen.",
+                lblHeadingRS: "Empfohlene Zusammenarbeitsumgebung",
+                lblRecommended: "Empfohlen",
+                //Site Information Screen
+                lblRotateSIS: "Drehen Sie Ihr Gerät, diese App kann nur im Querformat verwendet werden.",
+                lblSiteExists1_1: "Titel und Alias dürfen das Wort '",
+                lblSiteExists1_2: "' nicht enthalten, gemäß der Unternehmensrichtlinie.",
+                lblSiteExists2: "Klicken Sie auf 'Überprüfen'",
+                lblSiteExists3: "Umgebung ist verfügbar",
+                lblSiteExists4: "Umgebung existiert bereits, ändern Sie den Titel.",
+                lblSiteExists5: "Eine ähnliche Anfrage existiert bereits, ändern Sie den Titel.",
+                lblSiteExists6: "Sie haben bereits eine Anfrage mit diesen Details, bearbeiten und senden Sie diese Anfrage oder ändern Sie den Titel.",
+                btnVerify: "Überprüfen",
+                htmSiteDisplayName: "Anzeigename der Umgebung: ",
+                txtSiteTitleValue: "Geben Sie einen Titel ein (der zu Ihrer Umgebung passt)",
+                lblSiteTitleKey: "Titel der Umgebung",
+                lblSiteAliasKey: "Umgebungsalias (letzter Teil der URL)",
+                txtSiteDesc: "Beschreiben Sie den Zweck dieser Umgebung.",
+                lblSiteDescMessage: "Verwenden Sie nur Buchstaben, Zahlen, Leerzeichen und Zeilenumbrüche. Alle anderen Satzzeichen gehen beim Senden verloren.",
+                lblSiteDescKey: "Beschreibung",
+                txtBusinessJustValue: "Warum benötigen Sie diese Umgebung?",
+                lblBusinessJustKey: "Geschäftliche Rechtfertigung",
+                lblTimeZoneIdKey: "Zeitzone",
+                lblLCIDKey: "Standort",
+                lblRequired: "* gibt ein erforderliches Feld an",
+                lblHeadingSIS: "Informationen zur Zusammenarbeitsumgebung",
+                txtSiteTitleTooltip: "Titel für den Raum",
+                lblBusinessUnitKey: "Geschäftseinheit",
+                cmbBusinessUnit: "Suchen Sie eine Geschäftseinheit...",
+                //External Collab Screen
+                lblGuestEmailError: "Geben Sie eine gültige E-Mail-Adresse ein",
+                txtGuestEmail: "Geben Sie eine Gast-E-Mail-Adresse ein",
+                lblGuestEmail: "Geben Sie die Gast-E-Mail ein",
+                lblAddGuests: "Möchten Sie Gäste hinzufügen? Geben Sie die Details unten ein",
+                lblEmailHeading: "E-Mail",
+                lblHeadingECS: "Müssen Sie extern teilen?",
+                lblExternalSharingInfo1: "Wenn Sie 'Nein' auswählen, wird externes Teilen für die gesamte Umgebung deaktiviert. Sie müssen dann einen Administrator kontaktieren, wenn Sie dies später aktivieren möchten.",
+                lblExternalSharingInfo2: "Sie dürfen nicht extern teilen.",
+                txtExternalJustValue: "Warum ist externes Teilen erforderlich?",
+                lblExternalJustKey: "Begründung",
+                //Site Design Screen
+                lblTeamsTemplateDescHeading: "Über dieses Template",
+                lblNoTemplates: "Keine Templates gefunden - klicken Sie auf 'Weiter'",
+                lblSiteDesignKey: "Wählen Sie ein Template",
+                lblHeadingSDS1: "Wählen Sie ein Template für Ihre Umgebung",
+                lblHeadingSDS2: "Möchten Sie ein Template anwenden?",
+                //Join Hub Screen
+                lblNoHubSites: "Keine Hubseiten gefunden - klicken Sie auf 'Weiter'",
+                lblHubSiteKey: "Wählen Sie eine Hubseite",
+                lblHubSiteJustKey: "Geben Sie eine Begründung ein, um mit dieser Hubseite zu verbinden.",
+                htmSubtitle1: "Nicht klar, was eine Hubseite ist?",
+                htmSubtitle2: "Klicken Sie hier für weitere Informationen.",
+                lblHeadingJHS: "Möchten Sie Ihre Umgebung mit einer Hubseite verbinden?",
+                lblHubSiteError: "Hubseite ist erforderlich",
+                cmbHubSite: "Wählen Sie eine Hubseite...",
+                txtHubSiteJustValue: "Geben Sie eine Begründung ein",
+                //Submit Screen
+                lblHeadingSS: "Überprüfen und senden",
+                lblSiteTitleReviewKey: "Titel der Umgebung",
+                lblAreaDisplayNameKey: "Anzeigename der Umgebung",
+                lblSiteDescriptionReviewKey: "Beschreibung der Umgebung",
+                lblSiteTypeReviewKey: "Typ der Umgebung",
+                lblTimeZoneReviewKey: "Zeitzone",
+                lblLCIDReviewKey: "Standort",
+                lblSiteURLReviewKey: "Umgebungs-URL",
+                lblSiteAliasReviewKey: "Umgebungsalias",
+                lblSiteRequirementsReviewKey: "Anforderungen der Umgebung",
+                lblSitePurposeReviewKey: "Zweck und Inhalt der Umgebung",
+                lblBusinessJustificationReviewKey: "Geschäftliche Rechtfertigung",
+                lblConfidentialDataReviewKey: "Vertrauliche Daten",
+                lblSensitivityKeyReview: "Sensibilität",
+                lblRetentionKeyReview: "Aufbewahrung",
+                lblMembersReviewKey: "Mitglieder",
+                lblOwnersReviewKey: "Eigentümer",
+                lblExternalSharingReviewKey: "Externes Teilen erforderlich",
+                lblExternalSharingJustificationKey: "Begründung für externes Teilen",
+                lblGuestsReviewKey: "Gäste",
+                lblJoinHubReviewKey: "Verbinden mit einer Hubseite",
+                lblHubSiteTitleReviewKey: "Titel der Hubseite",
+                lblHubSiteJustificationReviewKey: "Begründung für die Hubseite",
+                lblSiteDesignTitleReviewKey: "Template",
+                lblVisibilityReviewKey: "Sichtbarkeit",
+                htmSiteURLReview: "URL wird sichtbar, sobald diese erstellt ist",
+                lblBusinessUnitReviewKey: "Geschäftseinheit",
+                //Disable Load Screen
+                btnDisableLoad: "Automatisches Laden deaktivieren",
+                lblDisableLoad: "Verwenden Sie diese Schaltfläche, um die automatische Lade-Funktion zu deaktivieren, während Sie sich im Bearbeitungsmodus befinden. Hierdurch können Sie den OnSelect-Code des lblLoadingApp-Steuerlements auf dem Ladescherm bearbeiten. Der Wert wird zurückgesetzt, sobald Sie die OnStart-Ereignis der App ausführen oder schließen und erneut öffnen.",
+                //More Screen
+                //Delete Request Screen
                 //Widths
-                sectionHeaderBtnWidth:105
+                sectionHeaderBtnWidth: 105
             }
         }
     )
